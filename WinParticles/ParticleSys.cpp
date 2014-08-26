@@ -1,0 +1,302 @@
+#include "stdafx.h"
+#include "ParticleSys.h"
+#include "Common.h"
+#include <cstdlib>
+#include <cmath>
+
+CParticleSys::CParticleSys()
+{
+	psys = new std::vector<CParticle>();
+	emitterX = 0.0;
+	emitterY = 0.0;
+	timeSinceEmit = 0.0;
+	defaultTint = RGB(255, 255, 255);
+	DefaultParameters();
+	
+	originalDefGrad = defaultGradient = new CGradient(3);
+	defaultGradient->SetStep(0, 0.0, RGB(0, 255, 0));
+	defaultGradient->SetStep(1, 0.5, RGB(255, 255, 0));
+	defaultGradient->SetStep(2, 1.0, RGB(255, 0, 0));
+}
+
+CParticleSys::~CParticleSys()
+{
+	delete psys;
+	if (defaultGradient == originalDefGrad) delete defaultGradient;
+}
+
+std::vector<CParticle> *CParticleSys::GetParticles()
+{
+	return psys;
+}
+
+double CParticleSys::RandInRange(double min, double max)
+{
+	return ((double)rand() / RAND_MAX) * (max - min) + min;
+}
+
+void CParticleSys::GetEmitterPos(double *x, double *y)
+{
+	if (x) *x = emitterX;
+	if (y) *y = emitterY;
+}
+
+void CParticleSys::SetEmitterPos(double x, double y)
+{
+	emitterX = x;
+	emitterY = y;
+}
+
+void CParticleSys::DefaultParameters()
+{
+	velocityMode = CParticleSys::VelocityMode::MODE_POLAR;
+	minVelocity = 0.0;
+	maxVelocity = 60.0;
+	minVelX = -60.0;
+	maxVelX = 60.0;
+	minVelY = -60.0;
+	maxVelY = 60.0;
+	maxAge = 1.0;
+	emissionRate = 1000.0;
+	emissionRadius = 0.0;
+	ax = 0.0;
+	ay = 0.0;
+}
+
+CParticleSys::VelocityMode CParticleSys::GetVelocityMode()
+{
+	return velocityMode;
+}
+
+void CParticleSys::SetVelocityMode(CParticleSys::VelocityMode mode)
+{
+	velocityMode = mode;
+}
+
+void CParticleSys::GetVelocity(double *min, double *max)
+{
+	if (min) *min = minVelocity;
+	if (max) *max = maxVelocity;
+}
+
+void CParticleSys::SetVelocity(double min, double max)
+{
+	minVelocity = min;
+	maxVelocity = max;
+}
+
+void CParticleSys::SetVelocity(double velocity)
+{
+	minVelocity = maxVelocity = velocity;
+}
+
+void CParticleSys::GetRectVelocityX(double *min, double *max)
+{
+	if (min) *min = minVelX;
+	if (max) *max = maxVelX;
+}
+
+void CParticleSys::SetRectVelocityX(double min, double max)
+{
+	minVelX = min;
+	maxVelX = max;
+}
+
+void CParticleSys::SetRectVelocityX(double velocity)
+{
+	minVelX = maxVelX = velocity;
+}
+
+void CParticleSys::GetRectVelocityY(double *min, double *max)
+{
+	if (min) *min = minVelY;
+	if (max) *max = maxVelY;
+}
+
+void CParticleSys::SetRectVelocityY(double min, double max)
+{
+	minVelY = min;
+	maxVelY = max;
+}
+
+void CParticleSys::SetRectVelocityY(double velocity)
+{
+	minVelY = maxVelY = velocity;
+}
+
+void CParticleSys::GetAcceleration(double *x, double *y)
+{
+	if (x) *x = ax;
+	if (y) *y = ay;
+}
+
+void CParticleSys::SetAcceleration(double x, double y)
+{
+	ax = x;
+	ay = y;
+}
+
+double CParticleSys::GetMaxAge()
+{
+	return maxAge;
+}
+
+void CParticleSys::SetMaxAge(double maxAge)
+{
+	this->maxAge = maxAge;
+}
+
+double CParticleSys::GetEmissionRate()
+{
+	return emissionRate;
+}
+
+void CParticleSys::SetEmissionRate(double emissionRate)
+{
+	this->emissionRate = emissionRate;
+}
+
+double CParticleSys::GetEmissionRadius()
+{
+	return emissionRadius;
+}
+
+void CParticleSys::SetEmissionRadius(double emissionRadius)
+{
+	this->emissionRadius = emissionRadius;
+}
+
+CGradient *CParticleSys::GetDefGradient()
+{
+	return defaultGradient;
+}
+
+void CParticleSys::SetDefGradient(CGradient *gradient)
+{
+	if (defaultGradient == originalDefGrad) delete defaultGradient;
+	defaultGradient = gradient;
+}
+
+COLORREF CParticleSys::GetDefaultTint()
+{
+	return defaultTint;
+}
+
+void CParticleSys::SetDefaultTint(COLORREF tint)
+{
+	defaultTint = tint;
+}
+
+void CParticleSys::SimMovingEmitter(double time, double destX, double destY)
+{
+	double srcX = emitterX;
+	double srcY = emitterY;
+
+	// First, simulate all existing particles.
+	for (std::vector<CParticle>::iterator i = psys->begin(); i != psys->end(); i++) {
+		i->Simulate(time);
+	}
+
+	// Now, create new particles and simulate those for the appropriate amounts of time.
+	double dt = 1.0 / emissionRate;
+	double t = time + timeSinceEmit;
+	while (t >= dt) {
+		double progress = 1.0 - t / (time + timeSinceEmit);
+		emitterX = Interpolate(progress, 0.0, 1.0, srcX, destX);
+		emitterY = Interpolate(progress, 0.0, 1.0, srcY, destY);
+		t -= dt;
+		CreateParticle(emitterX, emitterY).Simulate(t);
+	}
+	timeSinceEmit = t;
+
+	emitterX = destX;
+	emitterY = destY;
+	DisposeOfDead();
+}
+
+void CParticleSys::Simulate(double time)
+{
+	SimMovingEmitter(time, emitterX, emitterY);
+}
+
+void CParticleSys::Draw(HDC hDC, LPRECT rect)
+{
+	for (std::vector<CParticle>::iterator i = psys->begin(); i != psys->end(); i++) {
+		double x, y;
+		i->GetPosition(&x, &y);
+		if (rect->left <= x && x <= rect->right && rect->top <= y && y <= rect->bottom) {
+			i->Draw(hDC);
+		}
+	}
+}
+
+CParticle &CParticleSys::CreateParticle(double x, double y)
+{
+	CParticle p;
+	double angle = RandInRange(0.0, 6.28);
+	double vel = RandInRange(minVelocity, maxVelocity);
+	double radiusMultiplier;
+	if (minVelocity == maxVelocity) {
+		radiusMultiplier = RandInRange(0.0, emissionRadius);
+	} else {
+		radiusMultiplier = Interpolate(vel, minVelocity, maxVelocity, 0.0, emissionRadius);
+	}
+	x += std::cos(angle) * radiusMultiplier;
+	y += std::sin(angle) * radiusMultiplier;
+	p.SetPosition(x, y);
+
+	if (velocityMode == CParticleSys::VelocityMode::MODE_POLAR) {
+		p.SetVelocity(vel * std::cos(angle), vel * std::sin(angle));
+	} else if (velocityMode == CParticleSys::VelocityMode::MODE_RECT) {
+		p.SetVelocity(RandInRange(minVelX, maxVelX), RandInRange(minVelY, maxVelY));
+	}
+
+	p.SetAcceleration(ax, ay);
+	p.SetMaxAge(maxAge);
+	p.SetGradient(defaultGradient);
+	p.SetTint(defaultTint);
+	psys->push_back(p);
+	return psys->back();
+}
+
+void CParticleSys::CreateTestParticles()
+{
+	// This is a very old test function, from before the emitter was programmed.
+	CParticle test1, test2;
+
+	test1.SetPosition(64.0, 64.0);
+	test1.SetVelocity(64.0, 64.0);
+	test1.SetAcceleration(0.0, -16.0);
+	psys->push_back(test1);
+
+	test2.SetPosition(600.0, 400.0);
+	test2.SetVelocity(-200.0, -50.0);
+	test2.SetAcceleration(100.0, -25.0);
+	psys->push_back(test2);
+}
+
+void CParticleSys::DisposeOfDead()
+{
+	std::vector<CParticle> *newVec = new std::vector<CParticle>();
+
+	for (std::vector<CParticle>::iterator i = psys->begin(); i != psys->end(); i++) {
+		if (!i->IsDead()) {
+			newVec->push_back(*i);
+		}
+	}
+
+	delete psys;
+	psys = newVec;
+}
+
+const char *CParticleSys::VelocityModeText(CParticleSys::VelocityMode mode)
+{
+	switch (mode) {
+	case CParticleSys::VelocityMode::MODE_POLAR:
+		return "POLAR";
+	case CParticleSys::VelocityMode::MODE_RECT:
+		return "RECTANGULAR ([X] toggles X/Y)";
+	default:
+		return "???"; // ...Profit!
+	}
+}
