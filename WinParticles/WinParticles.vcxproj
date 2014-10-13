@@ -135,9 +135,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="BackBuffer.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="DisplayItem.h" />
