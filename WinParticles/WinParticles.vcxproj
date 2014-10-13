@@ -80,8 +80,9 @@
     <ClInclude Include="BackBuffer.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="DisplayItem.h" />
-    <ClInclude Include="DisplayItemTest.h" />
     <ClInclude Include="Gradient.h" />
+    <ClInclude Include="NumericInputBox.h" />
+    <ClInclude Include="ParamAgent.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleSys.h" />
     <ClInclude Include="Resource.h" />
@@ -93,8 +94,9 @@
     <ClCompile Include="BackBuffer.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="DisplayItem.cpp" />
-    <ClCompile Include="DisplayItemTest.cpp" />
     <ClCompile Include="Gradient.cpp" />
+    <ClCompile Include="NumericInputBox.cpp" />
+    <ClCompile Include="ParamAgent.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleSys.cpp" />
     <ClCompile Include="stdafx.cpp">

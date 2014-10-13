@@ -21,7 +21,7 @@ private:
 	CGradient *originalDefGrad;
 	CGradient *defaultGradient;
 	COLORREF defaultTint;
-
+	
 	double RandInRange(double min, double max);
 
 public:

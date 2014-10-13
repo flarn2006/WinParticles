@@ -6,7 +6,6 @@ CDisplayItem::CDisplayItem()
 	enabled = true;
 }
 
-
 CDisplayItem::~CDisplayItem()
 {
 }
@@ -17,6 +16,11 @@ void CDisplayItem::OnDraw(HDC hDC, LPRECT clientRect)
 
 void CDisplayItem::OnMouseDown(int x, int y)
 {
+}
+
+bool CDisplayItem::OnKeyDown(UINT uCode)
+{
+	return false;
 }
 
 bool CDisplayItem::OccupiesPoint(int x, int y)
@@ -42,6 +46,14 @@ void CDisplayItem::Draw(HDC hDC, LPRECT clientRect)
 void CDisplayItem::MouseDown(int x, int y)
 {
 	if (OccupyingPoint(x, y)) OnMouseDown(x, y);
+}
+
+bool CDisplayItem::KeyDown(UINT uCode)
+{
+	if (enabled)
+		return OnKeyDown(uCode);
+	else
+		return false;
 }
 
 bool CDisplayItem::OccupyingPoint(int x, int y)

@@ -8,9 +8,8 @@
 #include "Gradient.h"
 #include "Common.h"
 #include "DisplayItem.h"
-#ifdef _DEBUG
-#include "DisplayItemTest.h"
-#endif
+#include "NumericInputBox.h"
+#include "ParamAgent.h"
 #include <string>
 #include <vector>
 #include <sstream>
@@ -37,6 +36,9 @@ ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
+
+void SelectParam(CParamAgent *agent, int paramNum, double *deltaMult);
+void SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd);
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -136,8 +138,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-void SelectParam(int paramNum, double *deltaMult);
-void SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd);
 
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
@@ -163,12 +163,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static double emitterX, emitterY;
 	double temp1, temp2;
 	double delta;
+	bool alreadyHandled;
 	static double deltaMult;
 	static CHOOSECOLOR colorDlg;
 	static COLORREF customColors[16];
-	static bool rectVelYSelected = false;
 	static std::vector<CDisplayItem*> displayItems;
 	static bool mouseControlsParams = true;
+	static CNumericInputBox *numInputBox;
+	static CParamAgent *agent;
+	static RECT clientRect;
+	static bool cursorHidden = false;
 
 	switch (message)
 	{
@@ -176,7 +180,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		psys = new CParticleSys();
 		psys->SetAcceleration(0.0, -600.0);
 
-		SelectParam(0, &deltaMult);
+		agent = new CParamAgent(psys);
+
+		SelectParam(agent, 0, &deltaMult);
 
 		gradients[0] = new CGradient(5);
 		gradients[0]->SetStep(0, 0.0, RGB(255, 255, 0));
@@ -219,9 +225,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		for (int i = 0; i < 16; i++) customColors[i] = RGB(255, 255, 255);
 
-#ifdef _DEBUG
-		displayItems.push_back(new CDisplayItemTest());
-#endif
+		numInputBox = new CNumericInputBox();
+		numInputBox->SetFont(font);
+		displayItems.push_back(numInputBox);
 		
 		break;
 	case WM_COMMAND:
@@ -238,17 +244,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case ID_PARAMS_VM_POLAR: SetVelocityMode(CParticleSys::VelocityMode::MODE_POLAR, hWnd); break;
 		case ID_PARAMS_VM_RECT: SetVelocityMode(CParticleSys::VelocityMode::MODE_RECT, hWnd); break;
-		case ID_PARAMS_MINVEL: SelectParam(0, &deltaMult); break;
-		case ID_PARAMS_MAXVEL: SelectParam(1, &deltaMult); break;
-		case ID_PARAMS_MINVELX: SelectParam(0, &deltaMult); rectVelYSelected = false; break;
-		case ID_PARAMS_MAXVELX: SelectParam(1, &deltaMult); rectVelYSelected = false; break;
-		case ID_PARAMS_MINVELY: SelectParam(0, &deltaMult); rectVelYSelected = true; break;
-		case ID_PARAMS_MAXVELY: SelectParam(1, &deltaMult); rectVelYSelected = true; break;
-		case ID_PARAMS_XACCEL: SelectParam(2, &deltaMult); break;
-		case ID_PARAMS_YACCEL: SelectParam(3, &deltaMult); break;
-		case ID_PARAMS_MAXAGE: SelectParam(4, &deltaMult); break;
-		case ID_PARAMS_EMISSIONRATE: SelectParam(5, &deltaMult); break;
-		case ID_PARAMS_EMISSIONRADIUS: SelectParam(6, &deltaMult); break;
+		case ID_PARAMS_MINVEL: SelectParam(agent, 0, &deltaMult); break;
+		case ID_PARAMS_MAXVEL: SelectParam(agent, 1, &deltaMult); break;
+		case ID_PARAMS_MINVELX: SelectParam(agent, 0, &deltaMult); agent->SetRectVelYBit(false); break;
+		case ID_PARAMS_MAXVELX: SelectParam(agent, 1, &deltaMult); agent->SetRectVelYBit(false); break;
+		case ID_PARAMS_MINVELY: SelectParam(agent, 0, &deltaMult); agent->SetRectVelYBit(true); break;
+		case ID_PARAMS_MAXVELY: SelectParam(agent, 1, &deltaMult); agent->SetRectVelYBit(true); break;
+		case ID_PARAMS_XACCEL: SelectParam(agent, 2, &deltaMult); break;
+		case ID_PARAMS_YACCEL: SelectParam(agent, 3, &deltaMult); break;
+		case ID_PARAMS_MAXAGE: SelectParam(agent, 4, &deltaMult); break;
+		case ID_PARAMS_EMISSIONRATE: SelectParam(agent, 5, &deltaMult); break;
+		case ID_PARAMS_EMISSIONRADIUS: SelectParam(agent, 6, &deltaMult); break;
 		case ID_PARAMS_TINT:
 			colorDlg.rgbResult = psys->GetDefaultTint();
 			if (ChooseColor(&colorDlg)) {
@@ -261,12 +267,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_SIZE:
 		bbuf->UpdateSize();
+		GetClientRect(hWnd, &clientRect);
+		numInputBox->SetPosition((clientRect.left + clientRect.right) / 2, (clientRect.top + clientRect.bottom) / 2);
 		break;
 	case WM_PAINT:
 		hDC = bbuf->GetDC();
 
 		// Draw black background and particles
-		RECT clientRect;
 		GetClientRect(hWnd, &clientRect);
 		PatBlt(hDC, clientRect.left, clientRect.top, clientRect.right - clientRect.left, clientRect.bottom - clientRect.top, BLACKNESS);
 		psys->Draw(hDC, &clientRect);
@@ -295,7 +302,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			out << SELPARAM_CHAR(0) << " Minimum velocity:   " << temp1 << std::endl;
 			out << SELPARAM_CHAR(1) << " Maximum velocity:   " << temp2 << std::endl;
 		} else {
-			if (!rectVelYSelected) {
+			if (!agent->GetRectVelYBit()) {
 				psys->GetRectVelocityX(&temp1, &temp2);
 				out << SELPARAM_CHAR(0) << " Minimum X velocity: " << temp1 << std::endl;
 				out << SELPARAM_CHAR(1) << " Maximum X velocity: " << temp2 << std::endl;
@@ -336,29 +343,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_KEYDOWN:
-		if (0x31 <= wParam && wParam <= 0x30 + NUM_GRADIENTS) {
-			psys->SetDefGradient(gradients[wParam - 0x31]);
-		} else if (wParam == (WPARAM)'R') {
-			psys->DefaultParameters();
-			SetVelocityMode(psys->GetVelocityMode(), hWnd);
-		} else if (wParam == (WPARAM)'Z') {
-			if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR)
-				SetVelocityMode(CParticleSys::VelocityMode::MODE_RECT, hWnd);
-			else
-				SetVelocityMode(CParticleSys::VelocityMode::MODE_POLAR, hWnd);
-		} else if (wParam == (WPARAM)'X' && psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_RECT) {
-			rectVelYSelected = !rectVelYSelected;
-		} else if (wParam == VK_OEM_MINUS) {
-			deltaMult /= 10;
-		} else if (wParam == VK_OEM_PLUS) {
-			deltaMult *= 10;
+		alreadyHandled = false;
+		for (std::vector<CDisplayItem*>::iterator i = displayItems.begin(); i != displayItems.end(); i++) {
+			alreadyHandled = (*i)->KeyDown(wParam) || alreadyHandled;
+		}
+
+		if (!alreadyHandled) {
+			if (0x31 <= wParam && wParam <= 0x30 + NUM_GRADIENTS) {
+				psys->SetDefGradient(gradients[wParam - 0x31]);
+			} else if (wParam == (WPARAM)'R') {
+				psys->DefaultParameters();
+				SetVelocityMode(psys->GetVelocityMode(), hWnd);
+			} else if (wParam == (WPARAM)'Z') {
+				if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR)
+					SetVelocityMode(CParticleSys::VelocityMode::MODE_RECT, hWnd);
+				else
+					SetVelocityMode(CParticleSys::VelocityMode::MODE_POLAR, hWnd);
+			} else if (wParam == (WPARAM)'X' && psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_RECT) {
+				agent->SetRectVelYBit(!agent->GetRectVelYBit());
+			} else if (wParam == (WPARAM)'C') {
+				cursorHidden = !cursorHidden;
+				ShowCursor(!cursorHidden);
+			} else if (wParam == VK_OEM_MINUS) {
+				deltaMult /= 10;
+			} else if (wParam == VK_OEM_PLUS) {
+				deltaMult *= 10;
+			} else if (wParam == VK_RETURN) {
+				GetClientRect(hWnd, &clientRect);
+				numInputBox->PromptForValue(agent);
+			}
 		}
 		break;
 	case WM_LBUTTONDOWN:
 		if (mouseControlsParams) {
 			selParam--;
 			if (selParam < 0) selParam = MAX_PARAM;
-			SelectParam(selParam, &deltaMult);
+			SelectParam(agent, selParam, &deltaMult);
 		} else {
 			for (std::vector<CDisplayItem*>::iterator i = displayItems.begin(); i != displayItems.end(); i++) {
 				(*i)->MouseDown(LOWORD(lParam), HIWORD(lParam));
@@ -369,7 +389,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (mouseControlsParams) {
 			selParam++;
 			if (selParam > MAX_PARAM) selParam = 0;
-			SelectParam(selParam, &deltaMult);
+			SelectParam(agent, selParam, &deltaMult);
 		}
 		break;
 	case WM_MBUTTONDOWN:
@@ -393,67 +413,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_MOUSEWHEEL:
 		delta = (double)GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
-		switch (selParam) {
-		case 0: //min velocity
-			if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR)
-				psys->GetVelocity(&temp1, &temp2);
-			else if (!rectVelYSelected)
-				psys->GetRectVelocityX(&temp1, &temp2);
-			else
-				psys->GetRectVelocityY(&temp1, &temp2);
-			temp1 += deltaMult * delta;
-			if (temp1 < 0 && psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) temp1 = 0;
-			if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR)
-				psys->SetVelocity(temp1, temp1 > temp2 ? temp1 : temp2);
-			else if (!rectVelYSelected)
-				psys->SetRectVelocityX(temp1, temp1 > temp2 ? temp1 : temp2);
-			else
-				psys->SetRectVelocityY(temp1, temp1 > temp2 ? temp1 : temp2);
-			break;
-		case 1: //max velocity
-			if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR)
-				psys->GetVelocity(&temp1, &temp2);
-			else if (!rectVelYSelected)
-				psys->GetRectVelocityX(&temp1, &temp2);
-			else
-				psys->GetRectVelocityY(&temp1, &temp2);
-			temp2 += deltaMult * delta;
-			if (temp2 < 0 && psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) temp2 = 0;
-			if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR)
-				psys->SetVelocity(temp1, temp1 > temp2 ? temp1 : temp2);
-			else if (!rectVelYSelected)
-				psys->SetRectVelocityX(temp1, temp1 > temp2 ? temp1 : temp2);
-			else
-				psys->SetRectVelocityY(temp1, temp1 > temp2 ? temp1 : temp2);
-			break;
-		case 2: //X acceleration
-			psys->GetAcceleration(&temp1, &temp2);
-			temp1 += deltaMult * delta;
-			psys->SetAcceleration(temp1, temp2);
-			break;
-		case 3: //Y acceleration
-			psys->GetAcceleration(&temp1, &temp2);
-			temp2 += deltaMult * delta;
-			psys->SetAcceleration(temp1, temp2);
-			break;
-		case 4: //maximum age
-			temp1 = psys->GetMaxAge();
-			temp1 += deltaMult * delta;
-			if (temp1 > 0) psys->SetMaxAge(temp1);
-			break;
-		case 5: //emission rate
-			temp1 = psys->GetEmissionRate();
-			temp1 += deltaMult * delta;
-			if (temp1 < 0) temp1 = 0;
-			if (temp1 > 100000) temp1 = 100000.0;
-			psys->SetEmissionRate(temp1);
-			break;
-		case 6: //emission radius
-			temp1 = psys->GetEmissionRadius();
-			temp1 += deltaMult * delta;
-			psys->SetEmissionRadius(temp1);
-			break;
-		}
+		delta *= deltaMult;
+		agent->SetValue(agent->GetValue() + delta);
 		break;
 	case WM_TIMER:
 		psys->SimMovingEmitter(1.0 / fps, emitterX, emitterY);
@@ -467,6 +428,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		for (int i = 0; i < NUM_GRADIENTS; i++) {
 			delete gradients[i];
 		}
+		for (std::vector<CDisplayItem*>::iterator i = displayItems.begin(); i != displayItems.end(); i++) {
+			delete *i;
+		}
 		PostQuitMessage(0);
 		break;
 	default:
@@ -475,9 +439,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-void SelectParam(int paramNum, double *deltaMult)
+void SelectParam(CParamAgent *agent, int paramNum, double *deltaMult)
 {
 	selParam = paramNum;
+	agent->SetSelParam(selParam);
 	switch (paramNum) {
 		case 0: case 1: *deltaMult = 10.0; break;
 		case 2: *deltaMult = 10.0; break;

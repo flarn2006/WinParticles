@@ -48,7 +48,10 @@
     <ClInclude Include="DisplayItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DisplayItemTest.h">
+    <ClInclude Include="NumericInputBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParamAgent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -77,7 +80,10 @@
     <ClCompile Include="DisplayItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DisplayItemTest.cpp">
+    <ClCompile Include="NumericInputBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParamAgent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
