@@ -13,3 +13,8 @@ COLORREF MultiplyColors(COLORREF a, COLORREF b)
 	float blue1 = (float)GetBValue(a) / 255, blue2 = (float)GetBValue(b) / 255;
 	return RGB((BYTE)(255.0 * red1 * red2), (BYTE)(255.0 * green1 * green2), (BYTE)(255.0 * blue1 * blue2));
 }
+
+double RandInRange(double min, double max)
+{
+	return ((double)rand() / RAND_MAX) * (max - min) + min;
+}

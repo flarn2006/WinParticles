@@ -16,7 +16,7 @@
 #include <commdlg.h>
 
 #define MAX_LOADSTRING 100
-#define NUM_GRADIENTS 4
+#define NUM_GRADIENTS 5
 #define MAX_PARAM 6
 
 #define SELPARAM_CHAR(x) (selParam == (x) ? '>' : ' ')
@@ -39,6 +39,7 @@ INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 
 void SelectParam(CParamAgent *agent, int paramNum, double *deltaMult);
 void SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd);
+void RandomizeGradient(CGradient *gradient);
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -173,10 +174,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static CParamAgent *agent;
 	static RECT clientRect;
 	static bool cursorHidden = false;
+	static bool randomizeGradientOnSelect = false;
 
 	switch (message)
 	{
 	case WM_CREATE:
+		srand(GetTickCount());
 		psys = new CParticleSys();
 		psys->SetAcceleration(0.0, -600.0);
 
@@ -207,6 +210,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		gradients[3] = new CGradient(2);
 		gradients[3]->SetStep(0, 0.0, RGB(255, 255, 255));
 		gradients[3]->SetStep(1, 1.0, RGB(255, 255, 255));
+
+		gradients[4] = new CGradient(5);
+		RandomizeGradient(gradients[4]);
 
 		particleBitmap = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_PARTICLES));
 		particleBmpDC = CreateCompatibleDC(NULL);
@@ -294,6 +300,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		out << "Press 1 - " << NUM_GRADIENTS << " to change colors" << std::endl;
 		out << "Press R to reset parameters" << std::endl;
 		out << "Use mouse buttons and wheel to edit params" << std::endl;
+		out << "Press ENTER to type a value directly" << std::endl;
 		out << "[-+] Adjustment multiplier: " << deltaMult << std::endl;
 		out << "[Z]  Velocity mode: " << CParticleSys::VelocityModeText(psys->GetVelocityMode()) << std::endl;
 		out << "Current parameters:" << std::endl;
@@ -321,10 +328,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		clientRect.left += 5; clientRect.top += 5;
 		SetTextColor(hDC, 0x000000);
-		DrawText(hDC, out.str().c_str(), out.str().length(), &clientRect, 0);
+		DrawText(hDC, out.str().c_str(), (int)out.str().length(), &clientRect, 0);
 		clientRect.left -= 1; clientRect.top -= 1;
 		SetTextColor(hDC, 0xFFFF00);
-		DrawText(hDC, out.str().c_str(), out.str().length(), &clientRect, 0);
+		DrawText(hDC, out.str().c_str(), (int)out.str().length(), &clientRect, 0);
 		clientRect.left -= 4; clientRect.top -= 4;
 
 		// Draw gradient at bottom
@@ -337,7 +344,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SelectObject(hDC, GetStockObject(WHITE_PEN)); //deselect pen so it can be deleted
 			DeleteObject(gradientPen);
 		}
-
+		
 		hDC = BeginPaint(hWnd, &ps);
 		bbuf->CopyToFront(hDC);
 		EndPaint(hWnd, &ps);
@@ -345,11 +352,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		alreadyHandled = false;
 		for (std::vector<CDisplayItem*>::iterator i = displayItems.begin(); i != displayItems.end(); i++) {
-			alreadyHandled = (*i)->KeyDown(wParam) || alreadyHandled;
+			alreadyHandled = (*i)->KeyDown((UINT)wParam) || alreadyHandled;
 		}
 
 		if (!alreadyHandled) {
 			if (0x31 <= wParam && wParam <= 0x30 + NUM_GRADIENTS) {
+				if (wParam == 0x35) {
+					if (randomizeGradientOnSelect) RandomizeGradient(gradients[4]);
+					randomizeGradientOnSelect = true;
+				} else {
+					randomizeGradientOnSelect = false;
+				}
 				psys->SetDefGradient(gradients[wParam - 0x31]);
 			} else if (wParam == (WPARAM)'R') {
 				psys->DefaultParameters();
@@ -467,6 +480,16 @@ void SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd)
 	EnableMenuItem(hMenu, ID_PARAMS_MAXVELX, mode != CParticleSys::VelocityMode::MODE_RECT);
 	EnableMenuItem(hMenu, ID_PARAMS_MINVELY, mode != CParticleSys::VelocityMode::MODE_RECT);
 	EnableMenuItem(hMenu, ID_PARAMS_MAXVELY, mode != CParticleSys::VelocityMode::MODE_RECT);
+}
+
+void RandomizeGradient(CGradient *gradient)
+{
+	int count = gradient->GetStepCount();
+	for (int i = 0; i < count; i++) {
+		double position = RandInRange(0.0, 1.0);
+		COLORREF color = RGB(rand() % 256, rand() % 256, rand() % 256);
+		gradient->SetStep(i, position, color);
+	}
 }
 
 // Message handler for about box.

@@ -26,7 +26,7 @@ void CNumericInputBox::PromptForValue(CParamAgent *paramAgent)
 
 void CNumericInputBox::GetSize(LPSIZE size)
 {
-	size->cx = max(100, 8 * (input.length() + 2));
+	size->cx = max(100, 8 * ((LONG)input.length() + 2));
 	size->cy = 16;
 }
 
@@ -87,7 +87,7 @@ void CNumericInputBox::OnDraw(HDC hDC, LPRECT lpClientRect)
 	TextOut(hDC, bounds.left, bounds.top - 16, L"New value:", 10);
 
 	if (font != NULL) SelectObject(hDC, font);
-	TextOut(hDC, 4 + bounds.left, bounds.top, out.str().c_str(), out.str().length());
+	TextOut(hDC, 4 + bounds.left, bounds.top, out.str().c_str(), (int)out.str().length());
 }
 
 bool CNumericInputBox::OnKeyDown(UINT uCode)

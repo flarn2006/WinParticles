@@ -21,8 +21,6 @@ private:
 	CGradient *originalDefGrad;
 	CGradient *defaultGradient;
 	COLORREF defaultTint;
-	
-	double RandInRange(double min, double max);
 
 public:
 	CParticleSys();
@@ -73,7 +71,6 @@ public:
 	void Draw(HDC hDC, LPRECT rect);
 
 	CParticle &CreateParticle(double x, double y);
-	void CreateTestParticles();
 
 	void DisposeOfDead();
 

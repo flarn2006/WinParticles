@@ -30,11 +30,6 @@ std::vector<CParticle> *CParticleSys::GetParticles()
 	return psys;
 }
 
-double CParticleSys::RandInRange(double min, double max)
-{
-	return ((double)rand() / RAND_MAX) * (max - min) + min;
-}
-
 void CParticleSys::GetEmitterPos(double *x, double *y)
 {
 	if (x) *x = emitterX;
@@ -192,10 +187,15 @@ void CParticleSys::SimMovingEmitter(double time, double destX, double destY)
 	double srcX = emitterX;
 	double srcY = emitterY;
 
+	DWORD startTickCount = GetTickCount();
+
 	// First, simulate all existing particles.
 	for (std::vector<CParticle>::iterator i = psys->begin(); i != psys->end(); i++) {
 		i->Simulate(time);
+		if (GetTickCount() > startTickCount + 250) break;
 	}
+
+	startTickCount = GetTickCount();
 
 	// Now, create new particles and simulate those for the appropriate amounts of time.
 	double dt = 1.0 / emissionRate;
@@ -206,6 +206,7 @@ void CParticleSys::SimMovingEmitter(double time, double destX, double destY)
 		emitterY = Interpolate(progress, 0.0, 1.0, srcY, destY);
 		t -= dt;
 		CreateParticle(emitterX, emitterY).Simulate(t);
+		if (GetTickCount() > startTickCount + 250) break;
 	}
 	timeSinceEmit = t;
 
@@ -257,22 +258,6 @@ CParticle &CParticleSys::CreateParticle(double x, double y)
 	p.SetTint(defaultTint);
 	psys->push_back(p);
 	return psys->back();
-}
-
-void CParticleSys::CreateTestParticles()
-{
-	// This is a very old test function, from before the emitter was programmed.
-	CParticle test1, test2;
-
-	test1.SetPosition(64.0, 64.0);
-	test1.SetVelocity(64.0, 64.0);
-	test1.SetAcceleration(0.0, -16.0);
-	psys->push_back(test1);
-
-	test2.SetPosition(600.0, 400.0);
-	test2.SetVelocity(-200.0, -50.0);
-	test2.SetAcceleration(100.0, -25.0);
-	psys->push_back(test2);
 }
 
 void CParticleSys::DisposeOfDead()

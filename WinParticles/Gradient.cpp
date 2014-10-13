@@ -23,6 +23,11 @@ double CGradient::GetStepPosition(int index)
 	return steps[index].position;
 }
 
+int CGradient::GetStepCount()
+{
+	return numSteps;
+}
+
 void CGradient::SetStepColor(int index, COLORREF color)
 {
 	steps[index].color = color;
