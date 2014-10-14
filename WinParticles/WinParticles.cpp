@@ -10,6 +10,7 @@
 #include "DisplayItem.h"
 #include "NumericInputBox.h"
 #include "ParamAgent.h"
+#include "BitmapEditor.h"
 #include <string>
 #include <vector>
 #include <sstream>
@@ -172,6 +173,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static bool mouseControlsParams = true;
 	static CNumericInputBox *numInputBox;
 	static CParamAgent *agent;
+	static CBitmapEditor *bmpEditor;
 	static RECT clientRect;
 	static bool cursorHidden = false;
 	static bool randomizeGradientOnSelect = false;
@@ -234,6 +236,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		numInputBox = new CNumericInputBox();
 		numInputBox->SetFont(font);
 		displayItems.push_back(numInputBox);
+
+		bmpEditor = new CBitmapEditor(particleBmpDC, 30, 5);
+		displayItems.push_back(bmpEditor);
 		
 		break;
 	case WM_COMMAND:
@@ -275,6 +280,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		bbuf->UpdateSize();
 		GetClientRect(hWnd, &clientRect);
 		numInputBox->SetPosition((clientRect.left + clientRect.right) / 2, (clientRect.top + clientRect.bottom) / 2);
+		bmpEditor->SetTopRightPos(clientRect.right - 16, clientRect.top + 16);
 		break;
 	case WM_PAINT:
 		hDC = bbuf->GetDC();

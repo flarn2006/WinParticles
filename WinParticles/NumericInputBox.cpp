@@ -24,7 +24,7 @@ void CNumericInputBox::PromptForValue(CParamAgent *paramAgent)
 	SetEnabled(true);
 }
 
-void CNumericInputBox::GetSize(LPSIZE size)
+void CNumericInputBox::GetSize(const LPSIZE size)
 {
 	size->cx = max(100, 8 * ((LONG)input.length() + 2));
 	size->cy = 16;

@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BackBuffer.h" />
+    <ClInclude Include="BitmapEditor.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="DisplayItem.h" />
     <ClInclude Include="Gradient.h" />
@@ -150,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BackBuffer.cpp" />
+    <ClCompile Include="BitmapEditor.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="DisplayItem.cpp" />
     <ClCompile Include="Gradient.cpp" />

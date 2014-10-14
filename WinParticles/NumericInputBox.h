@@ -17,7 +17,7 @@ private:
 	HFONT font;
 
 protected:
-	virtual void OnDraw(HDC hDC, LPRECT lpClientRect);
+	virtual void OnDraw(HDC hDC, const LPRECT lpClientRect);
 	virtual bool OnKeyDown(UINT uCode);
 
 public:

@@ -10,7 +10,7 @@ CDisplayItem::~CDisplayItem()
 {
 }
 
-void CDisplayItem::OnDraw(HDC hDC, LPRECT clientRect)
+void CDisplayItem::OnDraw(HDC hDC, const LPRECT clientRect)
 {
 }
 
@@ -38,7 +38,7 @@ void CDisplayItem::SetEnabled(bool enabled)
 	this->enabled = enabled;
 }
 
-void CDisplayItem::Draw(HDC hDC, LPRECT clientRect)
+void CDisplayItem::Draw(HDC hDC, const LPRECT clientRect)
 {
 	if (enabled) OnDraw(hDC, clientRect);
 }
