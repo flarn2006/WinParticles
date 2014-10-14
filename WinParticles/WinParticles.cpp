@@ -424,10 +424,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		if (mouseControlsParams) {
 			SetCursor(curEmitter);
+			SetClassLong(hWnd, GCL_HCURSOR, (DWORD)curEmitter);
 			emitterX = (double)LOWORD(lParam);
 			emitterY = (double)HIWORD(lParam);
 		} else {
-			SetCursor(LoadCursor(NULL, IDC_ARROW));
+			HCURSOR curArrow = LoadCursor(NULL, IDC_ARROW);
+			SetCursor(curArrow);
+			SetClassLong(hWnd, GCL_HCURSOR, (DWORD)curArrow);
 		}
 		break;
 	case WM_MOUSEWHEEL:
