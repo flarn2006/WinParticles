@@ -102,6 +102,9 @@
     <Image Include="particles.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="bmptoolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="emitter.cur">

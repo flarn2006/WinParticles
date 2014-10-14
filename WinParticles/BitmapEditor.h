@@ -9,8 +9,14 @@ private:
 	POINT topRightPos;
 	SIZE bmpSize;
 	RECT bounds;
+	HBITMAP toolbarBmp;
+	HDC toolbarDC;
+	RECT toolbarRect;
 
 	const int PIXEL_SIZE = 8;
+	const int TOOLBAR_BMP_WIDTH = 49;
+	const int TOOLBAR_BMP_HEIGHT = 13;
+
 	void UpdateBounds();
 
 protected:

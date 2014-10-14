@@ -171,6 +171,7 @@
     <ResourceCompile Include="WinParticles.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="bmptoolbar.bmp" />
     <Image Include="particles.bmp" />
     <Image Include="WinParticles.ico" />
   </ItemGroup>
