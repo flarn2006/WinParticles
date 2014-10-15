@@ -4,6 +4,7 @@
 
 CCompoundDispItem::CCompoundDispItem()
 {
+	lastMouseMove = NULL;
 }
 
 CCompoundDispItem::~CCompoundDispItem()
@@ -26,6 +27,20 @@ void CCompoundDispItem::OnMouseDown(int x, int y)
 {
 	for (std::vector<CDisplayItem*>::iterator i = subItems.begin(); i != subItems.end(); i++) {
 		(*i)->MouseDown(x, y);
+	}
+}
+
+void CCompoundDispItem::OnMouseMove(int x, int y)
+{
+	for (std::vector<CDisplayItem*>::iterator i = subItems.begin(); i != subItems.end(); i++) {
+		(*i)->MouseMove(x, y);
+	}
+}
+
+void CCompoundDispItem::OnMouseUp(int x, int y)
+{
+	for (std::vector<CDisplayItem*>::iterator i = subItems.begin(); i != subItems.end(); i++) {
+		(*i)->MouseUp(x, y);
 	}
 }
 

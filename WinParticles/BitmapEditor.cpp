@@ -13,6 +13,7 @@ CBitmapEditor::CBitmapEditor(HDC hBitmapDC, LONG width, LONG height)
 	topRightPos.y = 0;
 	bmpSize.cx = width;
 	bmpSize.cy = height;
+	drawing = false;
 
 	toolbarBmp = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BMPTOOLBAR));
 	toolbarDC = CreateCompatibleDC(NULL);
@@ -70,7 +71,9 @@ void CBitmapEditor::OnMouseDown(int x, int y)
 	if (PtInRect(&bounds, { x, y })) {
 		int px = (x - bounds.left) / PIXEL_SIZE;
 		int py = (y - bounds.top) / PIXEL_SIZE;
-		PatBlt(bitmapDC, px, py, 1, 1, DSTINVERT);
+		drawing = true;
+		drawingState = GetPixel(bitmapDC, px, py) > 0;
+		PatBlt(bitmapDC, px, py, 1, 1, drawingState ? BLACKNESS : WHITENESS);
 	} else if (PtInRect(&toolbarRect, { x, y })) {
 		int btnWidth = 2 * TOOLBAR_BMP_WIDTH / 4;
 		int btnIndex = (x - toolbarRect.left) / btnWidth;
@@ -93,6 +96,20 @@ void CBitmapEditor::OnMouseDown(int x, int y)
 			break;
 		}
 	}
+}
+
+void CBitmapEditor::OnMouseMove(int x, int y)
+{
+	if (drawing && PtInRect(&bounds, { x, y })) {
+		int px = (x - bounds.left) / PIXEL_SIZE;
+		int py = (y - bounds.top) / PIXEL_SIZE;
+		PatBlt(bitmapDC, px, py, 1, 1, drawingState ? BLACKNESS : WHITENESS);
+	}
+}
+
+void CBitmapEditor::OnMouseUp(int x, int y)
+{
+	drawing = false;
 }
 
 bool CBitmapEditor::OccupiesPoint(int x, int y)

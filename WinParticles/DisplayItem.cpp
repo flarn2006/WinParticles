@@ -4,6 +4,8 @@
 CDisplayItem::CDisplayItem()
 {
 	enabled = true;
+	mouseLastSeenInside = false;
+	mouseIsDown = false;
 }
 
 CDisplayItem::~CDisplayItem()
@@ -15,6 +17,18 @@ void CDisplayItem::OnDraw(HDC hDC, const LPRECT clientRect)
 }
 
 void CDisplayItem::OnMouseDown(int x, int y)
+{
+}
+
+void CDisplayItem::OnMouseMove(int x, int y)
+{
+}
+
+void CDisplayItem::OnMouseUp(int x, int y)
+{
+}
+
+void CDisplayItem::OnMouseLeave()
 {
 }
 
@@ -45,7 +59,27 @@ void CDisplayItem::Draw(HDC hDC, const LPRECT clientRect)
 
 void CDisplayItem::MouseDown(int x, int y)
 {
-	if (OccupyingPoint(x, y)) OnMouseDown(x, y);
+	if (OccupyingPoint(x, y)) {
+		OnMouseDown(x, y);
+		mouseIsDown = true;
+	}
+}
+
+void CDisplayItem::MouseMove(int x, int y)
+{
+	bool mouseInside = OccupyingPoint(x, y);
+	if (mouseInside) {
+		OnMouseMove(x, y);
+	} else if (mouseLastSeenInside) {
+		OnMouseLeave();
+	}
+	mouseLastSeenInside = mouseInside;
+}
+
+void CDisplayItem::MouseUp(int x, int y)
+{
+	if (OccupyingPoint(x, y) || mouseIsDown) OnMouseUp(x, y);
+	mouseIsDown = false;
 }
 
 bool CDisplayItem::KeyDown(UINT uCode)

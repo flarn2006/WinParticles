@@ -429,6 +429,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 			}
 		}
+
 		if (mouseControlsParams) {
 			SetCursor(curEmitter);
 			SetClassLong(hWnd, GCL_HCURSOR, (DWORD)curEmitter);
@@ -440,6 +441,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			HCURSOR curArrow = LoadCursor(NULL, IDC_ARROW);
 			SetCursor(curArrow);
 			SetClassLong(hWnd, GCL_HCURSOR, (DWORD)curArrow);
+		}
+
+		for (std::vector<CDisplayItem*>::iterator i = displayItems.begin(); i != displayItems.end(); i++) {
+			(*i)->MouseMove(LOWORD(lParam), HIWORD(lParam));
+		}
+
+		break;
+	case WM_LBUTTONUP:
+		for (std::vector<CDisplayItem*>::iterator i = displayItems.begin(); i != displayItems.end(); i++) {
+			(*i)->MouseUp(LOWORD(lParam), HIWORD(lParam));
 		}
 		break;
 	case WM_MOUSEWHEEL:

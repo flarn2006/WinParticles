@@ -12,6 +12,8 @@ private:
 	HBITMAP toolbarBmp;
 	HDC toolbarDC;
 	RECT toolbarRect;
+	bool drawing;
+	bool drawingState;
 
 	const int PIXEL_SIZE = 10;
 	const int TOOLBAR_BMP_WIDTH = 49;
@@ -22,6 +24,8 @@ private:
 protected:
 	virtual void OnDraw(HDC hDC, const LPRECT clientRect);
 	virtual void OnMouseDown(int x, int y);
+	virtual void OnMouseMove(int x, int y);
+	virtual void OnMouseUp(int x, int y);
 	virtual bool OccupiesPoint(int x, int y);
 
 public:

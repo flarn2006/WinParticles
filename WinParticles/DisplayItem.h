@@ -3,10 +3,15 @@ class CDisplayItem
 {
 private:
 	bool enabled;
+	bool mouseLastSeenInside;
+	bool mouseIsDown;
 
 protected:
 	virtual void OnDraw(HDC hDC, const LPRECT clientRect);
 	virtual void OnMouseDown(int x, int y);
+	virtual void OnMouseMove(int x, int y);
+	virtual void OnMouseUp(int x, int y);
+	virtual void OnMouseLeave();
 	virtual bool OnKeyDown(UINT uCode);
 	virtual bool OccupiesPoint(int x, int y);
 
@@ -19,6 +24,8 @@ public:
 
 	void Draw(HDC hDC, const LPRECT clientRect);
 	void MouseDown(int x, int y);
+	void MouseMove(int x, int y);
+	void MouseUp(int x, int y);
 	bool KeyDown(UINT uCode);
 	bool OccupyingPoint(int x, int y);
 };
