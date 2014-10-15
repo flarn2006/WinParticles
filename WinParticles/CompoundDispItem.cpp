@@ -15,7 +15,7 @@ void CCompoundDispItem::AddSubItem(CDisplayItem *subItem)
 	subItems.push_back(subItem);
 }
 
-void CCompoundDispItem::OnDraw(HDC hDC, LPRECT clientRect)
+void CCompoundDispItem::OnDraw(HDC hDC, const LPRECT clientRect)
 {
 	for (std::vector<CDisplayItem*>::iterator i = subItems.begin(); i != subItems.end(); i++) {
 		(*i)->Draw(hDC, clientRect);
