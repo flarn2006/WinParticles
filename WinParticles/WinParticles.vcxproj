@@ -138,6 +138,7 @@
     <ClInclude Include="BackBuffer.h" />
     <ClInclude Include="BitmapEditor.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="CompoundDispItem.h" />
     <ClInclude Include="DisplayItem.h" />
     <ClInclude Include="Gradient.h" />
     <ClInclude Include="NumericInputBox.h" />
@@ -153,6 +154,7 @@
     <ClCompile Include="BackBuffer.cpp" />
     <ClCompile Include="BitmapEditor.cpp" />
     <ClCompile Include="Common.cpp" />
+    <ClCompile Include="CompoundDispItem.cpp" />
     <ClCompile Include="DisplayItem.cpp" />
     <ClCompile Include="Gradient.cpp" />
     <ClCompile Include="NumericInputBox.cpp" />

@@ -54,6 +54,9 @@
     <ClInclude Include="BitmapEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CompoundDispItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -87,6 +90,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BitmapEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CompoundDispItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
