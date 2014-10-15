@@ -8,6 +8,7 @@ CBitmapEditor::CBitmapEditor(HDC hBitmapDC, LONG width, LONG height)
 {
 	bitmapDC = hBitmapDC;
 	borderPen = CreatePen(PS_SOLID, 1, 0x808080);
+	sectionPen = CreatePen(PS_SOLID, 1, 0xFF8080);
 	topRightPos.x = 0;
 	topRightPos.y = 0;
 	bmpSize.cx = width;
@@ -23,6 +24,7 @@ CBitmapEditor::CBitmapEditor(HDC hBitmapDC, LONG width, LONG height)
 CBitmapEditor::~CBitmapEditor()
 {
 	DeleteObject(borderPen);
+	DeleteObject(sectionPen);
 	DeleteDC(toolbarDC);
 	DeleteObject(toolbarBmp);
 }
@@ -52,6 +54,14 @@ void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 			Rectangle(hDC, px, py, px + PIXEL_SIZE + 1, py + PIXEL_SIZE + 1);
 		}
 	}
+
+	SelectObject(hDC, sectionPen);
+	SelectObject(hDC, GetStockObject(NULL_BRUSH));
+	for (int i = 0; i < 6; i++) {
+		int sectionSize = PIXEL_SIZE * 5;
+		Rectangle(hDC, bounds.left + sectionSize * i, bounds.top, bounds.left + sectionSize * (i + 1) + 1, bounds.top + sectionSize + 1);
+	}
+
 	StretchBlt(hDC, toolbarRect.left, toolbarRect.top, TOOLBAR_BMP_WIDTH * 2, TOOLBAR_BMP_HEIGHT * 2, toolbarDC, 0, 0, TOOLBAR_BMP_WIDTH, TOOLBAR_BMP_HEIGHT, SRCCOPY);
 }
 

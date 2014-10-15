@@ -177,6 +177,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static RECT clientRect;
 	static bool cursorHidden = false;
 	static bool randomizeGradientOnSelect = false;
+	static bool mouseMovesEmitter = true;
 
 	switch (message)
 	{
@@ -303,8 +304,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		out << "DEBUG BUILD (performance is not optimal)" << std::endl;
 #endif
 		out << "Number of particles: " << psys->GetParticles()->size() << std::endl;
-		out << "Press 1 - " << NUM_GRADIENTS << " to change colors" << std::endl;
-		out << "Press R to reset parameters" << std::endl;
 		out << "Use mouse buttons and wheel to edit params" << std::endl;
 		out << "Press ENTER to type a value directly" << std::endl;
 		out << "[-+] Adjustment multiplier: " << deltaMult << std::endl;
@@ -331,6 +330,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		out << SELPARAM_CHAR(4) << " Maximum age:        " << psys->GetMaxAge() << std::endl;
 		out << SELPARAM_CHAR(5) << " Emission rate:      " << psys->GetEmissionRate() << std::endl;
 		out << SELPARAM_CHAR(6) << " Emission radius:    " << psys->GetEmissionRadius() << std::endl;
+
+		out << std::endl;
+		out << "Press 1 - " << NUM_GRADIENTS << " to change colors" << std::endl;
+		out << "[R] Reset parameters" << std::endl;
+		out << "[C] Show/hide cursor" << std::endl;
+		out << "[F] Freeze/unfreeze emitter" << std::endl;
 
 		clientRect.left += 5; clientRect.top += 5;
 		SetTextColor(hDC, 0x000000);
@@ -383,6 +388,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			} else if (wParam == (WPARAM)'C') {
 				cursorHidden = !cursorHidden;
 				ShowCursor(!cursorHidden);
+			} else if (wParam == (WPARAM)'F') {
+				mouseMovesEmitter = !mouseMovesEmitter;
 			} else if (wParam == VK_OEM_MINUS) {
 				deltaMult /= 10;
 			} else if (wParam == VK_OEM_PLUS) {
@@ -425,8 +432,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (mouseControlsParams) {
 			SetCursor(curEmitter);
 			SetClassLong(hWnd, GCL_HCURSOR, (DWORD)curEmitter);
-			emitterX = (double)LOWORD(lParam);
-			emitterY = (double)HIWORD(lParam);
+			if (mouseMovesEmitter) {
+				emitterX = (double)LOWORD(lParam);
+				emitterY = (double)HIWORD(lParam);
+			}
 		} else {
 			HCURSOR curArrow = LoadCursor(NULL, IDC_ARROW);
 			SetCursor(curArrow);
