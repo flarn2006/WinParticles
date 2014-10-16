@@ -24,6 +24,6 @@ public:
 	void SetStepPosition(int index, double position);
 	void SetStep(int index, double position, COLORREF color);
 
-	COLORREF ColorAtPoint(double position);
+	virtual COLORREF ColorAtPoint(double position);
 };
 

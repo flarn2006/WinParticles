@@ -12,13 +12,14 @@
 #include "ParamAgent.h"
 #include "BitmapEditor.h"
 #include "GradientEditor.h"
+#include "ChaoticGradient.h"
 #include <string>
 #include <vector>
 #include <sstream>
 #include <commdlg.h>
 
 #define MAX_LOADSTRING 100
-#define NUM_GRADIENTS 5
+#define NUM_GRADIENTS 6
 #define MAX_PARAM 6
 
 #define SELPARAM_CHAR(x) (selParam == (x) ? '>' : ' ')
@@ -28,10 +29,12 @@
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
+HBITMAP particleBitmap;
 HDC particleBmpDC;
 int selParam;
 CParticleSys *psys;
 HCURSOR curEmitter;
+bool additiveDrawing = true;
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -162,7 +165,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static CBackBuffer *bbuf;
 	static CGradient *gradients[NUM_GRADIENTS];
 	static int selGradientNum;
-	static HBITMAP particleBitmap;
 	std::wostringstream out;
 	int fps = 60;
 	static double emitterX, emitterY;
@@ -322,6 +324,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		out << "[C] Show/hide cursor" << std::endl;
 		out << "[F] Freeze/unfreeze emitter" << std::endl;
 		out << "[G] Reset gradient presets" << std::endl;
+		out << "[A] Toggle additive drawing " << "(" << (additiveDrawing ? "ON" : "OFF") << ")" << std::endl;
 
 		clientRect.left += 5; clientRect.top += 5;
 		SetTextColor(hDC, 0x000000);
@@ -372,6 +375,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				psys->SetDefGradient(gradients[selGradientNum]);
 				gradientEditor->SetGradient(gradients[selGradientNum]);
 				psys->GetParticles()->clear();
+			} else if (wParam == (WPARAM)'A') {
+				additiveDrawing = !additiveDrawing;
 			} else if (wParam == VK_OEM_MINUS) {
 				deltaMult /= 10;
 			} else if (wParam == VK_OEM_PLUS) {
@@ -501,6 +506,11 @@ void InitializeGradients(CGradient *gradients[], bool deleteFirst)
 
 	gradients[4] = new CGradient(5);
 	RandomizeGradient(gradients[4]);
+
+	gradients[5] = new CChaoticGradient(3);
+	gradients[5]->SetStep(0, 0.0, 0x000000);
+	gradients[5]->SetStep(1, 0.5, 0xFF8000);
+	gradients[5]->SetStep(2, 1.0, 0xFFFFFF);
 }
 
 void SelectParam(CParamAgent *agent, int paramNum, double *deltaMult)

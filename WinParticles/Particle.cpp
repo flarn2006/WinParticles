@@ -2,7 +2,9 @@
 #include "Particle.h"
 #include "Common.h"
 
+extern HBITMAP particleBitmap;
 extern HDC particleBmpDC;
+extern bool additiveDrawing;
 
 CParticle::CParticle()
 {
@@ -118,10 +120,17 @@ void CParticle::Simulate(double time)
 void CParticle::Draw(HDC hDC)
 {
 	double relativeAge = age / maxAge;
-
 	LONG x = (LONG)px - 2;
 	LONG y = (LONG)py - 2;
-	SetBkColor(hDC, 0);
-	SetTextColor(hDC, MultiplyColors(tint, gradient->ColorAtPoint(relativeAge)));
-	BitBlt(hDC, x, y, 5, 5, particleBmpDC, (int)(relativeAge * 6.0) * 5, 0, SRCPAINT);
+	COLORREF color = MultiplyColors(tint, gradient->ColorAtPoint(relativeAge));
+
+	if (additiveDrawing) {
+		SetBkColor(hDC, 0);
+		SetTextColor(hDC, color);
+		BitBlt(hDC, x, y, 5, 5, particleBmpDC, (int)(relativeAge * 6.0) * 5, 0, SRCPAINT);
+	} else {
+		SelectObject(hDC, GetStockObject(DC_BRUSH));
+		SetDCBrushColor(hDC, color);
+		MaskBlt(hDC, x, y, 5, 5, hDC, 0, 0, particleBitmap, (int)(relativeAge * 6.0) * 5, 0, MAKEROP4(0xAA0029, PATCOPY));
+	}
 }

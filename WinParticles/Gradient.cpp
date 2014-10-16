@@ -47,6 +47,7 @@ void CGradient::SetStep(int index, double position, COLORREF color)
 COLORREF CGradient::ColorAtPoint(double position)
 {
 	int index1, index2;
+	bool useSameIndex = false;
 
 	int closestIndex = -1;
 	double closestPos = 0.0;
@@ -60,21 +61,42 @@ COLORREF CGradient::ColorAtPoint(double position)
 		}
 	}
 
-	index1 = closestIndex;
-	closestIndex = -1;
-
-	for (int i = 0; i < numSteps; i++) {
-		if (steps[i].position > steps[index1].position) {
-			if (closestPos > steps[i].position || closestIndex == -1) {
+	if (closestIndex == -1) {
+		// Just find the one with the lowest (leftmost) position value
+		closestPos = 0.0;
+		for (int i = 0; i < numSteps; i++) {
+			if (steps[i].position < closestPos || closestIndex == -1) {
 				closestIndex = i;
 				closestPos = steps[i].position;
 			}
 		}
+		useSameIndex = true;
 	}
 
-	index2 = closestIndex;
+	index1 = closestIndex;
 
-	double relativePos = Interpolate(position, steps[index1].position, steps[index2].position, 0.0, 1.0);
+	if (useSameIndex) {
+		index2 = index1;
+	} else {
+		closestIndex = -1;
+		for (int i = 0; i < numSteps; i++) {
+			if (steps[i].position > steps[index1].position) {
+				if (closestPos > steps[i].position || closestIndex == -1) {
+					closestIndex = i;
+					closestPos = steps[i].position;
+				}
+			}
+		}
+
+		index2 = (closestIndex == -1) ? index1 : closestIndex;
+	}
+
+	double relativePos;
+	if (index1 == index2) {
+		relativePos = 0.0; // doesn't matter what goes here as long as it's not infinity or something
+	} else {
+		relativePos = Interpolate(position, steps[index1].position, steps[index2].position, 0.0, 1.0);
+	}
 	BYTE red = (BYTE)Interpolate(relativePos, 0.0, 1.0, (double)GetRValue(steps[index1].color), (double)GetRValue(steps[index2].color));
 	BYTE green = (BYTE)Interpolate(relativePos, 0.0, 1.0, (double)GetGValue(steps[index1].color), (double)GetGValue(steps[index2].color));
 	BYTE blue = (BYTE)Interpolate(relativePos, 0.0, 1.0, (double)GetBValue(steps[index1].color), (double)GetBValue(steps[index2].color));
