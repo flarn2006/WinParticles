@@ -141,6 +141,7 @@
     <ClInclude Include="CompoundDispItem.h" />
     <ClInclude Include="DisplayItem.h" />
     <ClInclude Include="Gradient.h" />
+    <ClInclude Include="GradientEditor.h" />
     <ClInclude Include="NumericInputBox.h" />
     <ClInclude Include="ParamAgent.h" />
     <ClInclude Include="Particle.h" />
@@ -157,6 +158,7 @@
     <ClCompile Include="CompoundDispItem.cpp" />
     <ClCompile Include="DisplayItem.cpp" />
     <ClCompile Include="Gradient.cpp" />
+    <ClCompile Include="GradientEditor.cpp" />
     <ClCompile Include="NumericInputBox.cpp" />
     <ClCompile Include="ParamAgent.cpp" />
     <ClCompile Include="Particle.cpp" />
@@ -175,6 +177,8 @@
   <ItemGroup>
     <Image Include="bmptoolbar.bmp" />
     <Image Include="particles.bmp" />
+    <Image Include="stephandle.bmp" />
+    <Image Include="stephandle_mask.bmp" />
     <Image Include="WinParticles.ico" />
   </ItemGroup>
   <ItemGroup>

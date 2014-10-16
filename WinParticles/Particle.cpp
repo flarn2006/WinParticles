@@ -125,33 +125,3 @@ void CParticle::Draw(HDC hDC)
 	SetTextColor(hDC, MultiplyColors(tint, gradient->ColorAtPoint(relativeAge)));
 	BitBlt(hDC, x, y, 5, 5, particleBmpDC, (int)(relativeAge * 6.0) * 5, 0, SRCPAINT);
 }
-
-/*void CParticle::Draw(HDC hDC, double maxAge)
-{
-	RECT rect;
-	double relativeAge = age / maxAge;
-
-	rect.left = (LONG)px;
-	rect.right = (LONG)px + 1;
-	rect.top = (LONG)py;
-	rect.bottom = (LONG)py + 1;
-	
-	if (relativeAge < 0.75) {
-		rect.right++;
-		rect.bottom++;
-	}
-
-	if (relativeAge < 0.25) {
-		rect.left--;
-		rect.top--;
-	}
-
-	if (!dead) {
-		HBRUSH brush = CreateSolidBrush(gradient->ColorAtPoint(relativeAge));
-		FillRect(hDC, &rect, brush);
-		DeleteObject(brush);
-	} else {
-		SelectObject(hDC, GetStockObject(WHITE_PEN));
-		Rectangle(hDC, rect.left, rect.top, rect.right, rect.bottom);
-	}
-}*/

@@ -28,6 +28,10 @@ void CDisplayItem::OnMouseUp(int x, int y)
 {
 }
 
+void CDisplayItem::OnRightClick(int x, int y)
+{
+}
+
 void CDisplayItem::OnMouseLeave()
 {
 }
@@ -68,7 +72,7 @@ void CDisplayItem::MouseDown(int x, int y)
 void CDisplayItem::MouseMove(int x, int y)
 {
 	bool mouseInside = OccupyingPoint(x, y);
-	if (mouseInside) {
+	if (mouseInside || mouseIsDown) {
 		OnMouseMove(x, y);
 	} else if (mouseLastSeenInside) {
 		OnMouseLeave();
@@ -80,6 +84,11 @@ void CDisplayItem::MouseUp(int x, int y)
 {
 	if (OccupyingPoint(x, y) || mouseIsDown) OnMouseUp(x, y);
 	mouseIsDown = false;
+}
+
+void CDisplayItem::RightClick(int x, int y)
+{
+	if (OccupyingPoint(x, y)) OnRightClick(x, y);
 }
 
 bool CDisplayItem::KeyDown(UINT uCode)

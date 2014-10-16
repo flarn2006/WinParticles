@@ -11,6 +11,7 @@
 #include "NumericInputBox.h"
 #include "ParamAgent.h"
 #include "BitmapEditor.h"
+#include "GradientEditor.h"
 #include <string>
 #include <vector>
 #include <sstream>
@@ -41,6 +42,7 @@ INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 void SelectParam(CParamAgent *agent, int paramNum, double *deltaMult);
 void SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd);
 void RandomizeGradient(CGradient *gradient);
+void InitializeGradients(CGradient *gradients[], bool deleteFirst);
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -159,6 +161,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static HFONT font;
 	static CBackBuffer *bbuf;
 	static CGradient *gradients[NUM_GRADIENTS];
+	static int selGradientNum;
 	static HBITMAP particleBitmap;
 	std::wostringstream out;
 	int fps = 60;
@@ -174,6 +177,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static CNumericInputBox *numInputBox;
 	static CParamAgent *agent;
 	static CBitmapEditor *bmpEditor;
+	static CGradientEditor *gradientEditor;
 	static RECT clientRect;
 	static bool cursorHidden = false;
 	static bool randomizeGradientOnSelect = false;
@@ -190,38 +194,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		SelectParam(agent, 0, &deltaMult);
 
-		gradients[0] = new CGradient(5);
-		gradients[0]->SetStep(0, 0.0, RGB(255, 255, 0));
-		gradients[0]->SetStep(1, 0.25, RGB(255, 0, 0));
-		gradients[0]->SetStep(2, 0.5, RGB(0, 0, 0));
-		gradients[0]->SetStep(3, 0.51, RGB(64, 64, 64));
-		gradients[0]->SetStep(4, 1.0, RGB(0, 0, 0));
-
-		gradients[1] = new CGradient(7);
-		gradients[1]->SetStep(0, 0.0, RGB(255, 0, 0));
-		gradients[1]->SetStep(1, 1.0 / 6, RGB(255, 255, 0));
-		gradients[1]->SetStep(2, 2.0 / 6, RGB(0, 255, 0));
-		gradients[1]->SetStep(3, 3.0 / 6, RGB(0, 255, 255));
-		gradients[1]->SetStep(4, 4.0 / 6, RGB(0, 0, 255));
-		gradients[1]->SetStep(5, 5.0 / 6, RGB(255, 0, 255));
-		gradients[1]->SetStep(6, 1.0, RGB(255, 0, 0));
-
-		gradients[2] = new CGradient(2);
-		gradients[2]->SetStep(0, 0.0, RGB(255, 255, 255));
-		gradients[2]->SetStep(1, 1.0, RGB(0, 0, 0));
-
-		gradients[3] = new CGradient(2);
-		gradients[3]->SetStep(0, 0.0, RGB(255, 255, 255));
-		gradients[3]->SetStep(1, 1.0, RGB(255, 255, 255));
-
-		gradients[4] = new CGradient(5);
-		RandomizeGradient(gradients[4]);
+		InitializeGradients(gradients, false);
 
 		particleBitmap = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_PARTICLES));
 		particleBmpDC = CreateCompatibleDC(NULL);
 		SelectObject(particleBmpDC, particleBitmap);
 
 		psys->SetDefGradient(gradients[0]);
+		selGradientNum = 0;
 
 		font = CreateFont(0, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, DEFAULT_PITCH, L"Fixedsys");
 		SetTimer(hWnd, 0, 1000 / fps, NULL);
@@ -240,6 +220,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		bmpEditor = new CBitmapEditor(particleBmpDC, 30, 5);
 		displayItems.push_back(bmpEditor);
+
+		gradientEditor = new CGradientEditor(psys->GetDefGradient());
+		gradientEditor->SetColorDialog(&colorDlg);
+		displayItems.push_back(gradientEditor);
 		
 		break;
 	case WM_COMMAND:
@@ -271,6 +255,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			colorDlg.rgbResult = psys->GetDefaultTint();
 			if (ChooseColor(&colorDlg)) {
 				psys->SetDefaultTint(colorDlg.rgbResult);
+				gradientEditor->SetTint(colorDlg.rgbResult);
 			}
 			break;
 		default:
@@ -336,6 +321,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		out << "[R] Reset parameters" << std::endl;
 		out << "[C] Show/hide cursor" << std::endl;
 		out << "[F] Freeze/unfreeze emitter" << std::endl;
+		out << "[G] Reset gradient presets" << std::endl;
 
 		clientRect.left += 5; clientRect.top += 5;
 		SetTextColor(hDC, 0x000000);
@@ -344,17 +330,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		SetTextColor(hDC, 0xFFFF00);
 		DrawText(hDC, out.str().c_str(), (int)out.str().length(), &clientRect, 0);
 		clientRect.left -= 4; clientRect.top -= 4;
-
-		// Draw gradient at bottom
-		for (int x = clientRect.left; x < clientRect.right; x++) {
-			double point = Interpolate(x, clientRect.left, clientRect.right, 0.0, 1.0);
-			HPEN gradientPen = CreatePen(PS_SOLID, 1, MultiplyColors(psys->GetDefaultTint(), psys->GetDefGradient()->ColorAtPoint(point)));
-			SelectObject(hDC, gradientPen);
-			MoveToEx(hDC, x, clientRect.bottom - 24, NULL);
-			LineTo(hDC, x, clientRect.bottom);
-			SelectObject(hDC, GetStockObject(WHITE_PEN)); //deselect pen so it can be deleted
-			DeleteObject(gradientPen);
-		}
 		
 		hDC = BeginPaint(hWnd, &ps);
 		bbuf->CopyToFront(hDC);
@@ -374,7 +349,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				} else {
 					randomizeGradientOnSelect = false;
 				}
-				psys->SetDefGradient(gradients[wParam - 0x31]);
+				selGradientNum = wParam - 0x31;
+				psys->SetDefGradient(gradients[selGradientNum]);
+				gradientEditor->SetGradient(gradients[selGradientNum]);
 			} else if (wParam == (WPARAM)'R') {
 				psys->DefaultParameters();
 				SetVelocityMode(psys->GetVelocityMode(), hWnd);
@@ -390,6 +367,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				ShowCursor(!cursorHidden);
 			} else if (wParam == (WPARAM)'F') {
 				mouseMovesEmitter = !mouseMovesEmitter;
+			} else if (wParam == (WPARAM)'G') {
+				InitializeGradients(gradients, true);
+				psys->SetDefGradient(gradients[selGradientNum]);
+				gradientEditor->SetGradient(gradients[selGradientNum]);
+				psys->GetParticles()->clear();
 			} else if (wParam == VK_OEM_MINUS) {
 				deltaMult /= 10;
 			} else if (wParam == VK_OEM_PLUS) {
@@ -416,6 +398,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			selParam++;
 			if (selParam > MAX_PARAM) selParam = 0;
 			SelectParam(agent, selParam, &deltaMult);
+		} else {
+			for (std::vector<CDisplayItem*>::iterator i = displayItems.begin(); i != displayItems.end(); i++) {
+				(*i)->RightClick(LOWORD(lParam), HIWORD(lParam));
+			}
 		}
 		break;
 	case WM_MBUTTONDOWN:
@@ -479,6 +465,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 	return 0;
+}
+
+void InitializeGradients(CGradient *gradients[], bool deleteFirst)
+{
+	if (deleteFirst) {
+		for (int i = 0; i < NUM_GRADIENTS; i++) {
+			delete gradients[i];
+		}
+	}
+
+	gradients[0] = new CGradient(5);
+	gradients[0]->SetStep(0, 0.0, RGB(255, 255, 0));
+	gradients[0]->SetStep(1, 0.25, RGB(255, 0, 0));
+	gradients[0]->SetStep(2, 0.5, RGB(0, 0, 0));
+	gradients[0]->SetStep(3, 0.51, RGB(64, 64, 64));
+	gradients[0]->SetStep(4, 1.0, RGB(0, 0, 0));
+
+	gradients[1] = new CGradient(7);
+	gradients[1]->SetStep(0, 0.0, RGB(255, 0, 0));
+	gradients[1]->SetStep(1, 1.0 / 6, RGB(255, 255, 0));
+	gradients[1]->SetStep(2, 2.0 / 6, RGB(0, 255, 0));
+	gradients[1]->SetStep(3, 3.0 / 6, RGB(0, 255, 255));
+	gradients[1]->SetStep(4, 4.0 / 6, RGB(0, 0, 255));
+	gradients[1]->SetStep(5, 5.0 / 6, RGB(255, 0, 255));
+	gradients[1]->SetStep(6, 1.0, RGB(255, 0, 0));
+
+	gradients[2] = new CGradient(2);
+	gradients[2]->SetStep(0, 0.0, RGB(255, 255, 255));
+	gradients[2]->SetStep(1, 1.0, RGB(0, 0, 0));
+
+	gradients[3] = new CGradient(2);
+	gradients[3]->SetStep(0, 0.0, RGB(255, 255, 255));
+	gradients[3]->SetStep(1, 1.0, RGB(255, 255, 255));
+
+	gradients[4] = new CGradient(5);
+	RandomizeGradient(gradients[4]);
 }
 
 void SelectParam(CParamAgent *agent, int paramNum, double *deltaMult)

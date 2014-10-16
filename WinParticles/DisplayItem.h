@@ -11,6 +11,7 @@ protected:
 	virtual void OnMouseDown(int x, int y);
 	virtual void OnMouseMove(int x, int y);
 	virtual void OnMouseUp(int x, int y);
+	virtual void OnRightClick(int x, int y);
 	virtual void OnMouseLeave();
 	virtual bool OnKeyDown(UINT uCode);
 	virtual bool OccupiesPoint(int x, int y);
@@ -26,6 +27,7 @@ public:
 	void MouseDown(int x, int y);
 	void MouseMove(int x, int y);
 	void MouseUp(int x, int y);
+	void RightClick(int x, int y);
 	bool KeyDown(UINT uCode);
 	bool OccupyingPoint(int x, int y);
 };

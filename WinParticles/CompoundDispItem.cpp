@@ -44,6 +44,13 @@ void CCompoundDispItem::OnMouseUp(int x, int y)
 	}
 }
 
+void CCompoundDispItem::OnRightClick(int x, int y)
+{
+	for (std::vector<CDisplayItem*>::iterator i = subItems.begin(); i != subItems.end(); i++) {
+		(*i)->RightClick(x, y);
+	}
+}
+
 bool CCompoundDispItem::OnKeyDown(UINT uCode)
 {
 	bool handledByAny = false;
