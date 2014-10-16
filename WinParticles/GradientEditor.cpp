@@ -47,7 +47,7 @@ void CGradientEditor::SetGradient(CGradient *gradient)
 	
 	if ((unsigned)gradient->GetStepCount() > stepHandles.size()) {
 		for (int i = stepHandles.size(); i < gradient->GetStepCount(); i++) {
-			CStepHandle *handle = new CStepHandle();
+			CStepHandle *handle = new CStepHandle(this);
 			handle->SetColorDialog(colorDlg);
 			stepHandles.push_back(handle);
 			AddSubItem(handle);
@@ -70,8 +70,9 @@ void CGradientEditor::SetColorDialog(LPCHOOSECOLOR colorDlg)
 
 // CGradientEditor::CStepHandle member functions
 
-CGradientEditor::CStepHandle::CStepHandle()
+CGradientEditor::CStepHandle::CStepHandle(CGradientEditor *parent)
 {
+	this->parent = parent;
 	bitmap = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_STEPHANDLE));
 	bmpMask = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_STEPHANDLE_MASK));
 	bitmapDC = CreateCompatibleDC(NULL);
@@ -110,6 +111,7 @@ void CGradientEditor::CStepHandle::OnMouseDown(int x, int y)
 {
 	dragging = true;
 	lastDragX = x;
+	parent->StopHandlingSubItemEvents();
 }
 
 void CGradientEditor::CStepHandle::OnMouseMove(int x, int y)
@@ -134,6 +136,7 @@ void CGradientEditor::CStepHandle::OnRightClick(int x, int y)
 		if (ChooseColor(colorDlg)) {
 			gradient->SetStepColor(stepIndex, colorDlg->rgbResult);
 		}
+		parent->StopHandlingSubItemEvents();
 	}
 }
 

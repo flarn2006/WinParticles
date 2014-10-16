@@ -10,6 +10,7 @@ private:
 	class CStepHandle : public CDisplayItem
 	{
 	private:
+		CGradientEditor *parent;
 		CGradient *gradient;
 		int stepIndex;
 		int lastDragX;
@@ -34,7 +35,7 @@ private:
 		virtual bool OccupiesPoint(int x, int y);
 
 	public:
-		CStepHandle();
+		CStepHandle(CGradientEditor *parent);
 		~CStepHandle();
 		void SetGradientInfo(CGradient *gradient, int stepIndex);
 		void SetPositioningInfo(int xMin, int xMax, int y);
