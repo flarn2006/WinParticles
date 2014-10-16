@@ -184,6 +184,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static bool cursorHidden = false;
 	static bool randomizeGradientOnSelect = false;
 	static bool mouseMovesEmitter = true;
+	static COLORREF backgroundColor = 0;
+	static HBRUSH backgroundBrush;
 
 	switch (message)
 	{
@@ -215,6 +217,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		colorDlg.Flags = CC_RGBINIT;
 
 		for (int i = 0; i < 16; i++) customColors[i] = RGB(255, 255, 255);
+
+		// This will be deleted when the background color is changed, so GetStockObject(BLACK_BRUSH) won't work here.
+		backgroundBrush = CreateSolidBrush(0);
 
 		numInputBox = new CNumericInputBox();
 		numInputBox->SetFont(font);
@@ -260,6 +265,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				gradientEditor->SetTint(colorDlg.rgbResult);
 			}
 			break;
+		case ID_PARAMS_BACKGROUNDCOLOR:
+			colorDlg.rgbResult = backgroundColor;
+			if (ChooseColor(&colorDlg)) {
+				backgroundColor = colorDlg.rgbResult;
+				DeleteObject(backgroundBrush);
+				backgroundBrush = CreateSolidBrush(backgroundColor);
+			}
+			break;
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
@@ -273,9 +286,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 		hDC = bbuf->GetDC();
 
-		// Draw black background and particles
+		// Draw background and particles
 		GetClientRect(hWnd, &clientRect);
-		PatBlt(hDC, clientRect.left, clientRect.top, clientRect.right - clientRect.left, clientRect.bottom - clientRect.top, BLACKNESS);
+		FillRect(hDC, &clientRect, backgroundBrush);
 		psys->Draw(hDC, &clientRect);
 
 		// Draw all active display items
