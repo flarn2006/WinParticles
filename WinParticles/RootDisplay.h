@@ -13,7 +13,7 @@ private:
 	CGradientEditor *gradientEditor;
 
 public:
-	CRootDisplay();
+	CRootDisplay(); // You MUST also call InitBitmapEditor and InitGradientEditor
 	~CRootDisplay();
 	
 	void InitBitmapEditor(HDC hBitmapDC, LONG width, LONG height);

@@ -10,6 +10,9 @@ CRootDisplay::CRootDisplay()
 
 CRootDisplay::~CRootDisplay()
 {
+	delete numInputBox;
+	delete bmpEditor;
+	delete gradientEditor;
 }
 
 void CRootDisplay::InitBitmapEditor(HDC hBitmapDC, LONG width, LONG height)
