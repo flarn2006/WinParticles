@@ -131,6 +131,6 @@ void CParticle::Draw(HDC hDC)
 	} else {
 		SelectObject(hDC, GetStockObject(DC_BRUSH));
 		SetDCBrushColor(hDC, color);
-		MaskBlt(hDC, x, y, 5, 5, hDC, 0, 0, particleBitmap, (int)(relativeAge * 6.0) * 5, 0, MAKEROP4(0xAA0029, PATCOPY));
+		WorkingMaskBlt(hDC, x, y, 5, 5, hDC, 0, 0, particleBitmap, (int)(relativeAge * 6.0) * 5, 0, MAKEROP4(0xAA0029, PATCOPY));
 	}
 }

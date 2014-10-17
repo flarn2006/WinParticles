@@ -75,6 +75,7 @@ CGradientEditor::CStepHandle::CStepHandle(CGradientEditor *parent)
 	this->parent = parent;
 	bitmap = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_STEPHANDLE));
 	bmpMask = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_STEPHANDLE_MASK));
+	bmpColorMask = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_STEPHANDLE_COLOR_MASK));
 	bitmapDC = CreateCompatibleDC(NULL);
 	SelectObject(bitmapDC, bitmap);
 	dragging = false;
@@ -101,10 +102,11 @@ void CGradientEditor::CStepHandle::OnDraw(HDC hDC, const LPRECT clientRect)
 {
 	int xSrc = dragging ? WIDTH : 0;
 	UpdateBounds();
-	MaskBlt(hDC, bounds.left, bounds.top, WIDTH, HEIGHT, bitmapDC, xSrc, 0, bmpMask, 0, 0, MAKEROP4(SRCCOPY, 0xAA0029));
+	MaskBlt(hDC, bounds.left, bounds.top, WIDTH, HEIGHT, bitmapDC, xSrc, 0, bmpMask, xSrc, 0, MAKEROP4(SRCCOPY, 0xAA0029));
+	SetBrushOrgEx(hDC, -20, 0, NULL);
 	SelectObject(hDC, GetStockObject(DC_BRUSH));
 	SetDCBrushColor(hDC, gradient->GetStepColor(stepIndex));
-	PatBlt(hDC, bounds.left + 3, bounds.top + 3, 6, 5, PATCOPY);
+	WorkingMaskBlt(hDC, bounds.left, bounds.top, WIDTH, HEIGHT, hDC, xSrc, 0, bmpColorMask, xSrc, 0, MAKEROP4(PATCOPY, 0xAA0029));
 }
 
 void CGradientEditor::CStepHandle::OnMouseDown(int x, int y)

@@ -180,6 +180,7 @@
     <Image Include="bmptoolbar.bmp" />
     <Image Include="particles.bmp" />
     <Image Include="stephandle.bmp" />
+	<Image Include="stephandle_color_mask.bmp" />
     <Image Include="stephandle_mask.bmp" />
     <Image Include="WinParticles.ico" />
   </ItemGroup>

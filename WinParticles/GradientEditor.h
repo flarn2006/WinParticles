@@ -16,7 +16,7 @@ private:
 		int lastDragX;
 		bool dragging;
 		RECT bounds;
-		HBITMAP bitmap, bmpMask;
+		HBITMAP bitmap, bmpMask, bmpColorMask;
 		HDC bitmapDC;
 		int posXMin, posXMax, posY;
 		LPCHOOSECOLOR colorDlg;

@@ -18,3 +18,26 @@ double RandInRange(double min, double max)
 {
 	return ((double)rand() / RAND_MAX) * (max - min) + min;
 }
+
+BOOL WorkingMaskBlt(HDC hdcDest, int nXDest, int nYDest, int nWidth, int nHeight, HDC hdcSrc, int nXSrc, int nYSrc, HBITMAP hbmMask, int xMask, int yMask, DWORD dwRop)
+{
+	// Hack to fix a bug with negative destination coordinates in MaskBlt when using PATCOPY
+
+	if (nXDest < 0) {
+		int oldXDest = nXDest;
+		nXDest = 0;
+		nWidth += oldXDest;
+		nXSrc -= oldXDest;
+		xMask -= oldXDest;
+	}
+
+	if (nYDest < 0) {
+		int oldYDest = nYDest;
+		nYDest = 0;
+		nHeight += oldYDest;
+		nYSrc -= oldYDest;
+		yMask -= oldYDest;
+	}
+
+	return MaskBlt(hdcDest, nXDest, nYDest, nWidth, nHeight, hdcSrc, nXSrc, nYSrc, hbmMask, xMask, yMask, dwRop);
+}

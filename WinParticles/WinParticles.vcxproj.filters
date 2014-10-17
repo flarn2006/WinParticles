@@ -129,6 +129,9 @@
     <Image Include="stephandle_mask.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="bitmap1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="emitter.cur">
