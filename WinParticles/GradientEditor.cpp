@@ -4,11 +4,11 @@
 #include "Common.h"
 
 extern HINSTANCE hInst;
+extern CHOOSECOLOR colorDlg;
 
 CGradientEditor::CGradientEditor(CGradient *gradient)
 {
 	tint = 0xFFFFFF;
-	colorDlg = NULL;
 	SetGradient(gradient);
 }
 
@@ -48,7 +48,6 @@ void CGradientEditor::SetGradient(CGradient *gradient)
 	if ((unsigned)gradient->GetStepCount() > stepHandles.size()) {
 		for (int i = stepHandles.size(); i < gradient->GetStepCount(); i++) {
 			CStepHandle *handle = new CStepHandle(this);
-			handle->SetColorDialog(colorDlg);
 			stepHandles.push_back(handle);
 			AddSubItem(handle);
 		}
@@ -57,14 +56,6 @@ void CGradientEditor::SetGradient(CGradient *gradient)
 	for (unsigned int i = 0; i < stepHandles.size(); i++) {
 		stepHandles[i]->SetEnabled(i < (unsigned)gradient->GetStepCount());
 		stepHandles[i]->SetGradientInfo(gradient, i);
-	}
-}
-
-void CGradientEditor::SetColorDialog(LPCHOOSECOLOR colorDlg)
-{
-	this->colorDlg = colorDlg;
-	for (std::vector<CStepHandle*>::iterator i = stepHandles.begin(); i != stepHandles.end(); i++) {
-		(*i)->SetColorDialog(colorDlg);
 	}
 }
 
@@ -133,13 +124,11 @@ void CGradientEditor::CStepHandle::OnMouseUp(int x, int y)
 
 void CGradientEditor::CStepHandle::OnRightClick(int x, int y)
 {
-	if (colorDlg) {
-		colorDlg->rgbResult = gradient->GetStepColor(stepIndex);
-		if (ChooseColor(colorDlg)) {
-			gradient->SetStepColor(stepIndex, colorDlg->rgbResult);
-		}
-		parent->StopHandlingSubItemEvents();
+	colorDlg.rgbResult = gradient->GetStepColor(stepIndex);
+	if (ChooseColor(&colorDlg)) {
+		gradient->SetStepColor(stepIndex, colorDlg.rgbResult);
 	}
+	parent->StopHandlingSubItemEvents();
 }
 
 bool CGradientEditor::CStepHandle::OccupiesPoint(int x, int y)
@@ -158,9 +147,4 @@ void CGradientEditor::CStepHandle::SetPositioningInfo(int xMin, int xMax, int y)
 	posXMin = xMin;
 	posXMax = xMax;
 	posY = y;
-}
-
-void CGradientEditor::CStepHandle::SetColorDialog(LPCHOOSECOLOR colorDlg)
-{
-	this->colorDlg = colorDlg;
 }

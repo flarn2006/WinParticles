@@ -63,6 +63,9 @@
     <ClInclude Include="ChaoticGradient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RootDisplay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -107,6 +110,9 @@
     <ClCompile Include="ChaoticGradient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RootDisplay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WinParticles.rc">
@@ -129,7 +135,7 @@
     <Image Include="stephandle_mask.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="bitmap1.bmp">
+    <Image Include="stephandle_color_mask.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -8,6 +8,7 @@
 #include "Gradient.h"
 #include "Common.h"
 #include "DisplayItem.h"
+#include "RootDisplay.h"
 #include "NumericInputBox.h"
 #include "ParamAgent.h"
 #include "BitmapEditor.h"
@@ -35,6 +36,7 @@ int selParam;
 CParticleSys *psys;
 HCURSOR curEmitter;
 bool additiveDrawing = true;
+CHOOSECOLOR colorDlg;
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -170,16 +172,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static double emitterX, emitterY;
 	double temp1, temp2;
 	double delta;
-	bool alreadyHandled;
 	static double deltaMult;
-	static CHOOSECOLOR colorDlg;
 	static COLORREF customColors[16];
-	static std::vector<CDisplayItem*> displayItems;
 	static bool mouseControlsParams = true;
-	static CNumericInputBox *numInputBox;
+	static CRootDisplay *display;
 	static CParamAgent *agent;
-	static CBitmapEditor *bmpEditor;
-	static CGradientEditor *gradientEditor;
 	static RECT clientRect;
 	static bool cursorHidden = false;
 	static bool randomizeGradientOnSelect = false;
@@ -221,16 +218,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// This will be deleted when the background color is changed, so GetStockObject(BLACK_BRUSH) won't work here.
 		backgroundBrush = CreateSolidBrush(0);
 
-		numInputBox = new CNumericInputBox();
-		numInputBox->SetFont(font);
-		displayItems.push_back(numInputBox);
-
-		bmpEditor = new CBitmapEditor(particleBmpDC, 30, 5);
-		displayItems.push_back(bmpEditor);
-
-		gradientEditor = new CGradientEditor(psys->GetDefGradient());
-		gradientEditor->SetColorDialog(&colorDlg);
-		displayItems.push_back(gradientEditor);
+		display = new CRootDisplay();
+		display->InitBitmapEditor(particleBmpDC, 30, 5);
+		display->InitGradientEditor(psys->GetDefGradient());
 		
 		break;
 	case WM_COMMAND:
@@ -262,7 +252,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			colorDlg.rgbResult = psys->GetDefaultTint();
 			if (ChooseColor(&colorDlg)) {
 				psys->SetDefaultTint(colorDlg.rgbResult);
-				gradientEditor->SetTint(colorDlg.rgbResult);
+				display->GetGradientEditor()->SetTint(colorDlg.rgbResult);
 			}
 			break;
 		case ID_PARAMS_BACKGROUNDCOLOR:
@@ -280,8 +270,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_SIZE:
 		bbuf->UpdateSize();
 		GetClientRect(hWnd, &clientRect);
-		numInputBox->SetPosition((clientRect.left + clientRect.right) / 2, (clientRect.top + clientRect.bottom) / 2);
-		bmpEditor->SetTopRightPos(clientRect.right - 16, clientRect.top + 16);
+		display->UpdateSize(&clientRect);
 		break;
 	case WM_PAINT:
 		hDC = bbuf->GetDC();
@@ -292,9 +281,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		psys->Draw(hDC, &clientRect);
 
 		// Draw all active display items
-		for (std::vector<CDisplayItem*>::iterator i = displayItems.begin(); i != displayItems.end(); i++) {
-			(*i)->Draw(hDC, &clientRect);
-		}
+		display->Draw(hDC, &clientRect);
 
 		// Draw text display
 		SelectObject(hDC, font);
@@ -352,12 +339,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_KEYDOWN:
-		alreadyHandled = false;
-		for (std::vector<CDisplayItem*>::iterator i = displayItems.begin(); i != displayItems.end(); i++) {
-			alreadyHandled = (*i)->KeyDown((UINT)wParam) || alreadyHandled;
-		}
-
-		if (!alreadyHandled) {
+		if (!display->KeyDown((UINT)wParam)) {
 			if (0x31 <= wParam && wParam <= 0x30 + NUM_GRADIENTS) {
 				if (wParam == 0x35) {
 					if (randomizeGradientOnSelect) RandomizeGradient(gradients[4]);
@@ -367,7 +349,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 				selGradientNum = wParam - 0x31;
 				psys->SetDefGradient(gradients[selGradientNum]);
-				gradientEditor->SetGradient(gradients[selGradientNum]);
+				display->GetGradientEditor()->SetGradient(gradients[selGradientNum]);
 			} else if (wParam == (WPARAM)'R') {
 				psys->DefaultParameters();
 				SetVelocityMode(psys->GetVelocityMode(), hWnd);
@@ -386,7 +368,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			} else if (wParam == (WPARAM)'G') {
 				InitializeGradients(gradients, true);
 				psys->SetDefGradient(gradients[selGradientNum]);
-				gradientEditor->SetGradient(gradients[selGradientNum]);
+				display->GetGradientEditor()->SetGradient(gradients[selGradientNum]);
 				psys->GetParticles()->clear();
 			} else if (wParam == (WPARAM)'A') {
 				additiveDrawing = !additiveDrawing;
@@ -396,7 +378,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				deltaMult *= 10;
 			} else if (wParam == VK_RETURN) {
 				GetClientRect(hWnd, &clientRect);
-				numInputBox->PromptForValue(agent);
+				display->GetNumInputBox()->PromptForValue(agent);
 			}
 		}
 		break;
@@ -406,9 +388,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if (selParam < 0) selParam = MAX_PARAM;
 			SelectParam(agent, selParam, &deltaMult);
 		} else {
-			for (std::vector<CDisplayItem*>::iterator i = displayItems.begin(); i != displayItems.end(); i++) {
-				(*i)->MouseDown(LOWORD(lParam), HIWORD(lParam));
-			}
+			display->MouseDown(LOWORD(lParam), HIWORD(lParam));
 		}
 		break;
 	case WM_RBUTTONDOWN:
@@ -417,22 +397,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if (selParam > MAX_PARAM) selParam = 0;
 			SelectParam(agent, selParam, &deltaMult);
 		} else {
-			for (std::vector<CDisplayItem*>::iterator i = displayItems.begin(); i != displayItems.end(); i++) {
-				(*i)->RightClick(LOWORD(lParam), HIWORD(lParam));
-			}
+			display->RightClick(LOWORD(lParam), HIWORD(lParam));
 		}
 		break;
 	case WM_MBUTTONDOWN:
 		psys->GetParticles()->clear();
 		break;
 	case WM_MOUSEMOVE:
-		mouseControlsParams = true;
-		for (std::vector<CDisplayItem*>::iterator i = displayItems.begin(); i != displayItems.end(); i++) {
-			if ((*i)->OccupyingPoint(LOWORD(lParam), HIWORD(lParam))) {
-				mouseControlsParams = false;
-				break;
-			}
-		}
+		mouseControlsParams = !display->OccupyingPoint(LOWORD(lParam), HIWORD(lParam));
 
 		if (mouseControlsParams) {
 			SetCursor(curEmitter);
@@ -447,15 +419,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetClassLong(hWnd, GCL_HCURSOR, (DWORD)curArrow);
 		}
 
-		for (std::vector<CDisplayItem*>::iterator i = displayItems.begin(); i != displayItems.end(); i++) {
-			(*i)->MouseMove(LOWORD(lParam), HIWORD(lParam));
-		}
+		display->MouseMove(LOWORD(lParam), HIWORD(lParam));
 
 		break;
 	case WM_LBUTTONUP:
-		for (std::vector<CDisplayItem*>::iterator i = displayItems.begin(); i != displayItems.end(); i++) {
-			(*i)->MouseUp(LOWORD(lParam), HIWORD(lParam));
-		}
+		display->MouseUp(LOWORD(lParam), HIWORD(lParam));
 		break;
 	case WM_MOUSEWHEEL:
 		delta = (double)GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
@@ -474,9 +442,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		for (int i = 0; i < NUM_GRADIENTS; i++) {
 			delete gradients[i];
 		}
-		for (std::vector<CDisplayItem*>::iterator i = displayItems.begin(); i != displayItems.end(); i++) {
-			delete *i;
-		}
+		delete display;
 		PostQuitMessage(0);
 		break;
 	default:

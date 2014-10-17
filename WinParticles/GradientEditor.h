@@ -19,7 +19,6 @@ private:
 		HBITMAP bitmap, bmpMask, bmpColorMask;
 		HDC bitmapDC;
 		int posXMin, posXMax, posY;
-		LPCHOOSECOLOR colorDlg;
 
 		const int WIDTH = 12;
 		const int HEIGHT = 16;
@@ -39,13 +38,11 @@ private:
 		~CStepHandle();
 		void SetGradientInfo(CGradient *gradient, int stepIndex);
 		void SetPositioningInfo(int xMin, int xMax, int y);
-		void SetColorDialog(LPCHOOSECOLOR colorDlg);
 	};
 
 	CGradient *gradient;
 	COLORREF tint;
 	std::vector<CStepHandle*> stepHandles;
-	LPCHOOSECOLOR colorDlg;
 
 protected:
 	virtual void OnDraw(HDC hDC, const LPRECT clientRect);
@@ -55,6 +52,5 @@ public:
 	~CGradientEditor();
 	void SetGradient(CGradient *gradient);
 	void SetTint(COLORREF tint);
-	void SetColorDialog(LPCHOOSECOLOR colorDlg);
 };
 
