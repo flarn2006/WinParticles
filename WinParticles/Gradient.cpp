@@ -2,15 +2,19 @@
 #include "Gradient.h"
 #include "Common.h"
 
+CGradient::CGradient()
+{
+}
+
 CGradient::CGradient(int numSteps)
 {
-	steps = new Step[numSteps];
-	this->numSteps = numSteps;
+	for (int i = 0; i < numSteps; i++) {
+		steps.push_back({ 0, 0 });
+	}
 }
 
 CGradient::~CGradient()
 {
-	delete[] steps;
 }
 
 COLORREF CGradient::GetStepColor(int index)
@@ -23,9 +27,9 @@ double CGradient::GetStepPosition(int index)
 	return steps[index].position;
 }
 
-int CGradient::GetStepCount()
+unsigned int CGradient::GetStepCount()
 {
-	return numSteps;
+	return steps.size();
 }
 
 void CGradient::SetStepColor(int index, COLORREF color)
@@ -51,7 +55,7 @@ COLORREF CGradient::ColorAtPoint(double position)
 
 	int closestIndex = -1;
 	double closestPos = 0.0;
-	for (int i = 0; i < numSteps; i++) {
+	for (unsigned int i = 0; i < steps.size(); i++) {
 		if (steps[i].position <= position) {
 			if (steps[i].position == position) return steps[i].color;
 			if (closestPos < steps[i].position || closestIndex == -1) {
@@ -64,7 +68,7 @@ COLORREF CGradient::ColorAtPoint(double position)
 	if (closestIndex == -1) {
 		// Just find the one with the lowest (leftmost) position value
 		closestPos = 0.0;
-		for (int i = 0; i < numSteps; i++) {
+		for (unsigned int i = 0; i < steps.size(); i++) {
 			if (steps[i].position < closestPos || closestIndex == -1) {
 				closestIndex = i;
 				closestPos = steps[i].position;
@@ -79,7 +83,7 @@ COLORREF CGradient::ColorAtPoint(double position)
 		index2 = index1;
 	} else {
 		closestIndex = -1;
-		for (int i = 0; i < numSteps; i++) {
+		for (unsigned int i = 0; i < steps.size(); i++) {
 			if (steps[i].position > steps[index1].position) {
 				if (closestPos > steps[i].position || closestIndex == -1) {
 					closestIndex = i;

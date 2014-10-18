@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include <vector>
 
 class CGradient
 {
@@ -10,16 +11,16 @@ private:
 		double position;
 	};
 
-	Step *steps;
-	int numSteps;
+	std::vector<Step> steps;
 
 public:
+	CGradient();
 	CGradient(int numSteps);
 	~CGradient();
 
 	COLORREF GetStepColor(int index);
 	double GetStepPosition(int index);
-	int GetStepCount();
+	unsigned int GetStepCount();
 	void SetStepColor(int index, COLORREF color);
 	void SetStepPosition(int index, double position);
 	void SetStep(int index, double position, COLORREF color);

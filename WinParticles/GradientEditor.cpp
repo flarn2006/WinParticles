@@ -46,7 +46,7 @@ void CGradientEditor::SetGradient(CGradient *gradient)
 	this->gradient = gradient;
 	
 	if ((unsigned)gradient->GetStepCount() > stepHandles.size()) {
-		for (int i = stepHandles.size(); i < gradient->GetStepCount(); i++) {
+		for (unsigned int i = stepHandles.size(); i < gradient->GetStepCount(); i++) {
 			CStepHandle *handle = new CStepHandle(this);
 			stepHandles.push_back(handle);
 			AddSubItem(handle);

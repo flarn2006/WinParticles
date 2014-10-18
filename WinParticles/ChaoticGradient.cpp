@@ -2,6 +2,10 @@
 #include "ChaoticGradient.h"
 #include "Common.h"
 
+CChaoticGradient::CChaoticGradient()
+{
+}
+
 CChaoticGradient::CChaoticGradient(int numSteps)
 : CGradient(numSteps)
 {

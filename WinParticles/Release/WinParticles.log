@@ -1,23 +1,10 @@
-﻿Build started 10/17/2014 2:45:12 AM.
-     1>Project "D:\src\vs2013\WinParticles\WinParticles\WinParticles.vcxproj" on node 2 (Build target(s)).
+﻿Build started 10/18/2014 5:36:44 PM.
+     1>Project "d:\src\vs2013\WinParticles\WinParticles\WinParticles.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\vs2013\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Ox /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\WinParticles.pch" /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt BitmapEditor.cpp ChaoticGradient.cpp Common.cpp CompoundDispItem.cpp Gradient.cpp GradientEditor.cpp NumericInputBox.cpp ParamAgent.cpp Particle.cpp ParticleSys.cpp RootDisplay.cpp WinParticles.cpp
-         BitmapEditor.cpp
-         ChaoticGradient.cpp
-         Common.cpp
-         CompoundDispItem.cpp
-         Gradient.cpp
+         C:\vs2013\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Ox /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\WinParticles.pch" /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt GradientEditor.cpp
          GradientEditor.cpp
-         NumericInputBox.cpp
-         ParamAgent.cpp
-         Particle.cpp
-         ParticleSys.cpp
-         RootDisplay.cpp
-         WinParticles.cpp
-       ResourceCompile:
-         C:\Program Files (x86)\Windows Kits\8.1\bin\x86\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"Release\WinParticles.res" WinParticles.rc 
        Link:
-         C:\vs2013\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\src\vs2013\WinParticles\Release\WinParticles.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\src\vs2013\WinParticles\Release\WinParticles.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\src\vs2013\WinParticles\Release\WinParticles.lib" /MACHINE:X86 /SAFESEH Release\WinParticles.res
+         C:\vs2013\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"d:\src\vs2013\WinParticles\Release\WinParticles.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"d:\src\vs2013\WinParticles\Release\WinParticles.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"d:\src\vs2013\WinParticles\Release\WinParticles.lib" /MACHINE:X86 /SAFESEH Release\WinParticles.res
          Release\BackBuffer.obj
          Release\BitmapEditor.obj
          Release\ChaoticGradient.obj
@@ -35,9 +22,9 @@
          Release\WinParticles.obj
          Generating code
          Finished generating code
-         WinParticles.vcxproj -> D:\src\vs2013\WinParticles\Release\WinParticles.exe
-     1>Done Building Project "D:\src\vs2013\WinParticles\WinParticles\WinParticles.vcxproj" (Build target(s)).
+         WinParticles.vcxproj -> d:\src\vs2013\WinParticles\Release\WinParticles.exe
+     1>Done Building Project "d:\src\vs2013\WinParticles\WinParticles\WinParticles.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:05.00
+Time Elapsed 00:00:00.95
