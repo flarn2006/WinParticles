@@ -12,6 +12,7 @@ private:
 protected:
 	void AddSubItem(CDisplayItem *subItem);
 	void StopHandlingSubItemEvents();
+	bool GetStopHandlingFlag();
 	virtual void OnDraw(HDC hDC, const LPRECT clientRect);
 	virtual void OnMouseDown(int x, int y);
 	virtual void OnMouseMove(int x, int y);

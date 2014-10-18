@@ -19,6 +19,7 @@ private:
 		HBITMAP bitmap, bmpMask, bmpColorMask;
 		HDC bitmapDC;
 		int posXMin, posXMax, posY;
+		bool posInfoSet;
 
 		const int WIDTH = 12;
 		const int HEIGHT = 16;
@@ -38,14 +39,21 @@ private:
 		~CStepHandle();
 		void SetGradientInfo(CGradient *gradient, int stepIndex);
 		void SetPositioningInfo(int xMin, int xMax, int y);
+		void StartDragging(int fromX);
 	};
 
 	CGradient *gradient;
 	COLORREF tint;
 	std::vector<CStepHandle*> stepHandles;
+	LPRECT clientRect;
+
+	CStepHandle *AddGradientStep(int x);
 
 protected:
 	virtual void OnDraw(HDC hDC, const LPRECT clientRect);
+	virtual void OnMouseDown(int x, int y);
+	virtual void OnRightClick(int x, int y);
+	virtual bool OccupiesPoint(int x, int y);
 
 public:
 	CGradientEditor(CGradient *gradient);

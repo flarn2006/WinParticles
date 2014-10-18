@@ -7,6 +7,7 @@ private:
 	bool mouseIsDown;
 
 protected:
+	void SetMouseDownFlag(bool flag); //to force it to respond to mouse move/up events
 	virtual void OnDraw(HDC hDC, const LPRECT clientRect);
 	virtual void OnMouseDown(int x, int y);
 	virtual void OnMouseMove(int x, int y);

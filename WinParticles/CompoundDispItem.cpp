@@ -21,6 +21,11 @@ void CCompoundDispItem::StopHandlingSubItemEvents()
 	stopHandling = true;
 }
 
+bool CCompoundDispItem::GetStopHandlingFlag()
+{
+	return stopHandling;
+}
+
 void CCompoundDispItem::OnDraw(HDC hDC, const LPRECT clientRect)
 {
 	for (std::vector<CDisplayItem*>::iterator i = subItems.begin(); i != subItems.end(); i++) {

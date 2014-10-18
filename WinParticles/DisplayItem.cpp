@@ -106,3 +106,8 @@ bool CDisplayItem::OccupyingPoint(int x, int y)
 	else
 		return false;
 }
+
+void CDisplayItem::SetMouseDownFlag(bool flag)
+{
+	mouseIsDown = flag;
+}

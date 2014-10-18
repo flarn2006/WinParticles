@@ -8,6 +8,7 @@ extern CHOOSECOLOR colorDlg;
 
 CGradientEditor::CGradientEditor(CGradient *gradient)
 {
+	clientRect = NULL;
 	tint = 0xFFFFFF;
 	SetGradient(gradient);
 }
@@ -26,6 +27,8 @@ void CGradientEditor::SetTint(COLORREF tint)
 
 void CGradientEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 {
+	this->clientRect = clientRect;
+
 	for (int x = clientRect->left; x < clientRect->right; x++) {
 		double point = Interpolate(x, clientRect->left, clientRect->right, 0.0, 1.0);
 		SelectObject(hDC, GetStockObject(DC_PEN));
@@ -39,6 +42,41 @@ void CGradientEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 	}
 
 	CCompoundDispItem::OnDraw(hDC, clientRect);
+}
+
+CGradientEditor::CStepHandle *CGradientEditor::AddGradientStep(int x)
+{
+	double pos = Interpolate(x, clientRect->left, clientRect->right, 0.0, 1.0);
+	unsigned int index = gradient->AddStep(pos, gradient->ColorAtPoint(pos));
+	SetGradient(gradient);
+	return stepHandles[index];
+}
+
+void CGradientEditor::OnMouseDown(int x, int y)
+{
+	CCompoundDispItem::OnMouseDown(x, y);
+	if (!GetStopHandlingFlag()) {
+		AddGradientStep(x)->StartDragging(x);
+	}
+}
+
+void CGradientEditor::OnRightClick(int x, int y)
+{
+	CCompoundDispItem::OnRightClick(x, y);
+	if (!GetStopHandlingFlag()) {
+		AddGradientStep(x);
+	}
+}
+
+bool CGradientEditor::OccupiesPoint(int x, int y)
+{
+	if (CCompoundDispItem::OccupiesPoint(x, y)) {
+		return true;
+	} else if (clientRect) {
+		return (y >= clientRect->bottom - 24);
+	} else {
+		return false;
+	}
 }
 
 void CGradientEditor::SetGradient(CGradient *gradient)
@@ -70,6 +108,7 @@ CGradientEditor::CStepHandle::CStepHandle(CGradientEditor *parent)
 	bitmapDC = CreateCompatibleDC(NULL);
 	SelectObject(bitmapDC, bitmap);
 	dragging = false;
+	posInfoSet = false;
 }
 
 CGradientEditor::CStepHandle::~CStepHandle()
@@ -102,14 +141,13 @@ void CGradientEditor::CStepHandle::OnDraw(HDC hDC, const LPRECT clientRect)
 
 void CGradientEditor::CStepHandle::OnMouseDown(int x, int y)
 {
-	dragging = true;
-	lastDragX = x;
+	StartDragging(x);
 	parent->StopHandlingSubItemEvents();
 }
 
 void CGradientEditor::CStepHandle::OnMouseMove(int x, int y)
 {
-	if (dragging) {
+	if (dragging && posInfoSet) {
 		int deltaX = x - lastDragX;
 		double deltaPos = Interpolate(deltaX, posXMin, posXMax, 0.0, 1.0);
 		gradient->SetStepPosition(stepIndex, gradient->GetStepPosition(stepIndex) + deltaPos);
@@ -124,9 +162,17 @@ void CGradientEditor::CStepHandle::OnMouseUp(int x, int y)
 
 void CGradientEditor::CStepHandle::OnRightClick(int x, int y)
 {
-	colorDlg.rgbResult = gradient->GetStepColor(stepIndex);
-	if (ChooseColor(&colorDlg)) {
-		gradient->SetStepColor(stepIndex, colorDlg.rgbResult);
+	if (dragging) {
+		if (gradient->GetStepCount() > 1) {
+			dragging = false;
+			gradient->DeleteStep(stepIndex);
+			parent->SetGradient(gradient);
+		}
+	} else {
+		colorDlg.rgbResult = gradient->GetStepColor(stepIndex);
+		if (ChooseColor(&colorDlg)) {
+			gradient->SetStepColor(stepIndex, colorDlg.rgbResult);
+		}
 	}
 	parent->StopHandlingSubItemEvents();
 }
@@ -147,4 +193,12 @@ void CGradientEditor::CStepHandle::SetPositioningInfo(int xMin, int xMax, int y)
 	posXMin = xMin;
 	posXMax = xMax;
 	posY = y;
+	posInfoSet = true;
+}
+
+void CGradientEditor::CStepHandle::StartDragging(int x)
+{
+	dragging = true;
+	lastDragX = x;
+	SetMouseDownFlag(true);
 }

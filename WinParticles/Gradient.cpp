@@ -51,9 +51,10 @@ void CGradient::SetStep(int index, double position, COLORREF color)
 	SetStepPosition(index, position);
 }
 
-void CGradient::AddStep(double position, COLORREF color)
+unsigned int CGradient::AddStep(double position, COLORREF color)
 {
 	steps->push_back({ color, position });
+	return steps->size() - 1;
 }
 
 void CGradient::DeleteStep(int index)
