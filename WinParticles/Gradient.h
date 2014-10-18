@@ -11,7 +11,7 @@ private:
 		double position;
 	};
 
-	std::vector<Step> steps;
+	std::vector<Step> *steps;
 
 public:
 	CGradient();
@@ -24,6 +24,8 @@ public:
 	void SetStepColor(int index, COLORREF color);
 	void SetStepPosition(int index, double position);
 	void SetStep(int index, double position, COLORREF color);
+	void AddStep(double position, COLORREF color);
+	void DeleteStep(int index);
 
 	virtual COLORREF ColorAtPoint(double position);
 };
