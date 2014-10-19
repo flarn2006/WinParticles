@@ -18,6 +18,7 @@
 #include <vector>
 #include <sstream>
 #include <commdlg.h>
+#include <shellapi.h>
 
 #define MAX_LOADSTRING 100
 #define NUM_GRADIENTS 6
@@ -544,9 +545,12 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 		return (INT_PTR)TRUE;
 
 	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-		{
+		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL) {
 			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)TRUE;
+		} else if (LOWORD(wParam) == IDC_GITHUB) {
+			ShellExecute(NULL, L"open", L"http://www.github.com/flarn2006/WinParticles", NULL, NULL, SW_SHOWNORMAL);
+			EndDialog(hDlg, IDOK);
 			return (INT_PTR)TRUE;
 		}
 		break;
