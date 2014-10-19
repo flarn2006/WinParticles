@@ -4,6 +4,7 @@ d:\src\vs2013\winparticles\winparticles\debug\vc120.idb
 d:\src\vs2013\winparticles\winparticles\debug\stdafx.obj
 d:\src\vs2013\winparticles\winparticles\debug\backbuffer.obj
 d:\src\vs2013\winparticles\winparticles\debug\bitmapeditor.obj
+d:\src\vs2013\winparticles\winparticles\debug\chaoticgradient.obj
 d:\src\vs2013\winparticles\winparticles\debug\common.obj
 d:\src\vs2013\winparticles\winparticles\debug\compounddispitem.obj
 d:\src\vs2013\winparticles\winparticles\debug\displayitem.obj
@@ -13,9 +14,8 @@ d:\src\vs2013\winparticles\winparticles\debug\numericinputbox.obj
 d:\src\vs2013\winparticles\winparticles\debug\paramagent.obj
 d:\src\vs2013\winparticles\winparticles\debug\particle.obj
 d:\src\vs2013\winparticles\winparticles\debug\particlesys.obj
-d:\src\vs2013\winparticles\winparticles\debug\winparticles.obj
-d:\src\vs2013\winparticles\winparticles\debug\chaoticgradient.obj
 d:\src\vs2013\winparticles\winparticles\debug\rootdisplay.obj
+d:\src\vs2013\winparticles\winparticles\debug\winparticles.obj
 d:\src\vs2013\winparticles\debug\winparticles.ilk
 d:\src\vs2013\winparticles\debug\winparticles.exe
 d:\src\vs2013\winparticles\debug\winparticles.pdb
@@ -23,12 +23,6 @@ d:\src\vs2013\winparticles\winparticles\debug\winparticles.res
 d:\src\vs2013\winparticles\winparticles\debug\winparticles.tlog\cl.command.1.tlog
 d:\src\vs2013\winparticles\winparticles\debug\winparticles.tlog\cl.read.1.tlog
 d:\src\vs2013\winparticles\winparticles\debug\winparticles.tlog\cl.write.1.tlog
-d:\src\vs2013\winparticles\winparticles\debug\winparticles.tlog\link.15084-cvtres.read.1.tlog
-d:\src\vs2013\winparticles\winparticles\debug\winparticles.tlog\link.15084-cvtres.write.1.tlog
-d:\src\vs2013\winparticles\winparticles\debug\winparticles.tlog\link.15084-rc.read.1.tlog
-d:\src\vs2013\winparticles\winparticles\debug\winparticles.tlog\link.15084-rc.write.1.tlog
-d:\src\vs2013\winparticles\winparticles\debug\winparticles.tlog\link.15084.read.1.tlog
-d:\src\vs2013\winparticles\winparticles\debug\winparticles.tlog\link.15084.write.1.tlog
 d:\src\vs2013\winparticles\winparticles\debug\winparticles.tlog\link.command.1.tlog
 d:\src\vs2013\winparticles\winparticles\debug\winparticles.tlog\link.read.1.tlog
 d:\src\vs2013\winparticles\winparticles\debug\winparticles.tlog\link.write.1.tlog
