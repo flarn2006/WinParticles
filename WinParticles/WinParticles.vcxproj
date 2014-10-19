@@ -147,6 +147,7 @@
     <ClInclude Include="ParamAgent.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleSys.h" />
+    <ClInclude Include="PresetManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RootDisplay.h" />
     <ClInclude Include="stdafx.h" />
@@ -166,6 +167,7 @@
     <ClCompile Include="ParamAgent.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleSys.cpp" />
+    <ClCompile Include="PresetManager.cpp" />
     <ClCompile Include="RootDisplay.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

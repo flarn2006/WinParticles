@@ -1,4 +1,4 @@
-﻿Build started 10/19/2014 4:12:56 PM.
+﻿Build started 10/19/2014 7:50:15 PM.
      1>Project "d:\src\vs2013\WinParticles\WinParticles\WinParticles.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\vs2013\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\WinParticles.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt WinParticles.cpp
@@ -17,6 +17,7 @@
          Debug\ParamAgent.obj
          Debug\Particle.obj
          Debug\ParticleSys.obj
+         Debug\PresetManager.obj
          Debug\RootDisplay.obj
          Debug\stdafx.obj
          Debug\WinParticles.obj
@@ -25,4 +26,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.82
+Time Elapsed 00:00:01.18

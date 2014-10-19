@@ -66,6 +66,9 @@
     <ClInclude Include="RootDisplay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PresetManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -111,6 +114,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RootDisplay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PresetManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

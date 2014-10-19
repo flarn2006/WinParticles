@@ -14,6 +14,7 @@
 #include "BitmapEditor.h"
 #include "GradientEditor.h"
 #include "ChaoticGradient.h"
+#include "PresetManager.h"
 #include <string>
 #include <vector>
 #include <sstream>
@@ -185,6 +186,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static COLORREF backgroundColor = 0;
 	static HBRUSH backgroundBrush;
 	static int verbosity = 2;
+	static CPresetManager *presetMgr;
 
 	switch (message)
 	{
@@ -194,6 +196,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		psys->SetAcceleration(0.0, -600.0);
 
 		agent = new CParamAgent(psys);
+		presetMgr = new CPresetManager(psys);
 
 		SelectParam(agent, 0, &deltaMult);
 
@@ -236,6 +239,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
+			break;
+		case ID_FILE_OPENPRESET:
+			presetMgr->LoadPresetDlg(hWnd);
+			break;
+		case ID_FILE_SAVEPRESET:
+			presetMgr->SavePresetDlg(hWnd);
 			break;
 		case ID_PARAMS_VM_POLAR: SetVelocityMode(CParticleSys::VelocityMode::MODE_POLAR, hWnd); break;
 		case ID_PARAMS_VM_RECT: SetVelocityMode(CParticleSys::VelocityMode::MODE_RECT, hWnd); break;
@@ -454,7 +463,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		InvalidateRect(hWnd, NULL, FALSE);
 		break;
 	case WM_DESTROY:
-		delete psys, bbuf;
+		delete psys, bbuf, agent, presetMgr;
 		DeleteDC(particleBmpDC);
 		DeleteObject(particleBitmap);
 		DeleteObject(font);
