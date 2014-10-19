@@ -184,6 +184,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static bool mouseMovesEmitter = true;
 	static COLORREF backgroundColor = 0;
 	static HBRUSH backgroundBrush;
+	static int verbosity = 2;
 
 	switch (message)
 	{
@@ -288,44 +289,50 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		SelectObject(hDC, font);
 		SetBkMode(hDC, TRANSPARENT);
 		
+		if (verbosity >= 2) {
 #ifdef _DEBUG
-		out << "DEBUG BUILD (performance is not optimal)" << std::endl;
+			out << "DEBUG BUILD (performance is not optimal)" << std::endl;
 #endif
-		out << "Number of particles: " << psys->GetParticles()->size() << std::endl;
-		out << "Use mouse buttons and wheel to edit params" << std::endl;
-		out << "Press ENTER to type a value directly" << std::endl;
-		out << "[-+] Adjustment multiplier: " << deltaMult << std::endl;
-		out << "[Z]  Velocity mode: " << CParticleSys::VelocityModeText(psys->GetVelocityMode()) << std::endl;
-		out << "Current parameters:" << std::endl;
-		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
-			psys->GetVelocity(&temp1, &temp2);
-			out << SELPARAM_CHAR(0) << " Minimum velocity:   " << temp1 << std::endl;
-			out << SELPARAM_CHAR(1) << " Maximum velocity:   " << temp2 << std::endl;
-		} else {
-			if (!agent->GetRectVelYBit()) {
-				psys->GetRectVelocityX(&temp1, &temp2);
-				out << SELPARAM_CHAR(0) << " Minimum X velocity: " << temp1 << std::endl;
-				out << SELPARAM_CHAR(1) << " Maximum X velocity: " << temp2 << std::endl;
-			} else {
-				psys->GetRectVelocityY(&temp1, &temp2);
-				out << SELPARAM_CHAR(0) << " Minimum Y velocity: " << temp1 << std::endl;
-				out << SELPARAM_CHAR(1) << " Maximum Y velocity: " << temp2 << std::endl;
-			}
+			out << "Number of particles: " << psys->GetParticles()->size() << std::endl;
+			out << "Use mouse buttons and wheel to edit params" << std::endl;
+			out << "Press ENTER to type a value directly" << std::endl;
+			out << "[-+] Adjustment multiplier: " << deltaMult << std::endl;
+			out << "[Z]  Velocity mode: " << CParticleSys::VelocityModeText(psys->GetVelocityMode()) << std::endl;
+			out << "Current parameters:" << std::endl;
 		}
-		psys->GetAcceleration(&temp1, &temp2);
-		out << SELPARAM_CHAR(2) << " X acceleration:     " << temp1 << std::endl;
-		out << SELPARAM_CHAR(3) << " Y acceleration:     " << temp2 << std::endl;
-		out << SELPARAM_CHAR(4) << " Maximum age:        " << psys->GetMaxAge() << std::endl;
-		out << SELPARAM_CHAR(5) << " Emission rate:      " << psys->GetEmissionRate() << std::endl;
-		out << SELPARAM_CHAR(6) << " Emission radius:    " << psys->GetEmissionRadius() << std::endl;
-
-		out << std::endl;
-		out << "Press 1 - " << NUM_GRADIENTS << " to change colors" << std::endl;
-		out << "[R] Reset parameters" << std::endl;
-		out << "[C] Show/hide cursor" << std::endl;
-		out << "[F] Freeze/unfreeze emitter" << std::endl;
-		out << "[G] Reset gradient presets" << std::endl;
-		out << "[A] Toggle additive drawing " << "(" << (additiveDrawing ? "ON" : "OFF") << ")" << std::endl;
+		if (verbosity >= 1) {
+			if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
+				psys->GetVelocity(&temp1, &temp2);
+				out << SELPARAM_CHAR(0) << " Minimum velocity:   " << temp1 << std::endl;
+				out << SELPARAM_CHAR(1) << " Maximum velocity:   " << temp2 << std::endl;
+			} else {
+				if (!agent->GetRectVelYBit()) {
+					psys->GetRectVelocityX(&temp1, &temp2);
+					out << SELPARAM_CHAR(0) << " Minimum X velocity: " << temp1 << std::endl;
+					out << SELPARAM_CHAR(1) << " Maximum X velocity: " << temp2 << std::endl;
+				} else {
+					psys->GetRectVelocityY(&temp1, &temp2);
+					out << SELPARAM_CHAR(0) << " Minimum Y velocity: " << temp1 << std::endl;
+					out << SELPARAM_CHAR(1) << " Maximum Y velocity: " << temp2 << std::endl;
+				}
+			}
+			psys->GetAcceleration(&temp1, &temp2);
+			out << SELPARAM_CHAR(2) << " X acceleration:     " << temp1 << std::endl;
+			out << SELPARAM_CHAR(3) << " Y acceleration:     " << temp2 << std::endl;
+			out << SELPARAM_CHAR(4) << " Maximum age:        " << psys->GetMaxAge() << std::endl;
+			out << SELPARAM_CHAR(5) << " Emission rate:      " << psys->GetEmissionRate() << std::endl;
+			out << SELPARAM_CHAR(6) << " Emission radius:    " << psys->GetEmissionRadius() << std::endl;
+		}
+		if (verbosity >= 2) {
+			out << std::endl;
+			out << "Press 1 - " << NUM_GRADIENTS << " to change colors" << std::endl;
+			out << "[R] Reset parameters" << std::endl;
+			out << "[C] Show/hide cursor" << std::endl;
+			out << "[F] Freeze/unfreeze emitter" << std::endl;
+			out << "[G] Reset gradient presets" << std::endl;
+			out << "[A] Toggle additive drawing " << "(" << (additiveDrawing ? "ON" : "OFF") << ")" << std::endl;
+			out << "[Q] Change text display" << std::endl;
+		}
 
 		clientRect.left += 5; clientRect.top += 5;
 		SetTextColor(hDC, 0x000000);
@@ -375,6 +382,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				psys->GetParticles()->clear();
 			} else if (wParam == (WPARAM)'A') {
 				additiveDrawing = !additiveDrawing;
+			} else if (wParam == (WPARAM)'Q') {
+				verbosity = (verbosity + 1) % 3;
 			} else if (wParam == VK_OEM_MINUS) {
 				deltaMult /= 10;
 			} else if (wParam == VK_OEM_PLUS) {
