@@ -31,5 +31,7 @@ public:
 	void RightClick(int x, int y);
 	bool KeyDown(UINT uCode);
 	bool OccupyingPoint(int x, int y);
+
+	bool IsMouseDown();
 };
 

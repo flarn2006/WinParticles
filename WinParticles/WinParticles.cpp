@@ -332,6 +332,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			out << "[G] Reset gradient presets" << std::endl;
 			out << "[A] Toggle additive drawing " << "(" << (additiveDrawing ? "ON" : "OFF") << ")" << std::endl;
 			out << "[Q] Change text display" << std::endl;
+			out << "[E] Toggle bitmap/gradient editors" << std::endl;
 		}
 
 		clientRect.left += 5; clientRect.top += 5;
@@ -384,6 +385,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				additiveDrawing = !additiveDrawing;
 			} else if (wParam == (WPARAM)'Q') {
 				verbosity = (verbosity + 1) % 3;
+			} else if (wParam == (WPARAM)'E') {
+				if (!display->GetBitmapEditor()->IsMouseDown() && !display->GetGradientEditor()->IsMouseDown()) {
+					bool enable = !display->GetBitmapEditor()->GetEnabled();
+					display->GetBitmapEditor()->SetEnabled(enable);
+					display->GetGradientEditor()->SetEnabled(enable);
+				}
 			} else if (wParam == VK_OEM_MINUS) {
 				deltaMult /= 10;
 			} else if (wParam == VK_OEM_PLUS) {

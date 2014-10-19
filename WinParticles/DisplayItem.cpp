@@ -111,3 +111,8 @@ void CDisplayItem::SetMouseDownFlag(bool flag)
 {
 	mouseIsDown = flag;
 }
+
+bool CDisplayItem::IsMouseDown()
+{
+	return mouseIsDown;
+}
