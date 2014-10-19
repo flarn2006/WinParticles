@@ -97,6 +97,16 @@ void CGradientEditor::SetGradient(CGradient *gradient)
 	}
 }
 
+bool CGradientEditor::IsOKToSwitchGradients()
+{
+	for (std::vector<CStepHandle*>::iterator i = stepHandles.begin(); i != stepHandles.end(); i++) {
+		if ((*i)->IsBeingDragged()) {
+			return false;
+		}
+	}
+	return true;
+}
+
 // CGradientEditor::CStepHandle member functions
 
 CGradientEditor::CStepHandle::CStepHandle(CGradientEditor *parent)
@@ -201,4 +211,9 @@ void CGradientEditor::CStepHandle::StartDragging(int x)
 	dragging = true;
 	lastDragX = x;
 	SetMouseDownFlag(true);
+}
+
+bool CGradientEditor::CStepHandle::IsBeingDragged()
+{
+	return dragging;
 }

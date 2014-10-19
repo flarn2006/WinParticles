@@ -40,6 +40,7 @@ private:
 		void SetGradientInfo(CGradient *gradient, int stepIndex);
 		void SetPositioningInfo(int xMin, int xMax, int y);
 		void StartDragging(int fromX);
+		bool IsBeingDragged();
 	};
 
 	CGradient *gradient;
@@ -60,5 +61,6 @@ public:
 	~CGradientEditor();
 	void SetGradient(CGradient *gradient);
 	void SetTint(COLORREF tint);
+	bool IsOKToSwitchGradients();
 };
 

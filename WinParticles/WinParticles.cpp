@@ -341,15 +341,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		if (!display->KeyDown((UINT)wParam)) {
 			if (0x31 <= wParam && wParam <= 0x30 + NUM_GRADIENTS) {
-				if (wParam == 0x35) {
-					if (randomizeGradientOnSelect) RandomizeGradient(gradients[4]);
-					randomizeGradientOnSelect = true;
-				} else {
-					randomizeGradientOnSelect = false;
+				if (display->GetGradientEditor()->IsOKToSwitchGradients()) {
+					if (wParam == 0x35) {
+						if (randomizeGradientOnSelect) RandomizeGradient(gradients[4]);
+						randomizeGradientOnSelect = true;
+					} else {
+						randomizeGradientOnSelect = false;
+					}
+					selGradientNum = wParam - 0x31;
+					psys->SetDefGradient(gradients[selGradientNum]);
+					display->GetGradientEditor()->SetGradient(gradients[selGradientNum]);
 				}
-				selGradientNum = wParam - 0x31;
-				psys->SetDefGradient(gradients[selGradientNum]);
-				display->GetGradientEditor()->SetGradient(gradients[selGradientNum]);
 			} else if (wParam == (WPARAM)'R') {
 				psys->DefaultParameters();
 				SetVelocityMode(psys->GetVelocityMode(), hWnd);
