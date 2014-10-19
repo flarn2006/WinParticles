@@ -16,8 +16,6 @@ private:
 		int lastDragX;
 		bool dragging;
 		RECT bounds;
-		HBITMAP bitmap, bmpMask, bmpColorMask;
-		HDC bitmapDC;
 		int posXMin, posXMax, posY;
 		bool posInfoSet;
 
@@ -43,6 +41,8 @@ private:
 		bool IsBeingDragged();
 	};
 
+	HBITMAP shBitmap, shBmpMask, shBmpColorMask;
+	HDC shBitmapDC;
 	CGradient *gradient;
 	COLORREF tint;
 	std::vector<CStepHandle*> stepHandles;

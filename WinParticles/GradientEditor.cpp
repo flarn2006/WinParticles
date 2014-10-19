@@ -11,10 +11,20 @@ CGradientEditor::CGradientEditor(CGradient *gradient)
 	clientRect = NULL;
 	tint = 0xFFFFFF;
 	SetGradient(gradient);
+	shBitmap = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_STEPHANDLE));
+	shBmpMask = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_STEPHANDLE_MASK));
+	shBmpColorMask = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_STEPHANDLE_COLOR_MASK));
+	shBitmapDC = CreateCompatibleDC(NULL);
+	SelectObject(shBitmapDC, shBitmap);
 }
 
 CGradientEditor::~CGradientEditor()
 {
+	DeleteDC(shBitmapDC);
+	DeleteObject(shBitmap);
+	DeleteObject(shBmpMask);
+	DeleteObject(shBmpColorMask);
+
 	for (std::vector<CStepHandle*>::iterator i = stepHandles.begin(); i != stepHandles.end(); i++) {
 		delete *i;
 	}
@@ -112,20 +122,12 @@ bool CGradientEditor::IsOKToSwitchGradients()
 CGradientEditor::CStepHandle::CStepHandle(CGradientEditor *parent)
 {
 	this->parent = parent;
-	bitmap = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_STEPHANDLE));
-	bmpMask = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_STEPHANDLE_MASK));
-	bmpColorMask = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_STEPHANDLE_COLOR_MASK));
-	bitmapDC = CreateCompatibleDC(NULL);
-	SelectObject(bitmapDC, bitmap);
 	dragging = false;
 	posInfoSet = false;
 }
 
 CGradientEditor::CStepHandle::~CStepHandle()
 {
-	DeleteDC(bitmapDC);
-	DeleteObject(bitmap);
-	DeleteObject(bmpMask);
 }
 
 void CGradientEditor::CStepHandle::UpdateBounds()
@@ -142,11 +144,11 @@ void CGradientEditor::CStepHandle::OnDraw(HDC hDC, const LPRECT clientRect)
 {
 	int xSrc = dragging ? WIDTH : 0;
 	UpdateBounds();
-	MaskBlt(hDC, bounds.left, bounds.top, WIDTH, HEIGHT, bitmapDC, xSrc, 0, bmpMask, xSrc, 0, MAKEROP4(SRCCOPY, 0xAA0029));
+	MaskBlt(hDC, bounds.left, bounds.top, WIDTH, HEIGHT, parent->shBitmapDC, xSrc, 0, parent->shBmpMask, xSrc, 0, MAKEROP4(SRCCOPY, 0xAA0029));
 	SetBrushOrgEx(hDC, -20, 0, NULL);
 	SelectObject(hDC, GetStockObject(DC_BRUSH));
 	SetDCBrushColor(hDC, gradient->GetStepColor(stepIndex));
-	WorkingMaskBlt(hDC, bounds.left, bounds.top, WIDTH, HEIGHT, hDC, xSrc, 0, bmpColorMask, xSrc, 0, MAKEROP4(PATCOPY, 0xAA0029));
+	WorkingMaskBlt(hDC, bounds.left, bounds.top, WIDTH, HEIGHT, hDC, xSrc, 0, parent->shBmpColorMask, xSrc, 0, MAKEROP4(PATCOPY, 0xAA0029));
 }
 
 void CGradientEditor::CStepHandle::OnMouseDown(int x, int y)
