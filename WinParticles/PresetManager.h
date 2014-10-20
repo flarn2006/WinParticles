@@ -17,8 +17,7 @@ private:
 	LPCTSTR loadError;
 	bool includesGradient;
 
-	static char *SplitString(char *string, char splitChar);
-	static bool SplitString(std::string &input, char splitChar, std::string **left, std::string **right);
+	static bool SplitString(std::string &input, char splitChar, std::string &left, std::string &right);
 
 public:
 	CPresetManager(CParticleSys *psys);
