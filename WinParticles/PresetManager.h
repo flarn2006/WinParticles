@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include <commdlg.h>
+#include <string>
 #include "ParticleSys.h"
 #include "Gradient.h"
 
@@ -13,8 +14,11 @@ private:
 	CGradient gradient;
 	OPENFILENAME fileDlg;
 	TCHAR filename[FILENAME_MAX_LENGTH];
+	LPCTSTR loadError;
+	bool includesGradient;
 
-	static LPTSTR SplitString(LPTSTR string, TCHAR splitChar);
+	static char *SplitString(char *string, char splitChar);
+	static bool SplitString(std::string &input, char splitChar, std::string **left, std::string **right);
 
 public:
 	CPresetManager(CParticleSys *psys);
@@ -23,5 +27,7 @@ public:
 	bool LoadPreset(LPCTSTR filename);
 	bool SavePresetDlg(HWND parent);
 	bool LoadPresetDlg(HWND parent);
+	bool DidLastPresetIncludeGradient();
+	CGradient *GetGradient();
 };
 

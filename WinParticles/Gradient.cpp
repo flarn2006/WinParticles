@@ -68,6 +68,11 @@ void CGradient::DeleteStep(int index)
 	}
 }
 
+void CGradient::DeleteAllSteps()
+{
+	steps->clear();
+}
+
 COLORREF CGradient::ColorAtPoint(double position)
 {
 	int index1, index2;

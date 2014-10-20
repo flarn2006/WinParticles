@@ -241,7 +241,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DestroyWindow(hWnd);
 			break;
 		case ID_FILE_OPENPRESET:
-			presetMgr->LoadPresetDlg(hWnd);
+			if (presetMgr->LoadPresetDlg(hWnd)) {
+				if (presetMgr->DidLastPresetIncludeGradient()) {
+					psys->SetDefGradient(presetMgr->GetGradient());
+					selGradientNum = -1;
+					display->GetGradientEditor()->SetGradient(presetMgr->GetGradient());
+				}
+			}
 			break;
 		case ID_FILE_SAVEPRESET:
 			presetMgr->SavePresetDlg(hWnd);
@@ -370,6 +376,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					psys->SetDefGradient(gradients[selGradientNum]);
 					display->GetGradientEditor()->SetGradient(gradients[selGradientNum]);
 				}
+			} else if (wParam == (WPARAM)'0') {
+				if (display->GetGradientEditor()->IsOKToSwitchGradients()) {
+					selGradientNum = -1;
+					psys->SetDefGradient(presetMgr->GetGradient());
+					display->GetGradientEditor()->SetGradient(presetMgr->GetGradient());
+				}
 			} else if (wParam == (WPARAM)'R') {
 				psys->DefaultParameters();
 				SetVelocityMode(psys->GetVelocityMode(), hWnd);
@@ -387,8 +399,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				mouseMovesEmitter = !mouseMovesEmitter;
 			} else if (wParam == (WPARAM)'G') {
 				InitializeGradients(gradients, true);
-				psys->SetDefGradient(gradients[selGradientNum]);
-				display->GetGradientEditor()->SetGradient(gradients[selGradientNum]);
+				CGradient *selected;
+				if (selGradientNum == -1) {
+					selected = presetMgr->GetGradient();
+				} else {
+					selected = gradients[selGradientNum];
+				}
+				psys->SetDefGradient(selected);
+				display->GetGradientEditor()->SetGradient(selected);
 				psys->GetParticles()->clear();
 			} else if (wParam == (WPARAM)'A') {
 				additiveDrawing = !additiveDrawing;
