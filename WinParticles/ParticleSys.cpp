@@ -280,7 +280,7 @@ const char *CParticleSys::VelocityModeText(CParticleSys::VelocityMode mode)
 	case CParticleSys::VelocityMode::MODE_POLAR:
 		return "POLAR";
 	case CParticleSys::VelocityMode::MODE_RECT:
-		return "RECTANGULAR ([X] toggles X/Y)";
+		return "RECTANGULAR";
 	default:
 		return "???"; // ...Profit!
 	}

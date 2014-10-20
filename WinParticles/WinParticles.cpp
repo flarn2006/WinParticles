@@ -311,11 +311,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			out << "Number of particles: " << psys->GetParticles()->size() << std::endl;
 			out << "Use mouse buttons and wheel to edit params" << std::endl;
 			out << "Press ENTER to type a value directly" << std::endl;
-			out << "[-+] Adjustment multiplier: " << deltaMult << std::endl;
-			out << "[Z]  Velocity mode: " << CParticleSys::VelocityModeText(psys->GetVelocityMode()) << std::endl;
-			out << "Current parameters:" << std::endl;
 		}
 		if (verbosity >= 1) {
+			out << "[-+] Adjustment multiplier: " << deltaMult << std::endl;
+			out << "[Z]  Velocity mode: " << CParticleSys::VelocityModeText(psys->GetVelocityMode());
+			if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_RECT)
+				out << " ([X] toggles X/Y)" << std::endl;
+			else
+				out << std::endl;
+			out << "Current parameters:" << std::endl;
 			if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
 				psys->GetVelocity(&temp1, &temp2);
 				out << SELPARAM_CHAR(0) << " Minimum velocity:   " << temp1 << std::endl;
