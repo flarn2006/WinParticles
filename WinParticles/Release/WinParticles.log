@@ -1,13 +1,9 @@
-﻿Build started 10/18/2014 11:12:20 PM.
+﻿Build started 10/20/2014 2:25:34 AM.
      1>Project "d:\src\vs2013\WinParticles\WinParticles\WinParticles.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\vs2013\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Ox /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Release\WinParticles.pch" /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
-         stdafx.cpp
-         C:\vs2013\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Ox /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\WinParticles.pch" /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt BackBuffer.cpp BitmapEditor.cpp ChaoticGradient.cpp Common.cpp CompoundDispItem.cpp DisplayItem.cpp Gradient.cpp GradientEditor.cpp NumericInputBox.cpp ParamAgent.cpp Particle.cpp ParticleSys.cpp RootDisplay.cpp WinParticles.cpp
-         BackBuffer.cpp
+         C:\vs2013\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Ox /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\WinParticles.pch" /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt BitmapEditor.cpp ChaoticGradient.cpp CompoundDispItem.cpp DisplayItem.cpp Gradient.cpp GradientEditor.cpp NumericInputBox.cpp ParamAgent.cpp Particle.cpp ParticleSys.cpp PresetManager.cpp RootDisplay.cpp WinParticles.cpp
          BitmapEditor.cpp
          ChaoticGradient.cpp
-         Common.cpp
          CompoundDispItem.cpp
          DisplayItem.cpp
          Gradient.cpp
@@ -16,6 +12,7 @@
          ParamAgent.cpp
          Particle.cpp
          ParticleSys.cpp
+         PresetManager.cpp
          RootDisplay.cpp
          WinParticles.cpp
        ResourceCompile:
@@ -34,6 +31,7 @@
          Release\ParamAgent.obj
          Release\Particle.obj
          Release\ParticleSys.obj
+         Release\PresetManager.obj
          Release\RootDisplay.obj
          Release\stdafx.obj
          Release\WinParticles.obj
@@ -44,4 +42,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:04.82
+Time Elapsed 00:00:05.95

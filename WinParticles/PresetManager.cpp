@@ -215,7 +215,8 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 					}
 				}
 
-				delete left, right;
+				delete left;
+				delete right;
 			}
 		} else {
 			// bitmapRow is not -1; read a line of the bitmap

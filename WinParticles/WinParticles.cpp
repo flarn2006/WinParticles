@@ -481,7 +481,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		InvalidateRect(hWnd, NULL, FALSE);
 		break;
 	case WM_DESTROY:
-		delete psys, bbuf, agent, presetMgr;
+		delete psys;
+		delete bbuf;
+		delete agent;
+		delete presetMgr;
 		DeleteDC(particleBmpDC);
 		DeleteObject(particleBitmap);
 		DeleteObject(font);
