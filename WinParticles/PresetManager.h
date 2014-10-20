@@ -20,11 +20,18 @@ private:
 	static bool SplitString(std::string &input, char splitChar, std::string &left, std::string &right);
 
 public:
+	enum Components {
+		PMC_BASIC_PARAMS = 1,
+		PMC_GRADIENT = 2,
+		PMC_BITMAP = 4,
+		PMC_ALL = 7,
+	};
+
 	CPresetManager(CParticleSys *psys);
 	~CPresetManager();
-	bool SavePreset(LPCTSTR filename);
+	bool SavePreset(LPCTSTR filename, Components componentsToSave = PMC_ALL);
 	bool LoadPreset(LPCTSTR filename);
-	bool SavePresetDlg(HWND parent);
+	bool SavePresetDlg(HWND parent, Components componentsToSave = PMC_ALL);
 	bool LoadPresetDlg(HWND parent);
 	bool DidLastPresetIncludeGradient();
 	CGradient *GetGradient();

@@ -252,6 +252,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_FILE_SAVEPRESET:
 			presetMgr->SavePresetDlg(hWnd);
 			break;
+		case ID_FILE_SAVEGRADIENT:
+			presetMgr->SavePresetDlg(hWnd, CPresetManager::PMC_GRADIENT);
+			break;
+		case ID_FILE_SAVEBITMAP:
+			presetMgr->SavePresetDlg(hWnd, CPresetManager::PMC_BITMAP);
+			break;
 		case ID_PARAMS_VM_POLAR: SetVelocityMode(CParticleSys::VelocityMode::MODE_POLAR, hWnd); break;
 		case ID_PARAMS_VM_RECT: SetVelocityMode(CParticleSys::VelocityMode::MODE_RECT, hWnd); break;
 		case ID_PARAMS_MINVEL: SelectParam(agent, 0, &deltaMult); break;

@@ -38,7 +38,7 @@ bool CPresetManager::SplitString(std::string &input, char splitChar, std::string
 	return true;
 }
 
-bool CPresetManager::SavePreset(LPCTSTR filename)
+bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components componentsToSave)
 {
 	std::ofstream file(filename, std::ofstream::trunc);
 	if (file.bad()) return false;
@@ -46,44 +46,51 @@ bool CPresetManager::SavePreset(LPCTSTR filename)
 	CParticleSys::VelocityMode velMode = psys->GetVelocityMode();
 	double temp1, temp2;
 
-	file << "VelocityMode=" << CParticleSys::VelocityModeText(velMode) << std::endl;
+	if (componentsToSave & PMC_BASIC_PARAMS) {
+		file << "VelocityMode=" << CParticleSys::VelocityModeText(velMode) << std::endl;
 
-	if (velMode == CParticleSys::VelocityMode::MODE_POLAR) {
-		psys->GetVelocity(&temp1, &temp2);
-		file << "MinVelocity=" << temp1 << std::endl;
-		file << "MaxVelocity=" << temp2 << std::endl;
-	} else {
-		psys->GetRectVelocityX(&temp1, &temp2);
-		file << "MinVelocityX=" << temp1 << std::endl;
-		file << "MaxVelocityX=" << temp2 << std::endl;
-		psys->GetRectVelocityY(&temp1, &temp2);
-		file << "MinVelocityY=" << temp1 << std::endl;
-		file << "MaxVelocityY=" << temp2 << std::endl;
-	}
-
-	psys->GetAcceleration(&temp1, &temp2);
-	file << "AccelerationX=" << temp1 << std::endl;
-	file << "AccelerationY=" << temp2 << std::endl;
-	
-	file << "MaximumAge=" << psys->GetMaxAge() << std::endl;
-	file << "EmissionRate=" << psys->GetEmissionRate() << std::endl;
-	file << "EmissionRadius=" << psys->GetEmissionRadius() << std::endl;
-
-	file << std::endl;
-
-	CGradient *gradient = psys->GetDefGradient();
-	unsigned int stepCount = gradient->GetStepCount();
-	for (unsigned int i = 0; i < stepCount; i++) {
-		file << "GradientStep=" << gradient->GetStepPosition(i) << "," << std::hex << gradient->GetStepColor(i) << std::endl;
-	}
-
-	file << std::endl;
-	file << "StartBitmap" << std::endl;
-	for (int y = 0; y < 5; y++) {
-		for (int x = 0; x < 30; x++) {
-			file << (GetPixel(particleBmpDC, x, y) > 0 ? '_' : '#');
+		if (velMode == CParticleSys::VelocityMode::MODE_POLAR) {
+			psys->GetVelocity(&temp1, &temp2);
+			file << "MinVelocity=" << temp1 << std::endl;
+			file << "MaxVelocity=" << temp2 << std::endl;
+		} else {
+			psys->GetRectVelocityX(&temp1, &temp2);
+			file << "MinVelocityX=" << temp1 << std::endl;
+			file << "MaxVelocityX=" << temp2 << std::endl;
+			psys->GetRectVelocityY(&temp1, &temp2);
+			file << "MinVelocityY=" << temp1 << std::endl;
+			file << "MaxVelocityY=" << temp2 << std::endl;
 		}
+
+		psys->GetAcceleration(&temp1, &temp2);
+		file << "AccelerationX=" << temp1 << std::endl;
+		file << "AccelerationY=" << temp2 << std::endl;
+
+		file << "MaximumAge=" << psys->GetMaxAge() << std::endl;
+		file << "EmissionRate=" << psys->GetEmissionRate() << std::endl;
+		file << "EmissionRadius=" << psys->GetEmissionRadius() << std::endl;
+
 		file << std::endl;
+	}
+
+	if (componentsToSave & PMC_GRADIENT) {
+		CGradient *gradient = psys->GetDefGradient();
+		unsigned int stepCount = gradient->GetStepCount();
+		for (unsigned int i = 0; i < stepCount; i++) {
+			file << "GradientStep=" << gradient->GetStepPosition(i) << "," << std::hex << gradient->GetStepColor(i) << std::endl;
+		}
+
+		file << std::endl;
+	}
+
+	if (componentsToSave & PMC_BITMAP) {
+		file << "StartBitmap" << std::endl;
+		for (int y = 0; y < 5; y++) {
+			for (int x = 0; x < 30; x++) {
+				file << (GetPixel(particleBmpDC, x, y) > 0 ? '_' : '#');
+			}
+			file << std::endl;
+		}
 	}
 
 	file.close();
@@ -218,12 +225,23 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 	return true;
 }
 
-bool CPresetManager::SavePresetDlg(HWND parent)
+bool CPresetManager::SavePresetDlg(HWND parent, CPresetManager::Components componentsToSave)
 {
-	fileDlg.lpstrTitle = L"Save Preset";
+	switch (componentsToSave) {
+	case PMC_GRADIENT:
+		fileDlg.lpstrTitle = L"Save Gradient";
+		break;
+	case PMC_BITMAP:
+		fileDlg.lpstrTitle = L"Save Bitmap";
+		break;
+	default:
+		fileDlg.lpstrTitle = L"Save Preset";
+	}
+
 	fileDlg.hwndOwner = parent;
+
 	if (GetSaveFileName(&fileDlg))
-		return SavePreset(fileDlg.lpstrFile);
+		return SavePreset(fileDlg.lpstrFile, componentsToSave);
 	else
 		return false;
 }
