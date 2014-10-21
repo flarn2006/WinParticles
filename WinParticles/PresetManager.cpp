@@ -207,6 +207,8 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 						return false;
 					}
 				}
+
+				if (includesGradient) gradient.PrecalculateColors();
 			}
 		} else {
 			// bitmapRow is not -1; read a line of the bitmap
