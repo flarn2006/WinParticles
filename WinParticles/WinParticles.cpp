@@ -315,7 +315,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			out << "DEBUG BUILD (performance is not optimal)" << std::endl;
 #endif
 			out << "Number of particles: " << psys->GetParticles()->size() << std::endl;
-			out << "Use mouse buttons and wheel to edit params" << std::endl;
+			out << "Use mouse buttons/wheel or arrow keys to edit params" << std::endl;
 			out << "Press ENTER to type a value directly" << std::endl;
 		}
 		if (verbosity >= 1) {
@@ -435,6 +435,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			} else if (wParam == VK_RETURN) {
 				GetClientRect(hWnd, &clientRect);
 				display->GetNumInputBox()->PromptForValue(agent);
+			} else if (wParam == VK_UP) {
+				selParam--;
+				if (selParam < 0) selParam = MAX_PARAM;
+				SelectParam(agent, selParam, &deltaMult);
+			} else if (wParam == VK_DOWN) {
+				selParam++;
+				if (selParam > MAX_PARAM) selParam = 0;
+				SelectParam(agent, selParam, &deltaMult);
+			} else if (wParam == VK_LEFT) {
+				agent->SetValue(agent->GetValue() - deltaMult);
+			} else if (wParam == VK_RIGHT) {
+				agent->SetValue(agent->GetValue() + deltaMult);
 			}
 		}
 		break;
