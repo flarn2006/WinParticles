@@ -252,6 +252,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_FILE_SAVEPRESET:
 			presetMgr->SavePresetDlg(hWnd);
 			break;
+		case ID_FILE_SAVEPARAMS:
+			presetMgr->SavePresetDlg(hWnd, CPresetManager::PMC_BASIC_PARAMS);
+			break;
 		case ID_FILE_SAVEGRADIENT:
 			presetMgr->SavePresetDlg(hWnd, CPresetManager::PMC_GRADIENT);
 			break;
