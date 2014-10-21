@@ -15,9 +15,9 @@ CRootDisplay::~CRootDisplay()
 	delete gradientEditor;
 }
 
-void CRootDisplay::InitBitmapEditor(HDC hBitmapDC, LONG width, LONG height)
+void CRootDisplay::InitBitmapEditor(CParticleBitmap *bitmap)
 {
-	bmpEditor = new CBitmapEditor(hBitmapDC, width, height);
+	bmpEditor = new CBitmapEditor(bitmap);
 	AddSubItem(bmpEditor);
 }
 

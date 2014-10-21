@@ -32,13 +32,12 @@
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
-HBITMAP particleBitmap;
-HDC particleBmpDC;
 int selParam;
 CParticleSys *psys;
 HCURSOR curEmitter;
 bool additiveDrawing = true;
 CHOOSECOLOR colorDlg;
+CParticleBitmap bitmap;
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -202,10 +201,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		InitializeGradients(gradients, false);
 
-		particleBitmap = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_PARTICLES));
-		particleBmpDC = CreateCompatibleDC(NULL);
-		SelectObject(particleBmpDC, particleBitmap);
-
 		psys->SetDefGradient(gradients[0]);
 		selGradientNum = 0;
 
@@ -224,8 +219,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		backgroundBrush = CreateSolidBrush(0);
 
 		display = new CRootDisplay();
-		display->InitBitmapEditor(particleBmpDC, 30, 5);
+		display->InitBitmapEditor(&bitmap);
 		display->InitGradientEditor(psys->GetDefGradient());
+
+		bitmap.LoadDefaultBitmap();
 		
 		break;
 	case WM_COMMAND:
@@ -510,8 +507,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		delete bbuf;
 		delete agent;
 		delete presetMgr;
-		DeleteDC(particleBmpDC);
-		DeleteObject(particleBitmap);
 		DeleteObject(font);
 		for (int i = 0; i < NUM_GRADIENTS; i++) {
 			delete gradients[i];

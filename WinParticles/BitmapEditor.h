@@ -1,11 +1,12 @@
 #pragma once
 #include "DisplayItem.h"
+#include "ParticleBitmap.h"
 
 class CBitmapEditor : public CDisplayItem
 {
 private:
 	HPEN borderPen, sectionPen;
-	HDC bitmapDC;
+	CParticleBitmap *bitmap;
 	POINT topRightPos;
 	SIZE bmpSize;
 	RECT bounds;
@@ -29,7 +30,7 @@ protected:
 	virtual bool OccupiesPoint(int x, int y);
 
 public:
-	CBitmapEditor(HDC hBitmapDC, LONG width, LONG height);
+	CBitmapEditor(CParticleBitmap *bitmap);
 	~CBitmapEditor();
 	void SetTopRightPos(LONG x, LONG y);
 };

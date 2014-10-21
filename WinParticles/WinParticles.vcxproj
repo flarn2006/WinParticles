@@ -146,6 +146,7 @@
     <ClInclude Include="NumericInputBox.h" />
     <ClInclude Include="ParamAgent.h" />
     <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleBitmap.h" />
     <ClInclude Include="ParticleSys.h" />
     <ClInclude Include="PresetManager.h" />
     <ClInclude Include="Resource.h" />
@@ -166,6 +167,7 @@
     <ClCompile Include="NumericInputBox.cpp" />
     <ClCompile Include="ParamAgent.cpp" />
     <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleBitmap.cpp" />
     <ClCompile Include="ParticleSys.cpp" />
     <ClCompile Include="PresetManager.cpp" />
     <ClCompile Include="RootDisplay.cpp" />

@@ -4,15 +4,13 @@
 
 extern HINSTANCE hInst;
 
-CBitmapEditor::CBitmapEditor(HDC hBitmapDC, LONG width, LONG height)
+CBitmapEditor::CBitmapEditor(CParticleBitmap *bitmap)
 {
-	bitmapDC = hBitmapDC;
+	this->bitmap = bitmap;
 	borderPen = CreatePen(PS_SOLID, 1, 0x808080);
 	sectionPen = CreatePen(PS_SOLID, 1, 0xFF8080);
 	topRightPos.x = 0;
 	topRightPos.y = 0;
-	bmpSize.cx = width;
-	bmpSize.cy = height;
 	drawing = false;
 
 	toolbarBmp = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BMPTOOLBAR));
@@ -32,6 +30,9 @@ CBitmapEditor::~CBitmapEditor()
 
 void CBitmapEditor::UpdateBounds()
 {
+	bmpSize.cx = bitmap->GetCellWidth() * bitmap->GetCellCount();
+	bmpSize.cy = bitmap->GetCellHeight();
+
 	bounds.right = topRightPos.x;
 	bounds.top = topRightPos.y;
 	bounds.left = bounds.right - PIXEL_SIZE * bmpSize.cx;
@@ -45,11 +46,11 @@ void CBitmapEditor::UpdateBounds()
 
 void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 {
+	UpdateBounds();
 	SelectObject(hDC, borderPen);
 	for (int y = 0; y < bmpSize.cy; y++) {
 		for (int x = 0; x < bmpSize.cx; x++) {
-			COLORREF pixel = GetPixel(bitmapDC, x, y);
-			SelectObject(hDC, GetStockObject(pixel ? BLACK_BRUSH : WHITE_BRUSH));
+			SelectObject(hDC, GetStockObject(bitmap->GetPixel(x, y) ? WHITE_BRUSH : BLACK_BRUSH));
 			int px = bounds.left + PIXEL_SIZE * x;
 			int py = bounds.top + PIXEL_SIZE * y;
 			Rectangle(hDC, px, py, px + PIXEL_SIZE + 1, py + PIXEL_SIZE + 1);
@@ -58,9 +59,10 @@ void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 
 	SelectObject(hDC, sectionPen);
 	SelectObject(hDC, GetStockObject(NULL_BRUSH));
-	for (int i = 0; i < 6; i++) {
-		int sectionSize = PIXEL_SIZE * 5;
-		Rectangle(hDC, bounds.left + sectionSize * i, bounds.top, bounds.left + sectionSize * (i + 1) + 1, bounds.top + sectionSize + 1);
+	for (int i = 0; i < bitmap->GetCellCount(); i++) {
+		int sectionWidth = PIXEL_SIZE * bitmap->GetCellWidth();
+		int sectionHeight = PIXEL_SIZE * bitmap->GetCellHeight();
+		Rectangle(hDC, bounds.left + sectionWidth * i, bounds.top, bounds.left + sectionWidth * (i + 1) + 1, bounds.top + sectionHeight + 1);
 	}
 
 	StretchBlt(hDC, toolbarRect.left, toolbarRect.top, TOOLBAR_BMP_WIDTH * 2, TOOLBAR_BMP_HEIGHT * 2, toolbarDC, 0, 0, TOOLBAR_BMP_WIDTH, TOOLBAR_BMP_HEIGHT, SRCCOPY);
@@ -72,27 +74,23 @@ void CBitmapEditor::OnMouseDown(int x, int y)
 		int px = (x - bounds.left) / PIXEL_SIZE;
 		int py = (y - bounds.top) / PIXEL_SIZE;
 		drawing = true;
-		drawingState = GetPixel(bitmapDC, px, py) > 0;
-		PatBlt(bitmapDC, px, py, 1, 1, drawingState ? BLACKNESS : WHITENESS);
+		drawingState = !bitmap->GetPixel(px, py);
+		bitmap->SetPixel(px, py, drawingState);
 	} else if (PtInRect(&toolbarRect, { x, y })) {
 		int btnWidth = 2 * TOOLBAR_BMP_WIDTH / 4;
 		int btnIndex = (x - toolbarRect.left) / btnWidth;
 		switch (btnIndex) {
 		case 0: //clear
-			PatBlt(bitmapDC, 0, 0, 30, 5, WHITENESS);
+			bitmap->Clear();
 			break;
 		case 1: //invert
-			PatBlt(bitmapDC, 0, 0, 30, 5, DSTINVERT);
+			bitmap->InvertAll();
 			break;
 		case 2: //copy
-			for (int i = 1; i <= 5; i++) {
-				BitBlt(bitmapDC, 5 * i, 0, 5, 5, bitmapDC, 0, 0, SRCCOPY);
-			}
+			bitmap->CopyToOtherCells(0);
 			break;
 		case 3: //default
-			HBITMAP newBitmap = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_PARTICLES));
-			HGDIOBJ oldBitmap = SelectObject(bitmapDC, newBitmap);
-			DeleteObject(oldBitmap);
+			bitmap->LoadDefaultBitmap();
 			break;
 		}
 	}
@@ -103,7 +101,7 @@ void CBitmapEditor::OnMouseMove(int x, int y)
 	if (drawing && PtInRect(&bounds, { x, y })) {
 		int px = (x - bounds.left) / PIXEL_SIZE;
 		int py = (y - bounds.top) / PIXEL_SIZE;
-		PatBlt(bitmapDC, px, py, 1, 1, drawingState ? BLACKNESS : WHITENESS);
+		bitmap->SetPixel(px, py, drawingState);
 	}
 }
 

@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "PresetManager.h"
+#include "ParticleBitmap.h"
 #include <fstream>
 #include <sstream>
 
-extern HDC particleBmpDC;
+extern CParticleBitmap bitmap;
 
 CPresetManager::CPresetManager(CParticleSys *psys)
 {
@@ -84,10 +85,15 @@ bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components com
 	}
 
 	if (componentsToSave & PMC_BITMAP) {
+		int width = bitmap.GetCellWidth() * bitmap.GetCellCount();
+		int height = bitmap.GetCellHeight();
+		file << "BitmapCellWidth=" << bitmap.GetCellWidth() << std::endl;
+		file << "BitmapCellHeight=" << height << std::endl;
+		file << "BitmapCellCount=" << bitmap.GetCellCount() << std::endl;
 		file << "StartBitmap" << std::endl;
-		for (int y = 0; y < 5; y++) {
-			for (int x = 0; x < 30; x++) {
-				file << (GetPixel(particleBmpDC, x, y) > 0 ? '_' : '#');
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				file << (bitmap.GetPixel(x, y) ? '#' : '_');
 			}
 			file << std::endl;
 		}
@@ -106,9 +112,13 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 
 	int bitmapRow = -1; //stores current row of bitmap being read; -1 means it's not a bitmap line
 	std::string line;
+	int bitmapCellWidth = 5;
+	int bitmapCellHeight = 5;
+	int bitmapCellCount = 6;
 	while (std::getline(file, line)) {
 		if (line.compare("StartBitmap") == 0) {
 			bitmapRow = 0;
+			bitmap.Resize(bitmapCellWidth, bitmapCellHeight, bitmapCellCount);
 		} else if (bitmapRow == -1) {
 			std::string left, right;
 
@@ -206,22 +216,33 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 						loadError = L"GradientStep without ','";
 						return false;
 					}
+
+				} else if (left.compare("BitmapCellWidth") == 0) {
+					parseRight >> bitmapCellWidth;
+
+				} else if (left.compare("BitmapCellHeight") == 0) {
+					parseRight >> bitmapCellHeight;
+
+				} else if (left.compare("BitmapCellCount") == 0) {
+					parseRight >> bitmapCellCount;
 				}
 
 				if (includesGradient) gradient.PrecalculateColors();
 			}
 		} else {
 			// bitmapRow is not -1; read a line of the bitmap
-			if (line.length() < 30) {
+			int bitmapWidth = bitmapCellWidth * bitmapCellCount;
+
+			if (line.length() < (unsigned)bitmapWidth) {
 				loadError = L"Unexpected end of line while reading bitmap data";
 				return false;
 			}
 
-			for (int i = 0; i < 30; i++) {
-				PatBlt(particleBmpDC, i, bitmapRow, 1, 1, (line[i] == '#') ? BLACKNESS : WHITENESS);
+			for (int i = 0; i < bitmapWidth; i++) {
+				bitmap.SetPixel(i, bitmapRow, line[i] == '#');
 			}
 
-			if (++bitmapRow > 4) bitmapRow = -1;
+			if (++bitmapRow >= bitmapCellHeight) bitmapRow = -1;
 		}
 	}
 	return true;
