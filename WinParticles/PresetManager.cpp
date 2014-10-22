@@ -87,6 +87,7 @@ bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components com
 	if (componentsToSave & PMC_BITMAP) {
 		int width = bitmap.GetCellWidth() * bitmap.GetCellCount();
 		int height = bitmap.GetCellHeight();
+		file << std::dec;
 		file << "BitmapCellWidth=" << bitmap.GetCellWidth() << std::endl;
 		file << "BitmapCellHeight=" << height << std::endl;
 		file << "BitmapCellCount=" << bitmap.GetCellCount() << std::endl;
