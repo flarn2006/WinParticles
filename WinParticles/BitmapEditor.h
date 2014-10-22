@@ -15,10 +15,12 @@ private:
 	RECT toolbarRect;
 	bool drawing;
 	bool drawingState;
+	bool resizing;
 
 	const int PIXEL_SIZE = 10;
-	const int TOOLBAR_BMP_WIDTH = 49;
+	const int TOOLBAR_BMP_WIDTH = 61;
 	const int TOOLBAR_BMP_HEIGHT = 13;
+	const int TOOLBAR_BUTTON_COUNT = 5;
 
 	void UpdateBounds();
 
@@ -27,6 +29,7 @@ protected:
 	virtual void OnMouseDown(int x, int y);
 	virtual void OnMouseMove(int x, int y);
 	virtual void OnMouseUp(int x, int y);
+	virtual bool OnKeyDown(UINT uCode);
 	virtual bool OccupiesPoint(int x, int y);
 
 public:

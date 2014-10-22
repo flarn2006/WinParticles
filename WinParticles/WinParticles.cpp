@@ -38,6 +38,7 @@ HCURSOR curEmitter;
 bool additiveDrawing = true;
 CHOOSECOLOR colorDlg;
 CParticleBitmap bitmap;
+HFONT font;
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -164,7 +165,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	int wmId, wmEvent;
 	PAINTSTRUCT ps;
 	HDC hDC;
-	static HFONT font;
 	static CBackBuffer *bbuf;
 	static CGradient *gradients[NUM_GRADIENTS];
 	static int selGradientNum;

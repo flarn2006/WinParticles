@@ -12,6 +12,7 @@ CBitmapEditor::CBitmapEditor(CParticleBitmap *bitmap)
 	topRightPos.x = 0;
 	topRightPos.y = 0;
 	drawing = false;
+	resizing = false;
 
 	toolbarBmp = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BMPTOOLBAR));
 	toolbarDC = CreateCompatibleDC(NULL);
@@ -66,6 +67,27 @@ void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 	}
 
 	StretchBlt(hDC, toolbarRect.left, toolbarRect.top, TOOLBAR_BMP_WIDTH * 2, TOOLBAR_BMP_HEIGHT * 2, toolbarDC, 0, 0, TOOLBAR_BMP_WIDTH, TOOLBAR_BMP_HEIGHT, SRCCOPY);
+
+	if (resizing) {
+		Rectangle(hDC, bounds.left - 2, bounds.top - 2, bounds.right + 3, bounds.bottom + 3);
+		SetDCBrushColor(hDC, 0xFFFF00);
+		SelectObject(hDC, GetStockObject(DC_BRUSH));
+		PatBlt(hDC, toolbarRect.left + 73, toolbarRect.top + 1, 24, 24, 0x500325);  // ROP 0x50: (PAT & !DEST)
+		
+		LPCTSTR resizeHelpText = L"[Arrows] Cell size\n[+/-]    # of cells";
+		RECT textRect;
+		textRect.left = bounds.left + 1;
+		textRect.top = toolbarRect.top + 1;
+		textRect.right = toolbarRect.left - 8;
+		textRect.bottom = clientRect->bottom;
+		
+		SetTextColor(hDC, 0);
+		DrawText(hDC, resizeHelpText, lstrlen(resizeHelpText), &textRect, 0);
+		textRect.left--;
+		textRect.top--;
+		SetTextColor(hDC, 0xFFFF00);
+		DrawText(hDC, resizeHelpText, lstrlen(resizeHelpText), &textRect, 0);
+	}
 }
 
 void CBitmapEditor::OnMouseDown(int x, int y)
@@ -77,7 +99,7 @@ void CBitmapEditor::OnMouseDown(int x, int y)
 		drawingState = !bitmap->GetPixel(px, py);
 		bitmap->SetPixel(px, py, drawingState);
 	} else if (PtInRect(&toolbarRect, { x, y })) {
-		int btnWidth = 2 * TOOLBAR_BMP_WIDTH / 4;
+		int btnWidth = 2 * TOOLBAR_BMP_WIDTH / TOOLBAR_BUTTON_COUNT;
 		int btnIndex = (x - toolbarRect.left) / btnWidth;
 		switch (btnIndex) {
 		case 0: //clear
@@ -89,7 +111,10 @@ void CBitmapEditor::OnMouseDown(int x, int y)
 		case 2: //copy
 			bitmap->CopyToOtherCells(0);
 			break;
-		case 3: //default
+		case 3: //resize
+			resizing = !resizing;
+			break;
+		case 4: //default
 			bitmap->LoadDefaultBitmap();
 			break;
 		}
@@ -108,6 +133,45 @@ void CBitmapEditor::OnMouseMove(int x, int y)
 void CBitmapEditor::OnMouseUp(int x, int y)
 {
 	drawing = false;
+}
+
+bool CBitmapEditor::OnKeyDown(UINT uCode)
+{
+	if (resizing) {
+		int cx = bitmap->GetCellWidth();
+		int cy = bitmap->GetCellHeight();
+		int cz = bitmap->GetCellCount();
+		switch (uCode) {
+		case VK_RIGHT:
+			if (--cx < 1) cx = 1;
+			bitmap->Resize(cx, cy, cz);
+			return true;
+		case VK_LEFT:
+			cx++;
+			bitmap->Resize(cx, cy, cz);
+			return true;
+		case VK_UP:
+			if (--cy < 1) cy = 1;
+			bitmap->Resize(cx, cy, cz);
+			return true;
+		case VK_DOWN:
+			cy++;
+			bitmap->Resize(cx, cy, cz);
+			return true;
+		case VK_OEM_MINUS: case (UINT)'-':
+			if (--cz < 1) cz = 1;
+			bitmap->Resize(cx, cy, cz);
+			return true;
+		case VK_OEM_PLUS: case (UINT)'=':
+			cz++;
+			bitmap->Resize(cx, cy, cz);
+			return true;
+		default:
+			return false;
+		}
+	} else {
+		return false;
+	}
 }
 
 bool CBitmapEditor::OccupiesPoint(int x, int y)

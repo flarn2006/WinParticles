@@ -1,9 +1,8 @@
-﻿Build started 10/21/2014 7:18:53 PM.
+﻿Build started 10/21/2014 7:40:42 PM.
      1>Project "d:\src\vs2013\WinParticles\WinParticles\WinParticles.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\vs2013\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Ox /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\WinParticles.pch" /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt BitmapEditor.cpp Particle.cpp ParticleBitmap.cpp PresetManager.cpp RootDisplay.cpp WinParticles.cpp
+         C:\vs2013\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Ox /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\WinParticles.pch" /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt BitmapEditor.cpp ParticleBitmap.cpp PresetManager.cpp RootDisplay.cpp WinParticles.cpp
          BitmapEditor.cpp
-         Particle.cpp
          ParticleBitmap.cpp
          PresetManager.cpp
          RootDisplay.cpp
@@ -34,4 +33,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.20
+Time Elapsed 00:00:02.34

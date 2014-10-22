@@ -36,8 +36,8 @@ void CCompoundDispItem::OnDraw(HDC hDC, const LPRECT clientRect)
 void CCompoundDispItem::OnMouseDown(int x, int y)
 {
 	stopHandling = false;
-	for (std::vector<CDisplayItem*>::iterator i = subItems.begin(); i != subItems.end(); i++) {
-		(*i)->MouseDown(x, y);
+	for (int i = subItems.size() - 1; i >= 0; i--) {
+		subItems[i]->MouseDown(x, y);
 		if (stopHandling) break;
 	}
 }
@@ -45,8 +45,8 @@ void CCompoundDispItem::OnMouseDown(int x, int y)
 void CCompoundDispItem::OnMouseMove(int x, int y)
 {
 	stopHandling = false;
-	for (std::vector<CDisplayItem*>::iterator i = subItems.begin(); i != subItems.end(); i++) {
-		(*i)->MouseMove(x, y);
+	for (int i = subItems.size() - 1; i >= 0; i--) {
+		subItems[i]->MouseMove(x, y);
 		if (stopHandling) break;
 	}
 }
@@ -54,8 +54,8 @@ void CCompoundDispItem::OnMouseMove(int x, int y)
 void CCompoundDispItem::OnMouseUp(int x, int y)
 {
 	stopHandling = false;
-	for (std::vector<CDisplayItem*>::iterator i = subItems.begin(); i != subItems.end(); i++) {
-		(*i)->MouseUp(x, y);
+	for (int i = subItems.size() - 1; i >= 0; i--) {
+		subItems[i]->MouseUp(x, y);
 		if (stopHandling) break;
 	}
 }
@@ -63,8 +63,8 @@ void CCompoundDispItem::OnMouseUp(int x, int y)
 void CCompoundDispItem::OnRightClick(int x, int y)
 {
 	stopHandling = false;
-	for (std::vector<CDisplayItem*>::iterator i = subItems.begin(); i != subItems.end(); i++) {
-		(*i)->RightClick(x, y);
+	for (int i = subItems.size() - 1; i >= 0; i--) {
+		subItems[i]->RightClick(x, y);
 		if (stopHandling) break;
 	}
 }

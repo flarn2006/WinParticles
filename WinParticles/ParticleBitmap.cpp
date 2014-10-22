@@ -35,20 +35,25 @@ int CParticleBitmap::GetCellCount()
 
 void CParticleBitmap::Resize(int cellWidth, int cellHeight, int cellCount)
 {
-	this->cellWidth = cellWidth;
-	this->cellHeight = cellHeight;
-	this->cellCount = cellCount;
-
 	int width = cellWidth * cellCount;
 	HBITMAP oldBitmap = bitmap;
 	HDC oldBitmapDC = bitmapDC;
 	bitmap = CreateCompatibleBitmap(bitmapDC, width, cellHeight);
 	bitmapDC = CreateCompatibleDC(bitmapDC);
 	SelectObject(bitmapDC, bitmap);
-	BitBlt(bitmapDC, 0, 0, width, cellHeight, oldBitmapDC, 0, 0, SRCCOPY);
+	
+	PatBlt(bitmapDC, 0, 0, width, cellHeight, WHITENESS);
+	for (int i = 0; i < this->cellCount; i++) {
+		// Copy over each cell from the old bitmap
+		BitBlt(bitmapDC, i * cellWidth, 0, this->cellWidth, this->cellHeight, oldBitmapDC, i * this->cellWidth, 0, SRCCOPY);
+	}
 	
 	DeleteDC(oldBitmapDC);
 	DeleteObject(oldBitmap);
+
+	this->cellWidth = cellWidth;
+	this->cellHeight = cellHeight;
+	this->cellCount = cellCount;
 }
 
 void CParticleBitmap::Draw(HDC hDC, int ctrX, int ctrY, COLORREF color, double relativeAge)
