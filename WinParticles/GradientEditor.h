@@ -41,8 +41,8 @@ private:
 		bool IsBeingDragged();
 	};
 
-	HBITMAP shBitmap, shBmpMask, shBmpColorMask;
-	HDC shBitmapDC;
+	HBITMAP shBitmap, shBmpMask, shBmpColorMask, cellMarkerBmp;
+	HDC shBitmapDC, cellMarkerBmpDC;
 	CGradient *gradient;
 	COLORREF tint;
 	std::vector<CStepHandle*> stepHandles;

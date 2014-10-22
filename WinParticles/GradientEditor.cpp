@@ -2,9 +2,11 @@
 #include "GradientEditor.h"
 #include "Resource.h"
 #include "Common.h"
+#include "ParticleBitmap.h"
 
 extern HINSTANCE hInst;
 extern CHOOSECOLOR colorDlg;
+extern CParticleBitmap bitmap;  // to get number of cells (sub-images)
 
 CGradientEditor::CGradientEditor(CGradient *gradient)
 {
@@ -16,6 +18,16 @@ CGradientEditor::CGradientEditor(CGradient *gradient)
 	shBmpColorMask = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_STEPHANDLE_COLOR_MASK));
 	shBitmapDC = CreateCompatibleDC(NULL);
 	SelectObject(shBitmapDC, shBitmap);
+
+	const BYTE data[] = {
+		0xEF, 0xFF, //11101111 11111111
+		0xC7, 0xFF, //11000111 11111111
+		0x83, 0xFF, //10000011 11111111
+		0x01, 0xFF, //00000001 11111111
+	};
+	cellMarkerBmp = CreateBitmap(7, 4, 1, 1, data);
+	cellMarkerBmpDC = CreateCompatibleDC(NULL);
+	SelectObject(cellMarkerBmpDC, cellMarkerBmp);
 }
 
 CGradientEditor::~CGradientEditor()
@@ -24,6 +36,8 @@ CGradientEditor::~CGradientEditor()
 	DeleteObject(shBitmap);
 	DeleteObject(shBmpMask);
 	DeleteObject(shBmpColorMask);
+	DeleteDC(cellMarkerBmpDC);
+	DeleteObject(cellMarkerBmp);
 
 	for (std::vector<CStepHandle*>::iterator i = stepHandles.begin(); i != stepHandles.end(); i++) {
 		delete *i;
@@ -45,6 +59,13 @@ void CGradientEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 		SetDCPenColor(hDC, MultiplyColors(tint, gradient->ColorAtPoint(point)));
 		MoveToEx(hDC, x, clientRect->bottom - 24, NULL);
 		LineTo(hDC, x, clientRect->bottom);
+	}
+
+	SetTextColor(hDC, 0xFFFFFF);
+	int count = bitmap.GetCellCount();
+	for (int i = 1; i < count; i++) {
+		int x = i * (clientRect->right - clientRect->left) / count;
+		BitBlt(hDC, x - 3, clientRect->bottom - 4, 7, 4, cellMarkerBmpDC, 0, 0, SRCINVERT);
 	}
 
 	for (std::vector<CStepHandle*>::iterator i = stepHandles.begin(); i != stepHandles.end(); i++) {
