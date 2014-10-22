@@ -297,6 +297,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_PAINT:
 		hDC = bbuf->GetDC();
+		SelectObject(hDC, font);
+		SetBkMode(hDC, TRANSPARENT);
 
 		// Draw background and particles
 		GetClientRect(hWnd, &clientRect);
@@ -307,9 +309,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		display->Draw(hDC, &clientRect);
 
 		// Draw text display
-		SelectObject(hDC, font);
-		SetBkMode(hDC, TRANSPARENT);
-		
 		if (verbosity >= 2) {
 #ifdef _DEBUG
 			out << "DEBUG BUILD (performance is not optimal)" << std::endl;

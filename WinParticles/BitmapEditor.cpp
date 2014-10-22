@@ -3,6 +3,7 @@
 #include "resource.h"
 
 extern HINSTANCE hInst;
+extern HFONT font;
 
 CBitmapEditor::CBitmapEditor(CParticleBitmap *bitmap)
 {
@@ -80,7 +81,8 @@ void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 		textRect.top = toolbarRect.top + 1;
 		textRect.right = toolbarRect.left - 8;
 		textRect.bottom = clientRect->bottom;
-		
+
+		SelectObject(hDC, font);
 		SetTextColor(hDC, 0);
 		DrawText(hDC, resizeHelpText, lstrlen(resizeHelpText), &textRect, 0);
 		textRect.left--;
