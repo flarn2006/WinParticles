@@ -2,12 +2,13 @@
 #include "NumericInputBox.h"
 #include <sstream>
 
+extern HFONT font;
+
 CNumericInputBox::CNumericInputBox()
 {
 	SetEnabled(false);
 	SetPosition(0, 0);
 	blueBrush = CreateSolidBrush(0xFF0000);
-	font = NULL;
 }
 
 CNumericInputBox::~CNumericInputBox()
@@ -112,9 +113,4 @@ bool CNumericInputBox::OnKeyDown(UINT uCode)
 
 	if (result && GetEnabled()) UpdateBounds();
 	return result;
-}
-
-void CNumericInputBox::SetFont(HFONT font)
-{
-	this->font = font;
 }

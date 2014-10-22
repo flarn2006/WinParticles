@@ -28,6 +28,5 @@ public:
 	void AcceptValue();
 	void CancelPrompt();
 	void SetPosition(LONG left, LONG top);
-	void SetFont(HFONT font);
 };
 
