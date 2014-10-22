@@ -121,3 +121,19 @@ void CParticleBitmap::LoadDefaultBitmap()
 	SelectObject(bitmapDC, bitmap);
 	if (oldBitmap) DeleteObject(oldBitmap);
 }
+
+void CParticleBitmap::ShiftAllCells(int xOffset, int yOffset)
+{
+	HBITMAP tempBitmap = CreateCompatibleBitmap(bitmapDC, cellWidth, cellHeight);
+	HDC tempDC = CreateCompatibleDC(NULL);
+	SelectObject(tempDC, tempBitmap);
+
+	for (int i = 0; i < cellCount; i++) {
+		PatBlt(tempDC, 0, 0, cellWidth, cellHeight, WHITENESS);
+		BitBlt(tempDC, xOffset, yOffset, cellWidth, cellHeight, bitmapDC, i * cellWidth, 0, SRCCOPY);
+		BitBlt(bitmapDC, i * cellWidth, 0, cellWidth, cellHeight, tempDC, 0, 0, SRCCOPY);
+	}
+
+	DeleteObject(tempBitmap);
+	DeleteDC(tempDC);
+}

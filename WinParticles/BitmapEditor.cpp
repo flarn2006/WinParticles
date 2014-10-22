@@ -75,7 +75,7 @@ void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 		SelectObject(hDC, GetStockObject(DC_BRUSH));
 		PatBlt(hDC, toolbarRect.left + 73, toolbarRect.top + 1, 24, 24, 0x500325);  // ROP 0x50: (PAT & !DEST)
 		
-		LPCTSTR resizeHelpText = L"[Arrows] Cell size\n[+/-]    # of cells";
+		LPCTSTR resizeHelpText = L"[WASD] Cell size\n[+/-]  # of cells\n[IJKL] Shift image";
 		RECT textRect;
 		textRect.left = bounds.left + 1;
 		textRect.top = toolbarRect.top + 1;
@@ -144,21 +144,33 @@ bool CBitmapEditor::OnKeyDown(UINT uCode)
 		int cy = bitmap->GetCellHeight();
 		int cz = bitmap->GetCellCount();
 		switch (uCode) {
-		case VK_RIGHT:
+		case VK_RIGHT: case (UINT)'D':
 			if (--cx < 1) cx = 1;
 			bitmap->Resize(cx, cy, cz);
 			return true;
-		case VK_LEFT:
+		case VK_LEFT: case (UINT)'A':
 			cx++;
 			bitmap->Resize(cx, cy, cz);
 			return true;
-		case VK_UP:
+		case VK_UP: case (UINT)'W':
 			if (--cy < 1) cy = 1;
 			bitmap->Resize(cx, cy, cz);
 			return true;
-		case VK_DOWN:
+		case VK_DOWN: case (UINT)'S':
 			cy++;
 			bitmap->Resize(cx, cy, cz);
+			return true;
+		case (UINT)'I':
+			bitmap->ShiftAllCells(0, -1);
+			return true;
+		case (UINT)'J':
+			bitmap->ShiftAllCells(-1, 0);
+			return true;
+		case (UINT)'K':
+			bitmap->ShiftAllCells(0, 1);
+			return true;
+		case (UINT)'L':
+			bitmap->ShiftAllCells(1, 0);
 			return true;
 		case VK_OEM_MINUS: case (UINT)'-':
 			if (--cz < 1) cz = 1;
