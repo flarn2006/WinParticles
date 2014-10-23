@@ -16,13 +16,15 @@ private:
 	bool drawing;
 	bool drawingState;
 	bool resizing;
+	int pixelSize;
+	RECT lastClientRect;
 
-	const int PIXEL_SIZE = 10;
 	const int TOOLBAR_BMP_WIDTH = 61;
 	const int TOOLBAR_BMP_HEIGHT = 13;
 	const int TOOLBAR_BUTTON_COUNT = 5;
 
 	void UpdateBounds();
+	void UpdateBounds(LPRECT clientRect);
 
 protected:
 	virtual void OnDraw(HDC hDC, const LPRECT clientRect);

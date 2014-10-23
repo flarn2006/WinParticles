@@ -14,12 +14,11 @@ CBitmapEditor::CBitmapEditor(CParticleBitmap *bitmap)
 	topRightPos.y = 0;
 	drawing = false;
 	resizing = false;
+	lastClientRect = { 0, 0, 0, 0 };
 
 	toolbarBmp = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BMPTOOLBAR));
 	toolbarDC = CreateCompatibleDC(NULL);
 	SelectObject(toolbarDC, toolbarBmp);
-
-	UpdateBounds();
 }
 
 CBitmapEditor::~CBitmapEditor()
@@ -32,38 +31,51 @@ CBitmapEditor::~CBitmapEditor()
 
 void CBitmapEditor::UpdateBounds()
 {
+	UpdateBounds(&lastClientRect);
+}
+
+void CBitmapEditor::UpdateBounds(LPRECT clientRect)
+{
 	bmpSize.cx = bitmap->GetCellWidth() * bitmap->GetCellCount();
 	bmpSize.cy = bitmap->GetCellHeight();
 
 	bounds.right = topRightPos.x;
 	bounds.top = topRightPos.y;
-	bounds.left = bounds.right - PIXEL_SIZE * bmpSize.cx;
-	bounds.bottom = bounds.top + PIXEL_SIZE * bmpSize.cy;
+
+	pixelSize = 32;
+	do {
+		pixelSize /= 2;
+		bounds.left = bounds.right - pixelSize * bmpSize.cx;
+		bounds.bottom = bounds.top + pixelSize * bmpSize.cy;
+	} while (bounds.left < clientRect->left + 500 && pixelSize > 2);
 	
 	toolbarRect.right = bounds.right;
 	toolbarRect.left = toolbarRect.right - TOOLBAR_BMP_WIDTH * 2 + 1;
 	toolbarRect.top = bounds.bottom + 8;
 	toolbarRect.bottom = toolbarRect.top + TOOLBAR_BMP_HEIGHT * 2 - 1;
+
+	CopyRect(&lastClientRect, clientRect);
 }
 
 void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 {
-	UpdateBounds();
-	SelectObject(hDC, borderPen);
+	UpdateBounds(clientRect);
+
+	SelectObject(hDC, (pixelSize > 2) ? borderPen : GetStockObject(NULL_PEN));
 	for (int y = 0; y < bmpSize.cy; y++) {
 		for (int x = 0; x < bmpSize.cx; x++) {
 			SelectObject(hDC, GetStockObject(bitmap->GetPixel(x, y) ? WHITE_BRUSH : BLACK_BRUSH));
-			int px = bounds.left + PIXEL_SIZE * x;
-			int py = bounds.top + PIXEL_SIZE * y;
-			Rectangle(hDC, px, py, px + PIXEL_SIZE + 1, py + PIXEL_SIZE + 1);
+			int px = bounds.left + pixelSize * x;
+			int py = bounds.top + pixelSize * y;
+			Rectangle(hDC, px, py, px + pixelSize + 1, py + pixelSize + 1);
 		}
 	}
 
 	SelectObject(hDC, sectionPen);
 	SelectObject(hDC, GetStockObject(NULL_BRUSH));
 	for (int i = 0; i < bitmap->GetCellCount(); i++) {
-		int sectionWidth = PIXEL_SIZE * bitmap->GetCellWidth();
-		int sectionHeight = PIXEL_SIZE * bitmap->GetCellHeight();
+		int sectionWidth = pixelSize * bitmap->GetCellWidth();
+		int sectionHeight = pixelSize * bitmap->GetCellHeight();
 		Rectangle(hDC, bounds.left + sectionWidth * i, bounds.top, bounds.left + sectionWidth * (i + 1) + 1, bounds.top + sectionHeight + 1);
 	}
 
@@ -95,8 +107,8 @@ void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 void CBitmapEditor::OnMouseDown(int x, int y)
 {
 	if (PtInRect(&bounds, { x, y })) {
-		int px = (x - bounds.left) / PIXEL_SIZE;
-		int py = (y - bounds.top) / PIXEL_SIZE;
+		int px = (x - bounds.left) / pixelSize;
+		int py = (y - bounds.top) / pixelSize;
 		drawing = true;
 		drawingState = !bitmap->GetPixel(px, py);
 		bitmap->SetPixel(px, py, drawingState);
@@ -126,8 +138,8 @@ void CBitmapEditor::OnMouseDown(int x, int y)
 void CBitmapEditor::OnMouseMove(int x, int y)
 {
 	if (drawing && PtInRect(&bounds, { x, y })) {
-		int px = (x - bounds.left) / PIXEL_SIZE;
-		int py = (y - bounds.top) / PIXEL_SIZE;
+		int px = (x - bounds.left) / pixelSize;
+		int py = (y - bounds.top) / pixelSize;
 		bitmap->SetPixel(px, py, drawingState);
 	}
 }
