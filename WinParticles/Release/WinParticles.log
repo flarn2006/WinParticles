@@ -1,4 +1,4 @@
-﻿Build started 10/23/2014 12:45:27 AM.
+﻿Build started 10/23/2014 6:27:57 PM.
      1>Project "d:\src\vs2013\WinParticles\WinParticles\WinParticles.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\vs2013\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Ox /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\WinParticles.pch" /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt BitmapEditor.cpp
@@ -29,4 +29,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.98
+Time Elapsed 00:00:01.42

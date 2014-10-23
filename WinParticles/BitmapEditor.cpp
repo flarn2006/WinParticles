@@ -43,9 +43,9 @@ void CBitmapEditor::UpdateBounds(LPRECT clientRect)
 	bounds.right = topRightPos.x;
 	bounds.top = topRightPos.y;
 
-	pixelSize = 32;
+	pixelSize = 17;
 	do {
-		pixelSize /= 2;
+		pixelSize--;
 		bounds.left = bounds.right - pixelSize * bmpSize.cx;
 		bounds.bottom = bounds.top + pixelSize * bmpSize.cy;
 	} while ((bounds.left < clientRect->left + ((verbosity == 0) ? 16 : 500) || bounds.bottom > clientRect->bottom - 300) && pixelSize > 2);
