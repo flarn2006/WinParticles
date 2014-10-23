@@ -39,6 +39,11 @@ bool additiveDrawing = true;
 CHOOSECOLOR colorDlg;
 CParticleBitmap bitmap;
 HFONT font;
+std::wstring cmdLine;
+CRootDisplay *display;
+CGradient *gradients[NUM_GRADIENTS];
+CPresetManager *presetMgr;
+int verbosity = 2;
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -46,10 +51,11 @@ BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 
-void SelectParam(CParamAgent *agent, int paramNum, double *deltaMult);
+void SelectParam(CParamAgent *agent, int paramNum, double &deltaMult);
 void SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd);
 void RandomizeGradient(CGradient *gradient);
 void InitializeGradients(CGradient *gradients[], bool deleteFirst);
+void SelectGradient(int gradientNum, int &selGradientNum);
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -59,10 +65,10 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
- 	// TODO: Place code here.
 	MSG msg;
 	HACCEL hAccelTable;
-
+	cmdLine = lpCmdLine;
+	
 	// Initialize global strings
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadString(hInstance, IDC_WINPARTICLES, szWindowClass, MAX_LOADSTRING);
@@ -166,7 +172,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hDC;
 	static CBackBuffer *bbuf;
-	static CGradient *gradients[NUM_GRADIENTS];
 	static int selGradientNum;
 	std::wostringstream out;
 	int fps = 60;
@@ -176,7 +181,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static double deltaMult;
 	static COLORREF customColors[16];
 	static bool mouseControlsParams = true;
-	static CRootDisplay *display;
 	static CParamAgent *agent;
 	static RECT clientRect;
 	static bool cursorHidden = false;
@@ -184,8 +188,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static bool mouseMovesEmitter = true;
 	static COLORREF backgroundColor = 0;
 	static HBRUSH backgroundBrush;
-	static int verbosity = 2;
-	static CPresetManager *presetMgr;
 
 	switch (message)
 	{
@@ -197,7 +199,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		agent = new CParamAgent(psys);
 		presetMgr = new CPresetManager(psys);
 
-		SelectParam(agent, 0, &deltaMult);
+		SelectParam(agent, 0, deltaMult);
 
 		InitializeGradients(gradients, false);
 
@@ -223,6 +225,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		display->InitGradientEditor(psys->GetDefGradient());
 
 		bitmap.LoadDefaultBitmap();
+
+		if (!cmdLine.empty()) {
+			if (cmdLine.front() == '"' && cmdLine.back() == '"') cmdLine = cmdLine.substr(1, cmdLine.length() - 2);
+			presetMgr->LoadPreset(cmdLine.c_str());
+			if (presetMgr->DidLastPresetIncludeGradient()) SelectGradient(-1, selGradientNum);
+		}
 		
 		break;
 	case WM_COMMAND:
@@ -240,9 +248,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_FILE_OPENPRESET:
 			if (presetMgr->LoadPresetDlg(hWnd)) {
 				if (presetMgr->DidLastPresetIncludeGradient()) {
-					psys->SetDefGradient(presetMgr->GetGradient());
-					selGradientNum = -1;
-					display->GetGradientEditor()->SetGradient(presetMgr->GetGradient());
+					SelectGradient(-1, selGradientNum);
 				}
 			}
 			break;
@@ -260,17 +266,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case ID_PARAMS_VM_POLAR: SetVelocityMode(CParticleSys::VelocityMode::MODE_POLAR, hWnd); break;
 		case ID_PARAMS_VM_RECT: SetVelocityMode(CParticleSys::VelocityMode::MODE_RECT, hWnd); break;
-		case ID_PARAMS_MINVEL: SelectParam(agent, 0, &deltaMult); break;
-		case ID_PARAMS_MAXVEL: SelectParam(agent, 1, &deltaMult); break;
-		case ID_PARAMS_MINVELX: SelectParam(agent, 0, &deltaMult); agent->SetRectVelYBit(false); break;
-		case ID_PARAMS_MAXVELX: SelectParam(agent, 1, &deltaMult); agent->SetRectVelYBit(false); break;
-		case ID_PARAMS_MINVELY: SelectParam(agent, 0, &deltaMult); agent->SetRectVelYBit(true); break;
-		case ID_PARAMS_MAXVELY: SelectParam(agent, 1, &deltaMult); agent->SetRectVelYBit(true); break;
-		case ID_PARAMS_XACCEL: SelectParam(agent, 2, &deltaMult); break;
-		case ID_PARAMS_YACCEL: SelectParam(agent, 3, &deltaMult); break;
-		case ID_PARAMS_MAXAGE: SelectParam(agent, 4, &deltaMult); break;
-		case ID_PARAMS_EMISSIONRATE: SelectParam(agent, 5, &deltaMult); break;
-		case ID_PARAMS_EMISSIONRADIUS: SelectParam(agent, 6, &deltaMult); break;
+		case ID_PARAMS_MINVEL: SelectParam(agent, 0, deltaMult); break;
+		case ID_PARAMS_MAXVEL: SelectParam(agent, 1, deltaMult); break;
+		case ID_PARAMS_MINVELX: SelectParam(agent, 0, deltaMult); agent->SetRectVelYBit(false); break;
+		case ID_PARAMS_MAXVELX: SelectParam(agent, 1, deltaMult); agent->SetRectVelYBit(false); break;
+		case ID_PARAMS_MINVELY: SelectParam(agent, 0, deltaMult); agent->SetRectVelYBit(true); break;
+		case ID_PARAMS_MAXVELY: SelectParam(agent, 1, deltaMult); agent->SetRectVelYBit(true); break;
+		case ID_PARAMS_XACCEL: SelectParam(agent, 2, deltaMult); break;
+		case ID_PARAMS_YACCEL: SelectParam(agent, 3, deltaMult); break;
+		case ID_PARAMS_MAXAGE: SelectParam(agent, 4, deltaMult); break;
+		case ID_PARAMS_EMISSIONRATE: SelectParam(agent, 5, deltaMult); break;
+		case ID_PARAMS_EMISSIONRADIUS: SelectParam(agent, 6, deltaMult); break;
 		case ID_PARAMS_TINT:
 			colorDlg.rgbResult = psys->GetDefaultTint();
 			if (ChooseColor(&colorDlg)) {
@@ -381,15 +387,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					} else {
 						randomizeGradientOnSelect = false;
 					}
-					selGradientNum = wParam - 0x31;
-					psys->SetDefGradient(gradients[selGradientNum]);
-					display->GetGradientEditor()->SetGradient(gradients[selGradientNum]);
+					SelectGradient(wParam - 0x31, selGradientNum);
 				}
 			} else if (wParam == (WPARAM)'0') {
 				if (display->GetGradientEditor()->IsOKToSwitchGradients()) {
-					selGradientNum = -1;
-					psys->SetDefGradient(presetMgr->GetGradient());
-					display->GetGradientEditor()->SetGradient(presetMgr->GetGradient());
+					SelectGradient(-1, selGradientNum);
 				}
 			} else if (wParam == (WPARAM)'R') {
 				psys->DefaultParameters();
@@ -408,14 +410,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				mouseMovesEmitter = !mouseMovesEmitter;
 			} else if (wParam == (WPARAM)'G') {
 				InitializeGradients(gradients, true);
-				CGradient *selected;
-				if (selGradientNum == -1) {
-					selected = presetMgr->GetGradient();
-				} else {
-					selected = gradients[selGradientNum];
-				}
-				psys->SetDefGradient(selected);
-				display->GetGradientEditor()->SetGradient(selected);
+				SelectGradient(selGradientNum, selGradientNum);
 				psys->GetParticles()->clear();
 			} else if (wParam == (WPARAM)'A') {
 				additiveDrawing = !additiveDrawing;
@@ -437,11 +432,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			} else if (wParam == VK_UP) {
 				selParam--;
 				if (selParam < 0) selParam = MAX_PARAM;
-				SelectParam(agent, selParam, &deltaMult);
+				SelectParam(agent, selParam, deltaMult);
 			} else if (wParam == VK_DOWN) {
 				selParam++;
 				if (selParam > MAX_PARAM) selParam = 0;
-				SelectParam(agent, selParam, &deltaMult);
+				SelectParam(agent, selParam, deltaMult);
 			} else if (wParam == VK_LEFT) {
 				agent->SetValue(agent->GetValue() - deltaMult);
 			} else if (wParam == VK_RIGHT) {
@@ -453,7 +448,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (mouseControlsParams) {
 			selParam--;
 			if (selParam < 0) selParam = MAX_PARAM;
-			SelectParam(agent, selParam, &deltaMult);
+			SelectParam(agent, selParam, deltaMult);
 		} else {
 			display->MouseDown(LOWORD(lParam), HIWORD(lParam));
 		}
@@ -462,7 +457,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (mouseControlsParams) {
 			selParam++;
 			if (selParam > MAX_PARAM) selParam = 0;
-			SelectParam(agent, selParam, &deltaMult);
+			SelectParam(agent, selParam, deltaMult);
 		} else {
 			display->RightClick(LOWORD(lParam), HIWORD(lParam));
 		}
@@ -560,18 +555,33 @@ void InitializeGradients(CGradient *gradients[], bool deleteFirst)
 	gradients[5]->SetStep(2, 1.0, 0xFFFFFF);
 }
 
-void SelectParam(CParamAgent *agent, int paramNum, double *deltaMult)
+void SelectParam(CParamAgent *agent, int paramNum, double &deltaMult)
 {
 	selParam = paramNum;
 	agent->SetSelParam(selParam);
 	switch (paramNum) {
-		case 0: case 1: *deltaMult = 10.0; break;
-		case 2: *deltaMult = 10.0; break;
-		case 3: *deltaMult = -10.0; break;
-		case 4: *deltaMult = 0.1; break;
-		case 5: *deltaMult = 10.0; break;
-		case 6: *deltaMult = 1.0; break;
+		case 0: case 1: deltaMult = 10.0; break;
+		case 2: deltaMult = 10.0; break;
+		case 3: deltaMult = -10.0; break;
+		case 4: deltaMult = 0.1; break;
+		case 5: deltaMult = 10.0; break;
+		case 6: deltaMult = 1.0; break;
 	}
+}
+
+void SelectGradient(int gradientNum, int &selGradientNum)
+{
+	CGradient *toSelect;
+	selGradientNum = gradientNum;
+
+	if (gradientNum == -1) {
+		toSelect = presetMgr->GetGradient();
+	} else {
+		toSelect = gradients[gradientNum];
+	}
+
+	psys->SetDefGradient(toSelect);
+	display->GetGradientEditor()->SetGradient(toSelect);
 }
 
 void SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd)

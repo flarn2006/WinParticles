@@ -4,6 +4,7 @@
 
 extern HINSTANCE hInst;
 extern HFONT font;
+extern int verbosity;
 
 CBitmapEditor::CBitmapEditor(CParticleBitmap *bitmap)
 {
@@ -47,7 +48,7 @@ void CBitmapEditor::UpdateBounds(LPRECT clientRect)
 		pixelSize /= 2;
 		bounds.left = bounds.right - pixelSize * bmpSize.cx;
 		bounds.bottom = bounds.top + pixelSize * bmpSize.cy;
-	} while (bounds.left < clientRect->left + 500 && pixelSize > 2);
+	} while ((bounds.left < clientRect->left + ((verbosity == 0) ? 16 : 500) || bounds.bottom > clientRect->bottom - 300) && pixelSize > 2);
 	
 	toolbarRect.right = bounds.right;
 	toolbarRect.left = toolbarRect.right - TOOLBAR_BMP_WIDTH * 2 + 1;
@@ -61,7 +62,7 @@ void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 {
 	UpdateBounds(clientRect);
 
-	SelectObject(hDC, (pixelSize > 2) ? borderPen : GetStockObject(NULL_PEN));
+	SelectObject(hDC, (pixelSize > 2) ? borderPen : GetStockObject(BLACK_PEN));
 	for (int y = 0; y < bmpSize.cy; y++) {
 		for (int x = 0; x < bmpSize.cx; x++) {
 			SelectObject(hDC, GetStockObject(bitmap->GetPixel(x, y) ? WHITE_BRUSH : BLACK_BRUSH));
