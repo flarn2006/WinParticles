@@ -113,7 +113,7 @@ void CParticle::Simulate(double time)
 
 		age += time;
 
-		if (age > maxAge && maxAge > 0) SetDead();
+		if (age > maxAge && maxAge >= 0) SetDead();
 	}
 }
 
