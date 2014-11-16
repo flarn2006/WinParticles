@@ -188,10 +188,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static bool mouseMovesEmitter = true;
 	static COLORREF backgroundColor = 0;
 	static HBRUSH backgroundBrush;
+	HDROP hDrop;
 
-	switch (message)
-	{
+	switch (message) {
 	case WM_CREATE:
+		DragAcceptFiles(hWnd, TRUE);
+
 		srand(GetTickCount());
 		psys = new CParticleSys();
 		psys->SetAcceleration(0.0, -600.0);
@@ -231,14 +233,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			presetMgr->LoadPreset(cmdLine.c_str());
 			if (presetMgr->DidLastPresetIncludeGradient()) SelectGradient(-1, selGradientNum);
 		}
-		
+
 		break;
 	case WM_COMMAND:
-		wmId    = LOWORD(wParam);
+		wmId = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
 		// Parse the menu selections:
-		switch (wmId)
-		{
+		switch (wmId) {
 		case IDM_ABOUT:
 			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
 			break;
@@ -372,7 +373,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		SetTextColor(hDC, 0xFFFF00);
 		DrawText(hDC, out.str().c_str(), (int)out.str().length(), &clientRect, 0);
 		clientRect.left -= 4; clientRect.top -= 4;
-		
+
 		hDC = BeginPaint(hWnd, &ps);
 		bbuf->CopyToFront(hDC);
 		EndPaint(hWnd, &ps);
@@ -495,6 +496,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_TIMER:
 		psys->SimMovingEmitter(1.0 / fps, emitterX, emitterY);
 		InvalidateRect(hWnd, NULL, FALSE);
+		break;
+	case WM_DROPFILES:
+		hDrop = (HDROP)wParam;
+		if (DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0) == 1) {
+			int numChars = DragQueryFile(hDrop, 0, NULL, 0) + 1;
+			LPTSTR name = (LPTSTR)malloc(sizeof(TCHAR) * numChars);
+			DragQueryFile(hDrop, 0, name, numChars);
+			if (presetMgr->LoadPreset(name)) {
+				if (presetMgr->DidLastPresetIncludeGradient()) {
+					SelectGradient(-1, selGradientNum);
+				}
+			}
+		} else {
+			MessageBox(hWnd, L"Sorry, you can only drop a single file into this application at a time.", L"Error", MB_ICONERROR);
+		}
+		DragFinish(hDrop);
 		break;
 	case WM_DESTROY:
 		delete psys;
