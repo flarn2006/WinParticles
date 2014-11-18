@@ -20,6 +20,7 @@ private:
 
 public:
 	CGradient();
+	CGradient(const CGradient &other);
 	CGradient(int numSteps);
 	~CGradient();
 

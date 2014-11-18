@@ -6,6 +6,9 @@ CChaoticGradient::CChaoticGradient()
 {
 }
 
+CChaoticGradient::CChaoticGradient(const CGradient &other)
+: CGradient(other) { }
+
 CChaoticGradient::CChaoticGradient(int numSteps)
 : CGradient(numSteps)
 {
@@ -13,6 +16,11 @@ CChaoticGradient::CChaoticGradient(int numSteps)
 
 CChaoticGradient::~CChaoticGradient()
 {
+}
+
+bool CChaoticGradient::IsChaotic(CGradient *gradient)
+{
+	return (dynamic_cast<CChaoticGradient*>(gradient) != NULL);
 }
 
 COLORREF CChaoticGradient::ColorAtPoint(double position)

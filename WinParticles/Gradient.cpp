@@ -7,6 +7,15 @@ CGradient::CGradient()
 	steps = new std::vector<Step>();
 }
 
+CGradient::CGradient(const CGradient &other)
+{
+	steps = new std::vector<Step>();
+	for (std::vector<Step>::iterator i = other.steps->begin(); i != other.steps->end(); i++) {
+		steps->push_back(*i);
+	}
+	PrecalculateColors();
+}
+
 CGradient::CGradient(int numSteps)
 {
 	steps = new std::vector<Step>();

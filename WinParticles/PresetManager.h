@@ -11,7 +11,7 @@ private:
 	static const int FILENAME_MAX_LENGTH = 1024;
 
 	CParticleSys *psys;
-	CGradient gradient;
+	CGradient *gradient;
 	OPENFILENAME fileDlg;
 	TCHAR filename[FILENAME_MAX_LENGTH];
 	LPCTSTR loadError;

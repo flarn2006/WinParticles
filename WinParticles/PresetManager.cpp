@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "PresetManager.h"
 #include "ParticleBitmap.h"
+#include "ChaoticGradient.h"
 #include <fstream>
 #include <sstream>
 
@@ -9,8 +10,10 @@ extern CParticleBitmap bitmap;
 CPresetManager::CPresetManager(CParticleSys *psys)
 {
 	this->psys = psys;
-	gradient.AddStep(0.0, 0xFF);
-	gradient.AddStep(1.0, 0xFF0000);
+
+	gradient = new CGradient();
+	gradient->AddStep(0.0, 0xFF);
+	gradient->AddStep(1.0, 0xFF0000);
 
 	filename[0] = (TCHAR)0;
 	fileDlg.lStructSize = sizeof(OPENFILENAME);
@@ -28,6 +31,7 @@ CPresetManager::CPresetManager(CParticleSys *psys)
 
 CPresetManager::~CPresetManager()
 {
+	delete gradient;
 }
 
 bool CPresetManager::SplitString(std::string &input, char splitChar, std::string &left, std::string &right)
@@ -76,6 +80,11 @@ bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components com
 
 	if (componentsToSave & PMC_GRADIENT) {
 		CGradient *gradient = psys->GetDefGradient();
+
+		if (CChaoticGradient::IsChaotic(gradient)) {
+			file << "ChaoticGradient" << std::endl;
+		}
+
 		unsigned int stepCount = gradient->GetStepCount();
 		for (unsigned int i = 0; i < stepCount; i++) {
 			file << "GradientStep=" << gradient->GetStepPosition(i) << "," << std::hex << gradient->GetStepColor(i) << std::endl;
@@ -113,6 +122,7 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 
 	int bitmapRow = -1; //stores current row of bitmap being read; -1 means it's not a bitmap line
 	std::string line;
+	bool chaoticGradient = false;
 	int bitmapCellWidth = 5;
 	int bitmapCellHeight = 5;
 	int bitmapCellCount = 6;
@@ -120,6 +130,14 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 		if (line.compare("StartBitmap") == 0) {
 			bitmapRow = 0;
 			bitmap.Resize(bitmapCellWidth, bitmapCellHeight, bitmapCellCount);
+
+		} else if (line.compare("ChaoticGradient") == 0) {
+			if (!CChaoticGradient::IsChaotic(gradient)) {
+				chaoticGradient = true;
+				delete gradient;
+				gradient = new CChaoticGradient();
+			}
+
 		} else if (bitmapRow == -1) {
 			std::string left, right;
 
@@ -203,7 +221,12 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 					std::string left2, right2;
 					if (SplitString(right, ',', left2, right2)) {
 						if (!includesGradient) {
-							gradient.DeleteAllSteps();
+							if (CChaoticGradient::IsChaotic(gradient) && !chaoticGradient) {
+								delete gradient;
+								gradient = new CGradient();
+							} else {
+								gradient->DeleteAllSteps();
+							}
 							includesGradient = true;
 						}
 						std::istringstream parseLeft2(left2);
@@ -212,7 +235,7 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 						COLORREF color;
 						parseLeft2 >> pos;
 						parseRight2 >> std::hex >> color;
-						gradient.AddStep(pos, color);
+						gradient->AddStep(pos, color);
 					} else {
 						loadError = L"GradientStep without ','";
 						return false;
@@ -228,7 +251,7 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 					parseRight >> bitmapCellCount;
 				}
 
-				if (includesGradient) gradient.PrecalculateColors();
+				if (includesGradient) gradient->PrecalculateColors();
 			}
 		} else {
 			// bitmapRow is not -1; read a line of the bitmap
@@ -290,5 +313,5 @@ bool CPresetManager::DidLastPresetIncludeGradient()
 
 CGradient *CPresetManager::GetGradient()
 {
-	return &gradient;
+	return gradient;
 }

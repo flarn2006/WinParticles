@@ -356,7 +356,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		if (verbosity >= 2) {
 			out << std::endl;
-			out << "Press 1 - " << NUM_GRADIENTS << " to change colors" << std::endl;
+			out << "Press 0 - " << NUM_GRADIENTS << " to change colors" << std::endl;
 			out << "[R] Reset parameters" << std::endl;
 			out << "[C] Show/hide cursor" << std::endl;
 			out << "[F] Freeze/unfreeze emitter" << std::endl;
