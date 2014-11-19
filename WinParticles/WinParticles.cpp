@@ -320,7 +320,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #ifdef _DEBUG
 			out << "DEBUG BUILD (performance is not optimal)" << std::endl;
 #endif
-			out << "Number of particles: " << psys->GetParticles()->size() << std::endl;
+			out << "Number of particles: " << psys->GetLiveParticleCount();
+#ifdef _DEBUG
+			out << " living" << std::endl;
+			out << "                     " << psys->GetParticles()->size() << " total";
+#endif
+			out << std::endl;
 			out << "Use mouse buttons/wheel or arrow keys to edit params" << std::endl;
 			out << "Press ENTER to type a value directly" << std::endl;
 		}

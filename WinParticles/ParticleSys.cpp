@@ -17,6 +17,8 @@ CParticleSys::CParticleSys()
 	defaultGradient->SetStep(0, 0.0, RGB(0, 255, 0));
 	defaultGradient->SetStep(1, 0.5, RGB(255, 255, 0));
 	defaultGradient->SetStep(2, 1.0, RGB(255, 0, 0));
+
+	livingCount = 0;
 }
 
 CParticleSys::~CParticleSys()
@@ -190,8 +192,16 @@ void CParticleSys::SimMovingEmitter(double time, double destX, double destY)
 	DWORD startTickCount = GetTickCount();
 
 	// First, simulate all existing particles.
+	int deadCount = 0;
+	livingCount = 0;
 	for (std::vector<CParticle>::iterator i = psys->begin(); i != psys->end(); i++) {
 		i->Simulate(time);
+
+		if (i->IsDead())
+			deadCount++;
+		else
+			livingCount++;
+
 		if (GetTickCount() > startTickCount + 250) break;
 	}
 
@@ -212,7 +222,8 @@ void CParticleSys::SimMovingEmitter(double time, double destX, double destY)
 
 	emitterX = destX;
 	emitterY = destY;
-	DisposeOfDead();
+
+	if (100 * deadCount / psys->size() >= DISPOSE_THRESHOLD) DisposeOfDead();
 }
 
 void CParticleSys::Simulate(double time)
@@ -229,6 +240,11 @@ void CParticleSys::Draw(HDC hDC, LPRECT rect)
 			i->Draw(hDC);
 		}
 	}
+}
+
+int CParticleSys::GetLiveParticleCount()
+{
+	return livingCount;
 }
 
 CParticle &CParticleSys::CreateParticle(double x, double y)
@@ -251,6 +267,8 @@ CParticle &CParticleSys::CreateParticle(double x, double y)
 	} else if (velocityMode == CParticleSys::VelocityMode::MODE_RECT) {
 		p.SetVelocity(RandInRange(minVelX, maxVelX), RandInRange(minVelY, maxVelY));
 	}
+
+	livingCount++;
 
 	p.SetAcceleration(ax, ay);
 	p.SetMaxAge(maxAge);

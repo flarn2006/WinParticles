@@ -8,6 +8,7 @@ public:
 	enum VelocityMode { MODE_POLAR, MODE_RECT };
 
 private:
+	const int DISPOSE_THRESHOLD = 10; //dispose of dead at this percentage dead
 	std::vector<CParticle> *psys;
 	double emitterX, emitterY;
 	VelocityMode velocityMode;
@@ -21,6 +22,7 @@ private:
 	CGradient *originalDefGrad;
 	CGradient *defaultGradient;
 	COLORREF defaultTint;
+	int livingCount;
 
 public:
 	CParticleSys();
@@ -69,6 +71,8 @@ public:
 	void SimMovingEmitter(double time, double destX, double destY);
 	void Simulate(double time);
 	void Draw(HDC hDC, LPRECT rect);
+
+	int GetLiveParticleCount();
 
 	CParticle &CreateParticle(double x, double y);
 
