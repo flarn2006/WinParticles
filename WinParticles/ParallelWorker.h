@@ -8,19 +8,19 @@ class CParallelWorker
 private:
 	int threadCount;
 	HANDLE *threads;
-	std::vector<TItem&> itemStorage;
+	std::vector<TItem*> itemStorage;
 
 	static DWORD WINAPI ThreadProc(LPVOID lpParameter)
 	{
 		CParallelWorker<TItem> *owner = (CParallelWorker<TItem>*)lpParameter;
 		for (;;) {
-			if (owner->itemStorage->empty()) {
+			if (owner->itemStorage.empty()) {
 				SwitchToThread();
 			} else {
-				while (!owner->itemStorage->empty()) {
-					TItem &item = owner->itemStorage->back();
-					owner->itemStorage->pop_back();
-					owner->ProcessOneItem(item);
+				while (!owner->itemStorage.empty()) {
+					TItem *item = owner->itemStorage.back();
+					owner->itemStorage.pop_back();
+					owner->ProcessOneItem(*item);
 				}
 			}
 		}
@@ -50,11 +50,11 @@ public:
 
 	void ProcessVector(std::vector<TItem> &items)
 	{
-		for (std::vector<TItem&>::iterator i = items.begin(); i != items.end(); i++) {
-			itemStorage.push_back(*i);
+		for (std::vector<TItem>::iterator i = items.begin(); i != items.end(); i++) {
+			itemStorage.push_back(&(*i));
 		}
 
-		while (!itemStorage->empty()) SwitchToThread();
+		while (!itemStorage.empty()) SwitchToThread();
 	}
 };
 

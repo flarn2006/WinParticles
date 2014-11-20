@@ -296,7 +296,7 @@ const char *CParticleSys::VelocityModeText(CParticleSys::VelocityMode mode)
 }
 
 CParticleSys::CPsysWorker::CPsysWorker(int threadCount, CParticleSys *owner)
-: CParallelWorker<CParticle*>(threadCount)
+: CParallelWorker<CParticle>(threadCount)
 {
 	this->owner = owner;
 }
