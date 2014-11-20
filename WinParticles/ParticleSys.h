@@ -23,7 +23,7 @@ private:
 	CGradient *originalDefGrad;
 	CGradient *defaultGradient;
 	COLORREF defaultTint;
-	int simTime;
+	double simTime;
 	int deadCount, livingCount;
 
 	class CPsysWorker : public CParallelWorker<CParticle>
