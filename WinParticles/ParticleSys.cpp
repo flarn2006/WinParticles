@@ -19,6 +19,8 @@ CParticleSys::CParticleSys()
 	defaultGradient->SetStep(2, 1.0, RGB(255, 0, 0));
 
 	livingCount = 0;
+
+	worker = new CPsysWorker(4, this);
 }
 
 CParticleSys::~CParticleSys()
@@ -189,25 +191,14 @@ void CParticleSys::SimMovingEmitter(double time, double destX, double destY)
 	double srcX = emitterX;
 	double srcY = emitterY;
 
-	DWORD startTickCount = GetTickCount();
-
 	// First, simulate all existing particles.
-	int deadCount = 0;
+	simTime = time;
+	deadCount = 0;
 	livingCount = 0;
-	for (std::vector<CParticle>::iterator i = psys->begin(); i != psys->end(); i++) {
-		i->Simulate(time);
-
-		if (i->IsDead())
-			deadCount++;
-		else
-			livingCount++;
-
-		if (GetTickCount() > startTickCount + 250) break;
-	}
-
-	startTickCount = GetTickCount();
+	worker->ProcessVector(*psys);
 
 	// Now, create new particles and simulate those for the appropriate amounts of time.
+	DWORD startTickCount = GetTickCount();
 	double dt = 1.0 / emissionRate;
 	double t = time + timeSinceEmit;
 	while (t >= dt) {
@@ -302,4 +293,20 @@ const char *CParticleSys::VelocityModeText(CParticleSys::VelocityMode mode)
 	default:
 		return "???"; // ...Profit!
 	}
+}
+
+CParticleSys::CPsysWorker::CPsysWorker(int threadCount, CParticleSys *owner)
+: CParallelWorker<CParticle*>(threadCount)
+{
+	this->owner = owner;
+}
+
+void CParticleSys::CPsysWorker::ProcessOneItem(CParticle &item)
+{
+	item.Simulate(owner->simTime);
+
+	if (item.IsDead())
+		owner->deadCount++;
+	else
+		owner->livingCount++;
 }

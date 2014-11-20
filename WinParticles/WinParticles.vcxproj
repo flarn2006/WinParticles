@@ -144,6 +144,7 @@
     <ClInclude Include="Gradient.h" />
     <ClInclude Include="GradientEditor.h" />
     <ClInclude Include="NumericInputBox.h" />
+    <ClInclude Include="ParallelWorker.h" />
     <ClInclude Include="ParamAgent.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleBitmap.h" />

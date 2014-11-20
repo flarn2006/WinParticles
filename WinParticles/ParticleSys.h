@@ -1,5 +1,6 @@
 #pragma once
 #include "Particle.h"
+#include "ParallelWorker.h"
 #include <vector>
 
 class CParticleSys
@@ -22,7 +23,22 @@ private:
 	CGradient *originalDefGrad;
 	CGradient *defaultGradient;
 	COLORREF defaultTint;
-	int livingCount;
+	int simTime;
+	int deadCount, livingCount;
+
+	class CPsysWorker : public CParallelWorker<CParticle>
+	{
+	private:
+		CParticleSys *owner;
+
+	protected:
+		virtual void ProcessOneItem(CParticle &item);
+
+	public:
+		CPsysWorker(int threadCount, CParticleSys *owner);
+	};
+
+	CPsysWorker *worker;
 
 public:
 	CParticleSys();
