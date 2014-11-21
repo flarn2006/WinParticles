@@ -214,7 +214,8 @@ void CParticleSys::SimMovingEmitter(double time, double destX, double destY)
 	emitterX = destX;
 	emitterY = destY;
 
-	if (100 * deadCount / (signed)psys->size() >= DISPOSE_THRESHOLD) DisposeOfDead();
+	if (!psys->empty())
+		if (100 * deadCount / (signed)psys->size() >= DISPOSE_THRESHOLD) DisposeOfDead();
 }
 
 void CParticleSys::Simulate(double time)
