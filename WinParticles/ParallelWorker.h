@@ -8,22 +8,28 @@ class CParallelWorker
 private:
 	int threadCount;
 	HANDLE *threads;
-	std::vector<TItem*> itemStorage;
+	std::vector<TItem> *vector;
+	int itemCount;
+	int currentItem;
+	int exitedThreads; // -1 means do not start exiting
 
 	static DWORD WINAPI ThreadProc(LPVOID lpParameter)
 	{
 		CParallelWorker<TItem> *owner = (CParallelWorker<TItem>*)lpParameter;
-		for (;;) {
-			if (owner->itemStorage.empty()) {
+		while (owner->exitedThreads < 0) {
+			if (owner->currentItem >= owner->itemCount) {
 				SwitchToThread();
 			} else {
-				while (!owner->itemStorage.empty()) {
-					TItem *item = owner->itemStorage.back();
-					owner->itemStorage.pop_back();
-					owner->ProcessOneItem(*item);
+				int myCurrentItem;
+				while ((myCurrentItem = owner->currentItem) < owner->itemCount) {
+					TItem &item = owner->vector->at(myCurrentItem);
+					owner->currentItem++;
+					owner->ProcessOneItem(item);
 				}
 			}
 		}
+		owner->exitedThreads++;
+		ExitThread(0);
 	}
 
 protected:
@@ -32,6 +38,8 @@ protected:
 public:
 	CParallelWorker(int threadCount)
 	{
+		exitedThreads = -1;
+		itemCount = currentItem = 0;
 		this->threadCount = threadCount;
 		threads = new HANDLE[threadCount];
 
@@ -42,19 +50,17 @@ public:
 
 	~CParallelWorker()
 	{
-		for (int i = 0; i < threadCount; i++) {
-			TerminateThread(threads[i], 0);
-		}
+		exitedThreads = 0;
+		while (exitedThreads < threadCount) SwitchToThread();
 		delete threads;
 	}
 
 	void ProcessVector(std::vector<TItem> &items)
 	{
-		for (std::vector<TItem>::iterator i = items.begin(); i != items.end(); i++) {
-			itemStorage.push_back(&(*i));
-		}
-
-		while (!itemStorage.empty()) SwitchToThread();
+		vector = &items;
+		itemCount = items.size();
+		currentItem = 0;
+		while (currentItem < itemCount) SwitchToThread();
 	}
 };
 
