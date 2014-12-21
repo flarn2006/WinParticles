@@ -2,13 +2,14 @@
 #include <string>
 #include "DisplayItem.h"
 #include "ParamAgent.h"
+#include "Common.h"
 
 class CNumericInputBox : public CDisplayItem
 {
 private:
 	CParamAgent *agent;
 	int paramNum;
-	std::wstring input;
+	tstring input;
 	void GetSize(LPSIZE lpSize);
 	void UpdateBounds();
 	LONG left, top;

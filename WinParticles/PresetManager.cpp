@@ -17,15 +17,15 @@ CPresetManager::CPresetManager(CParticleSys *psys)
 
 	filename[0] = (TCHAR)0;
 	fileDlg.lStructSize = sizeof(OPENFILENAME);
-	fileDlg.lpstrFilter = L"Presets (*.wpp)\0*.wpp\0All files (*.*)\0*.*\0\0";
+	fileDlg.lpstrFilter = _T("Presets (*.wpp)\0*.wpp\0All files (*.*)\0*.*\0\0");
 	fileDlg.lpstrCustomFilter = NULL;
 	fileDlg.nFilterIndex = 0;
 	fileDlg.lpstrFile = filename;
 	fileDlg.nMaxFile = FILENAME_MAX_LENGTH;
 	fileDlg.lpstrFileTitle = NULL;
-	fileDlg.lpstrInitialDir = L"Presets";
+	fileDlg.lpstrInitialDir = _T("Presets");
 	fileDlg.Flags = OFN_FILEMUSTEXIST | OFN_OVERWRITEPROMPT; //ignored in save and open dialogs respectively
-	fileDlg.lpstrDefExt = L"wpp";
+	fileDlg.lpstrDefExt = _T("wpp");
 	fileDlg.FlagsEx = 0;
 }
 
@@ -150,7 +150,7 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 					} else if (right.compare("RECTANGULAR") == 0) {
 						psys->SetVelocityMode(CParticleSys::VelocityMode::MODE_RECT);
 					} else {
-						loadError = L"Unrecognized velocity mode";
+						loadError = _T("Unrecognized velocity mode");
 						return false;
 					}
 
@@ -237,7 +237,7 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 						parseRight2 >> std::hex >> color;
 						gradient->AddStep(pos, color);
 					} else {
-						loadError = L"GradientStep without ','";
+						loadError = _T("GradientStep without ','");
 						return false;
 					}
 
@@ -258,7 +258,7 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 			int bitmapWidth = bitmapCellWidth * bitmapCellCount;
 
 			if (line.length() < (unsigned)bitmapWidth) {
-				loadError = L"Unexpected end of line while reading bitmap data";
+				loadError = _T("Unexpected end of line while reading bitmap data");
 				return false;
 			}
 
@@ -276,13 +276,13 @@ bool CPresetManager::SavePresetDlg(HWND parent, CPresetManager::Components compo
 {
 	switch (componentsToSave) {
 	case PMC_GRADIENT:
-		fileDlg.lpstrTitle = L"Save Gradient";
+		fileDlg.lpstrTitle = _T("Save Gradient");
 		break;
 	case PMC_BITMAP:
-		fileDlg.lpstrTitle = L"Save Bitmap";
+		fileDlg.lpstrTitle = _T("Save Bitmap");
 		break;
 	default:
-		fileDlg.lpstrTitle = L"Save Preset";
+		fileDlg.lpstrTitle = _T("Save Preset");
 	}
 
 	fileDlg.hwndOwner = parent;
@@ -295,11 +295,11 @@ bool CPresetManager::SavePresetDlg(HWND parent, CPresetManager::Components compo
 
 bool CPresetManager::LoadPresetDlg(HWND parent)
 {
-	fileDlg.lpstrTitle = L"Open Preset";
+	fileDlg.lpstrTitle = _T("Open Preset");
 	fileDlg.hwndOwner = parent;
 	if (GetOpenFileName(&fileDlg)) {
 		bool result = LoadPreset(fileDlg.lpstrFile);
-		if (!result) MessageBox(parent, loadError, L"Error loading preset", MB_ICONERROR);
+		if (!result) MessageBox(parent, loadError, _T("Error loading preset"), MB_ICONERROR);
 		return result;
 	} else {
 		return false;

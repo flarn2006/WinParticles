@@ -1,5 +1,19 @@
 #pragma once
 #include <Windows.h>
+#include <string>
+#include <sstream>
+
+#ifdef _UNICODE
+	typedef wchar_t tchar_t;
+	typedef std::wstring tstring;
+	typedef std::wistringstream tistringstream;
+	typedef std::wostringstream tostringstream;
+#else
+	typedef char tchar_t;
+	typedef std::string tstring;
+	typedef std::istringstream tistringstream;
+	typedef std::ostringstream tostringstream;
+#endif
 
 double Interpolate(double value, double inputMin, double inputMax, double outputMin, double outputMax);
 

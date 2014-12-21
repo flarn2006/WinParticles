@@ -53,7 +53,7 @@ void CNumericInputBox::AcceptValue()
 		CancelPrompt();
 	} else {
 		double value;
-		std::wistringstream parse(input);
+		tistringstream parse(input);
 		parse >> value;
 		if (!parse.fail()) {
 			agent->SetValue(paramNum, value);
@@ -76,16 +76,16 @@ void CNumericInputBox::SetPosition(LONG left, LONG top)
 
 void CNumericInputBox::OnDraw(HDC hDC, LPRECT lpClientRect)
 {
-	std::wostringstream out;
+	tostringstream out;
 	out << input << '_';
 	
 	FillRect(hDC, &bounds, blueBrush);
 
 	SetTextColor(hDC, 0x000000);
-	TextOut(hDC, bounds.left + 1, bounds.top - 15, L"New value:", 10);
+	TextOut(hDC, bounds.left + 1, bounds.top - 15, _T("New value:"), 10);
 
 	SetTextColor(hDC, 0xFFFFFF);
-	TextOut(hDC, bounds.left, bounds.top - 16, L"New value:", 10);
+	TextOut(hDC, bounds.left, bounds.top - 16, _T("New value:"), 10);
 
 	if (font != NULL) SelectObject(hDC, font);
 	TextOut(hDC, 4 + bounds.left, bounds.top, out.str().c_str(), (int)out.str().length());
@@ -94,8 +94,8 @@ void CNumericInputBox::OnDraw(HDC hDC, LPRECT lpClientRect)
 bool CNumericInputBox::OnKeyDown(UINT uCode)
 {
 	bool result = false;
-	wchar_t ch[2];
-	ch[0] = LOWORD(MapVirtualKey(uCode, MAPVK_VK_TO_CHAR));
+	tchar_t ch[2];
+	ch[0] = (tchar_t)LOWORD(MapVirtualKey(uCode, MAPVK_VK_TO_CHAR));
 	ch[1] = 0;
 	if (uCode == VK_BACK) {
 		if (!input.empty()) input.pop_back();
