@@ -88,7 +88,7 @@ void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 		SelectObject(hDC, GetStockObject(DC_BRUSH));
 		PatBlt(hDC, toolbarRect.left + 73, toolbarRect.top + 1, 24, 24, 0x500325);  // ROP 0x50: (PAT & !DEST)
 		
-		LPCTSTR resizeHelpText = _T("[WASD] Cell size\n[+/-]  # of cells\n[IJKL] Shift image");
+		LPCTSTR resizeHelpText = TEXT("[WASD] Cell size\n[+/-]  # of cells\n[IJKL] Shift image");
 		RECT textRect;
 		textRect.left = bounds.left + 1;
 		textRect.top = toolbarRect.top + 1;

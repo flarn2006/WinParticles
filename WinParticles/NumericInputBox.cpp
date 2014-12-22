@@ -82,10 +82,10 @@ void CNumericInputBox::OnDraw(HDC hDC, LPRECT lpClientRect)
 	FillRect(hDC, &bounds, blueBrush);
 
 	SetTextColor(hDC, 0x000000);
-	TextOut(hDC, bounds.left + 1, bounds.top - 15, _T("New value:"), 10);
+	TextOut(hDC, bounds.left + 1, bounds.top - 15, TEXT("New value:"), 10);
 
 	SetTextColor(hDC, 0xFFFFFF);
-	TextOut(hDC, bounds.left, bounds.top - 16, _T("New value:"), 10);
+	TextOut(hDC, bounds.left, bounds.top - 16, TEXT("New value:"), 10);
 
 	if (font != NULL) SelectObject(hDC, font);
 	TextOut(hDC, 4 + bounds.left, bounds.top, out.str().c_str(), (int)out.str().length());

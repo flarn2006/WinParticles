@@ -208,7 +208,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		psys->SetDefGradient(gradients[0]);
 		selGradientNum = 0;
 
-		font = CreateFont(0, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, DEFAULT_PITCH, _T("Fixedsys"));
+		font = CreateFont(0, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, DEFAULT_PITCH, TEXT("Fixedsys"));
 		SetTimer(hWnd, 0, 1000 / fps, NULL);
 		bbuf = new CBackBuffer(hWnd);
 
@@ -514,7 +514,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 			}
 		} else {
-			MessageBox(hWnd, _T("Sorry, you can only drop a single file into this application at a time."), _T("Error"), MB_ICONERROR);
+			MessageBox(hWnd, TEXT("Sorry, you can only drop a single file into this application at a time."), TEXT("Error"), MB_ICONERROR);
 		}
 		DragFinish(hDrop);
 		break;
@@ -646,7 +646,7 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		} else if (LOWORD(wParam) == IDC_GITHUB) {
-			ShellExecute(NULL, _T("open"), _T("http://www.github.com/flarn2006/WinParticles"), NULL, NULL, SW_SHOWNORMAL);
+			ShellExecute(NULL, TEXT("open"), TEXT("http://www.github.com/flarn2006/WinParticles"), NULL, NULL, SW_SHOWNORMAL);
 			EndDialog(hDlg, IDOK);
 			return (INT_PTR)TRUE;
 		}
