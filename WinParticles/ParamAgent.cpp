@@ -30,23 +30,33 @@ double CParamAgent::GetValue(ParamID paramNum)
 {
 	double temp1, temp2;
 	switch (paramNum) {
-	case MIN_VELOCITY:
+	case MIN_VELOCITY: // MIN_VELOCITY_X in rect mode
 		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
 			psys->GetVelocity(&temp1, &temp2);
 			return temp1;
-		} else if (!rectVelYSelected) {
+		} else {
 			psys->GetRectVelocityX(&temp1, &temp2);
+			return temp1;
+		}
+	case MAX_VELOCITY: // MAX_VELOCITY_X in rect mode
+		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
+			psys->GetVelocity(&temp1, &temp2);
+			return temp2;
+		} else {
+			psys->GetRectVelocityX(&temp1, &temp2);
+			return temp2;
+		}
+	case MIN_ANGLE: // MIN_VELOCITY_Y in rect mode
+		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
+			psys->GetAngle(&temp1, &temp2);
 			return temp1;
 		} else {
 			psys->GetRectVelocityY(&temp1, &temp2);
 			return temp1;
 		}
-	case MAX_VELOCITY:
+	case MAX_ANGLE: // MAX_VELOCITY_Y in rect mode
 		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
-			psys->GetVelocity(&temp1, &temp2);
-			return temp2;
-		} else if (!rectVelYSelected) {
-			psys->GetRectVelocityX(&temp1, &temp2);
+			psys->GetAngle(&temp1, &temp2);
 			return temp2;
 		} else {
 			psys->GetRectVelocityY(&temp1, &temp2);
@@ -78,25 +88,37 @@ void CParamAgent::SetValue(ParamID paramNum, double newValue)
 {
 	double temp1, temp2;
 	switch (paramNum) {
-	case MIN_VELOCITY:
+	case MIN_VELOCITY: // MIN_VELOCITY_X in rect mode
 		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
 			psys->GetVelocity(&temp1, &temp2);
 			psys->SetVelocity(newValue, temp2);
-		} else if (!rectVelYSelected) {
+		} else {
 			psys->GetRectVelocityX(&temp1, &temp2);
 			psys->SetRectVelocityX(newValue, temp2);
+		}
+		break;
+	case MAX_VELOCITY: // MAX_VELOCITY_X in rect mode
+		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
+			psys->GetVelocity(&temp1, &temp2);
+			psys->SetVelocity(temp1, newValue);
+		} else {
+			psys->GetRectVelocityX(&temp1, &temp2);
+			psys->SetRectVelocityX(temp1, newValue);
+		}
+		break;
+	case MIN_ANGLE: // MIN_VELOCITY_Y in rect mode
+		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
+			psys->GetAngle(&temp1, &temp2);
+			psys->SetAngle(std::fmod(newValue, 360.0), temp2);
 		} else {
 			psys->GetRectVelocityY(&temp1, &temp2);
 			psys->SetRectVelocityY(newValue, temp2);
 		}
 		break;
-	case MAX_VELOCITY:
+	case MAX_ANGLE: // MAX_VELOCITY_Y in rect mode
 		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
-			psys->GetVelocity(&temp1, &temp2);
-			psys->SetVelocity(temp1, newValue);
-		} else if (!rectVelYSelected) {
-			psys->GetRectVelocityX(&temp1, &temp2);
-			psys->SetRectVelocityX(temp1, newValue);
+			psys->GetAngle(&temp1, &temp2);
+			psys->SetAngle(temp1, std::fmod(newValue, 360.0));
 		} else {
 			psys->GetRectVelocityY(&temp1, &temp2);
 			psys->SetRectVelocityY(temp1, newValue);
@@ -122,16 +144,6 @@ void CParamAgent::SetValue(ParamID paramNum, double newValue)
 		psys->SetEmissionRadius(newValue);
 		break;
 	}
-}
-
-bool CParamAgent::GetRectVelYBit()
-{
-	return rectVelYSelected;
-}
-
-void CParamAgent::SetRectVelYBit(bool isYSelected)
-{
-	rectVelYSelected = isYSelected;
 }
 
 CParamAgent::ParamID operator--(CParamAgent::ParamID &var, int)

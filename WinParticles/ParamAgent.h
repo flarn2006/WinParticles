@@ -8,18 +8,23 @@ public:
 		MIN_PARAM = 0,
 		MIN_VELOCITY = 0,
 		MAX_VELOCITY = 1,
-		ACCELERATION_X = 2,
-		ACCELERATION_Y = 3,
-		MAXIMUM_AGE = 4,
-		EMISSION_RATE = 5,
-		EMISSION_RADIUS = 6,
-		MAX_PARAM = 6
+		MIN_VELOCITY_X = 0,
+		MAX_VELOCITY_X = 1,
+		MIN_ANGLE = 2,
+		MAX_ANGLE = 3,
+		MIN_VELOCITY_Y = 2,
+		MAX_VELOCITY_Y = 3,
+		ACCELERATION_X = 4,
+		ACCELERATION_Y = 5,
+		MAXIMUM_AGE = 6,
+		EMISSION_RATE = 7,
+		EMISSION_RADIUS = 8,
+		MAX_PARAM = 8
 	};
 
 private:
 	CParticleSys *psys;
 	ParamID selParam;
-	bool rectVelYSelected;
 
 public:
 	CParamAgent(CParticleSys *pSys);
@@ -30,8 +35,6 @@ public:
 	double GetValue(ParamID paramNum);
 	void SetValue(double newValue);
 	void SetValue(ParamID paramNum, double newValue);
-	bool GetRectVelYBit();
-	void SetRectVelYBit(bool isYSelected);
 };
 
 CParamAgent::ParamID operator--(CParamAgent::ParamID &var, int);

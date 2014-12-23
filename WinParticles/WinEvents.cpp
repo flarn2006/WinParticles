@@ -135,12 +135,13 @@ void CWinEvents::SelectParam(CParamAgent *agent, CParamAgent::ParamID paramNum, 
 	selParam = paramNum;
 	agent->SetSelParam(selParam);
 	switch (paramNum) {
-	case 0: case 1: deltaMult = 10.0; break;
-	case 2: deltaMult = 10.0; break;
-	case 3: deltaMult = -10.0; break;
-	case 4: deltaMult = 0.1; break;
-	case 5: deltaMult = 10.0; break;
-	case 6: deltaMult = 1.0; break;
+	case CParamAgent::ParamID::MIN_VELOCITY: case CParamAgent::ParamID::MAX_VELOCITY: deltaMult = 10.0; break;
+	case CParamAgent::ParamID::MIN_ANGLE: case CParamAgent::ParamID::MAX_ANGLE: deltaMult = 10.0; break; // MIN(/MAX)_ANGLE = MIN(/MAX)_VELOCITY_Y in rect mode
+	case CParamAgent::ParamID::ACCELERATION_X: deltaMult = 10.0; break;
+	case CParamAgent::ParamID::ACCELERATION_Y: deltaMult = -10.0; break;
+	case CParamAgent::ParamID::MAXIMUM_AGE: deltaMult = 0.1; break;
+	case CParamAgent::ParamID::EMISSION_RATE: deltaMult = 10.0; break;
+	case CParamAgent::ParamID::EMISSION_RADIUS: deltaMult = 1.0; break;
 	}
 }
 
@@ -169,6 +170,8 @@ void CWinEvents::SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd)
 
 	EnableMenuItem(hMenu, ID_PARAMS_MINVEL, mode != CParticleSys::VelocityMode::MODE_POLAR);
 	EnableMenuItem(hMenu, ID_PARAMS_MAXVEL, mode != CParticleSys::VelocityMode::MODE_POLAR);
+	EnableMenuItem(hMenu, ID_PARAMS_MINANGLE, mode != CParticleSys::VelocityMode::MODE_POLAR);
+	EnableMenuItem(hMenu, ID_PARAMS_MAXANGLE, mode != CParticleSys::VelocityMode::MODE_POLAR);
 	EnableMenuItem(hMenu, ID_PARAMS_MINVELX, mode != CParticleSys::VelocityMode::MODE_RECT);
 	EnableMenuItem(hMenu, ID_PARAMS_MAXVELX, mode != CParticleSys::VelocityMode::MODE_RECT);
 	EnableMenuItem(hMenu, ID_PARAMS_MINVELY, mode != CParticleSys::VelocityMode::MODE_RECT);
@@ -218,10 +221,12 @@ bool CWinEvents::OnCommand(WORD command, WORD eventID)
 	case ID_PARAMS_VM_RECT: SetVelocityMode(CParticleSys::VelocityMode::MODE_RECT, hWnd); break;
 	case ID_PARAMS_MINVEL: SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY, deltaMult); break;
 	case ID_PARAMS_MAXVEL: SelectParam(agent, CParamAgent::ParamID::MAX_VELOCITY, deltaMult); break;
-	case ID_PARAMS_MINVELX: SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY, deltaMult); agent->SetRectVelYBit(false); break;
-	case ID_PARAMS_MAXVELX: SelectParam(agent, CParamAgent::ParamID::MAX_VELOCITY, deltaMult); agent->SetRectVelYBit(false); break;
-	case ID_PARAMS_MINVELY: SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY, deltaMult); agent->SetRectVelYBit(true); break;
-	case ID_PARAMS_MAXVELY: SelectParam(agent, CParamAgent::ParamID::MAX_VELOCITY, deltaMult); agent->SetRectVelYBit(true); break;
+	case ID_PARAMS_MINANGLE: SelectParam(agent, CParamAgent::ParamID::MIN_ANGLE, deltaMult); break;
+	case ID_PARAMS_MAXANGLE: SelectParam(agent, CParamAgent::ParamID::MAX_ANGLE, deltaMult); break;
+	case ID_PARAMS_MINVELX: SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY_X, deltaMult); break;
+	case ID_PARAMS_MAXVELX: SelectParam(agent, CParamAgent::ParamID::MAX_VELOCITY_X, deltaMult); break;
+	case ID_PARAMS_MINVELY: SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY_Y, deltaMult); break;
+	case ID_PARAMS_MAXVELY: SelectParam(agent, CParamAgent::ParamID::MAX_VELOCITY_Y, deltaMult); break;
 	case ID_PARAMS_XACCEL: SelectParam(agent, CParamAgent::ParamID::ACCELERATION_X, deltaMult); break;
 	case ID_PARAMS_YACCEL: SelectParam(agent, CParamAgent::ParamID::ACCELERATION_Y, deltaMult); break;
 	case ID_PARAMS_MAXAGE: SelectParam(agent, CParamAgent::ParamID::MAXIMUM_AGE, deltaMult); break;
@@ -289,33 +294,29 @@ void CWinEvents::OnPaint()
 	}
 	if (verbosity >= 1) {
 		out << "[-+] Adjustment multiplier: " << deltaMult << std::endl;
-		out << "[Z]  Velocity mode: " << CParticleSys::VelocityModeText(psys->GetVelocityMode());
-		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_RECT)
-			out << " ([X] toggles X/Y)" << std::endl;
-		else
-			out << std::endl;
+		out << "[Z]  Velocity mode: " << CParticleSys::VelocityModeText(psys->GetVelocityMode()) << std::endl;
 		out << "Current parameters:" << std::endl;
 		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
 			psys->GetVelocity(&temp1, &temp2);
-			out << SELPARAM_CHAR(0) << " Minimum velocity:   " << temp1 << std::endl;
-			out << SELPARAM_CHAR(1) << " Maximum velocity:   " << temp2 << std::endl;
+			out << SELPARAM_CHAR(CParamAgent::ParamID::MIN_VELOCITY) << " Minimum velocity:   " << temp1 << std::endl;
+			out << SELPARAM_CHAR(CParamAgent::ParamID::MAX_VELOCITY) << " Maximum velocity:   " << temp2 << std::endl;
+			psys->GetAngle(&temp1, &temp2);
+			out << SELPARAM_CHAR(CParamAgent::ParamID::MIN_ANGLE) << " Minimum angle:      " << temp1 << '°' << std::endl;
+			out << SELPARAM_CHAR(CParamAgent::ParamID::MAX_ANGLE) << " Maximum angle:      " << temp2 << '°' << std::endl;
 		} else {
-			if (!agent->GetRectVelYBit()) {
-				psys->GetRectVelocityX(&temp1, &temp2);
-				out << SELPARAM_CHAR(0) << " Minimum X velocity: " << temp1 << std::endl;
-				out << SELPARAM_CHAR(1) << " Maximum X velocity: " << temp2 << std::endl;
-			} else {
-				psys->GetRectVelocityY(&temp1, &temp2);
-				out << SELPARAM_CHAR(0) << " Minimum Y velocity: " << temp1 << std::endl;
-				out << SELPARAM_CHAR(1) << " Maximum Y velocity: " << temp2 << std::endl;
-			}
+			psys->GetRectVelocityX(&temp1, &temp2);
+			out << SELPARAM_CHAR(CParamAgent::ParamID::MIN_VELOCITY_X) << " Minimum X velocity: " << temp1 << std::endl;
+			out << SELPARAM_CHAR(CParamAgent::ParamID::MAX_VELOCITY_X) << " Maximum X velocity: " << temp2 << std::endl;
+			psys->GetRectVelocityY(&temp1, &temp2);
+			out << SELPARAM_CHAR(CParamAgent::ParamID::MIN_VELOCITY_Y) << " Minimum Y velocity: " << temp1 << std::endl;
+			out << SELPARAM_CHAR(CParamAgent::ParamID::MAX_VELOCITY_Y) << " Maximum Y velocity: " << temp2 << std::endl;
 		}
 		psys->GetAcceleration(&temp1, &temp2);
-		out << SELPARAM_CHAR(2) << " X acceleration:     " << temp1 << std::endl;
-		out << SELPARAM_CHAR(3) << " Y acceleration:     " << temp2 << std::endl;
-		out << SELPARAM_CHAR(4) << " Maximum age:        " << psys->GetMaxAge() << std::endl;
-		out << SELPARAM_CHAR(5) << " Emission rate:      " << psys->GetEmissionRate() << std::endl;
-		out << SELPARAM_CHAR(6) << " Emission radius:    " << psys->GetEmissionRadius() << std::endl;
+		out << SELPARAM_CHAR(CParamAgent::ParamID::ACCELERATION_X) << " X acceleration:     " << temp1 << std::endl;
+		out << SELPARAM_CHAR(CParamAgent::ParamID::ACCELERATION_Y) << " Y acceleration:     " << temp2 << std::endl;
+		out << SELPARAM_CHAR(CParamAgent::ParamID::MAXIMUM_AGE) << " Maximum age:        " << psys->GetMaxAge() << std::endl;
+		out << SELPARAM_CHAR(CParamAgent::ParamID::EMISSION_RATE) << " Emission rate:      " << psys->GetEmissionRate() << std::endl;
+		out << SELPARAM_CHAR(CParamAgent::ParamID::EMISSION_RADIUS) << " Emission radius:    " << psys->GetEmissionRadius() << std::endl;
 	}
 	if (verbosity >= 2) {
 		out << std::endl;
@@ -367,8 +368,6 @@ void CWinEvents::OnKeyDown(WORD key)
 				SetVelocityMode(CParticleSys::VelocityMode::MODE_RECT, hWnd);
 			else
 				SetVelocityMode(CParticleSys::VelocityMode::MODE_POLAR, hWnd);
-		} else if (key == (WPARAM)'X' && psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_RECT) {
-			agent->SetRectVelYBit(!agent->GetRectVelYBit());
 		} else if (key == (WPARAM)'C') {
 			cursorHidden = !cursorHidden;
 			ShowCursor(!cursorHidden);
