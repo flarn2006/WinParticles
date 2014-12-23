@@ -58,6 +58,9 @@ bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components com
 			psys->GetVelocity(&temp1, &temp2);
 			file << "MinVelocity=" << temp1 << std::endl;
 			file << "MaxVelocity=" << temp2 << std::endl;
+			psys->GetAngle(&temp1, &temp2);
+			file << "MinAngle=" << temp1 << std::endl;
+			file << "MaxAngle=" << temp2 << std::endl;
 		} else {
 			psys->GetRectVelocityX(&temp1, &temp2);
 			file << "MinVelocityX=" << temp1 << std::endl;
@@ -165,6 +168,18 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 					psys->GetVelocity(&min, &max);
 					parseRight >> max;
 					psys->SetVelocity(min, max);
+
+				} else if (left.compare("MinAngle") == 0) {
+					double min, max;
+					psys->GetAngle(&min, &max);
+					parseRight >> min;
+					psys->SetAngle(min, max);
+
+				} else if (left.compare("MaxAngle") == 0) {
+					double min, max;
+					psys->GetAngle(&min, &max);
+					parseRight >> max;
+					psys->SetAngle(min, max);
 
 				} else if (left.compare("MinVelocityX") == 0) {
 					double min, max;
