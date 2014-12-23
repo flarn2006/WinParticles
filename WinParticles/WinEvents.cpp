@@ -10,14 +10,13 @@
 
 #define MAX_LOADSTRING 100
 #define NUM_GRADIENTS 6
-#define MAX_PARAM 6
 #define FPS 60
 
 #define SELPARAM_CHAR(x) (selParam == (x) ? '>' : ' ')
 #define MF_CHECK_BOOL(b) ((b) ? MF_CHECKED : MF_UNCHECKED)
 
 extern HINSTANCE hInst;
-extern int selParam;
+extern CParamAgent::ParamID selParam;
 extern CParticleSys *psys;
 extern HCURSOR curEmitter;
 extern bool additiveDrawing;
@@ -43,7 +42,7 @@ CWinEvents::CWinEvents(HWND hWnd)
 	agent = new CParamAgent(psys);
 	presetMgr = new CPresetManager(psys);
 
-	SelectParam(agent, 0, deltaMult);
+	SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY, deltaMult);
 
 	InitializeGradients(gradients, false);
 
@@ -131,7 +130,7 @@ void CWinEvents::InitializeGradients(CGradient *gradients[], bool deleteFirst)
 	gradients[5]->SetStep(2, 1.0, 0xFFFFFF);
 }
 
-void CWinEvents::SelectParam(CParamAgent *agent, int paramNum, double &deltaMult)
+void CWinEvents::SelectParam(CParamAgent *agent, CParamAgent::ParamID paramNum, double &deltaMult)
 {
 	selParam = paramNum;
 	agent->SetSelParam(selParam);
@@ -217,17 +216,17 @@ bool CWinEvents::OnCommand(WORD command, WORD eventID)
 		break;
 	case ID_PARAMS_VM_POLAR: SetVelocityMode(CParticleSys::VelocityMode::MODE_POLAR, hWnd); break;
 	case ID_PARAMS_VM_RECT: SetVelocityMode(CParticleSys::VelocityMode::MODE_RECT, hWnd); break;
-	case ID_PARAMS_MINVEL: SelectParam(agent, 0, deltaMult); break;
-	case ID_PARAMS_MAXVEL: SelectParam(agent, 1, deltaMult); break;
-	case ID_PARAMS_MINVELX: SelectParam(agent, 0, deltaMult); agent->SetRectVelYBit(false); break;
-	case ID_PARAMS_MAXVELX: SelectParam(agent, 1, deltaMult); agent->SetRectVelYBit(false); break;
-	case ID_PARAMS_MINVELY: SelectParam(agent, 0, deltaMult); agent->SetRectVelYBit(true); break;
-	case ID_PARAMS_MAXVELY: SelectParam(agent, 1, deltaMult); agent->SetRectVelYBit(true); break;
-	case ID_PARAMS_XACCEL: SelectParam(agent, 2, deltaMult); break;
-	case ID_PARAMS_YACCEL: SelectParam(agent, 3, deltaMult); break;
-	case ID_PARAMS_MAXAGE: SelectParam(agent, 4, deltaMult); break;
-	case ID_PARAMS_EMISSIONRATE: SelectParam(agent, 5, deltaMult); break;
-	case ID_PARAMS_EMISSIONRADIUS: SelectParam(agent, 6, deltaMult); break;
+	case ID_PARAMS_MINVEL: SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY, deltaMult); break;
+	case ID_PARAMS_MAXVEL: SelectParam(agent, CParamAgent::ParamID::MAX_VELOCITY, deltaMult); break;
+	case ID_PARAMS_MINVELX: SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY, deltaMult); agent->SetRectVelYBit(false); break;
+	case ID_PARAMS_MAXVELX: SelectParam(agent, CParamAgent::ParamID::MAX_VELOCITY, deltaMult); agent->SetRectVelYBit(false); break;
+	case ID_PARAMS_MINVELY: SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY, deltaMult); agent->SetRectVelYBit(true); break;
+	case ID_PARAMS_MAXVELY: SelectParam(agent, CParamAgent::ParamID::MAX_VELOCITY, deltaMult); agent->SetRectVelYBit(true); break;
+	case ID_PARAMS_XACCEL: SelectParam(agent, CParamAgent::ParamID::ACCELERATION_X, deltaMult); break;
+	case ID_PARAMS_YACCEL: SelectParam(agent, CParamAgent::ParamID::ACCELERATION_Y, deltaMult); break;
+	case ID_PARAMS_MAXAGE: SelectParam(agent, CParamAgent::ParamID::MAXIMUM_AGE, deltaMult); break;
+	case ID_PARAMS_EMISSIONRATE: SelectParam(agent, CParamAgent::ParamID::EMISSION_RATE, deltaMult); break;
+	case ID_PARAMS_EMISSIONRADIUS: SelectParam(agent, CParamAgent::ParamID::EMISSION_RADIUS, deltaMult); break;
 	case ID_PARAMS_TINT:
 		colorDlg.rgbResult = psys->GetDefaultTint();
 		if (ChooseColor(&colorDlg)) {
@@ -398,11 +397,9 @@ void CWinEvents::OnKeyDown(WORD key)
 			display->GetNumInputBox()->PromptForValue(agent);
 		} else if (key == VK_UP) {
 			selParam--;
-			if (selParam < 0) selParam = MAX_PARAM;
 			SelectParam(agent, selParam, deltaMult);
 		} else if (key == VK_DOWN) {
 			selParam++;
-			if (selParam > MAX_PARAM) selParam = 0;
 			SelectParam(agent, selParam, deltaMult);
 		} else if (key == VK_LEFT) {
 			agent->SetValue(agent->GetValue() - deltaMult);
@@ -416,7 +413,6 @@ void CWinEvents::OnLButtonDown(SHORT x, SHORT y)
 {
 	if (mouseControlsParams) {
 		selParam--;
-		if (selParam < 0) selParam = MAX_PARAM;
 		SelectParam(agent, selParam, deltaMult);
 	} else {
 		display->MouseDown(x, y);
@@ -427,7 +423,6 @@ void CWinEvents::OnRButtonDown(SHORT x, SHORT y)
 {
 	if (mouseControlsParams) {
 		selParam++;
-		if (selParam > MAX_PARAM) selParam = 0;
 		SelectParam(agent, selParam, deltaMult);
 	} else {
 		display->RightClick(x, y);

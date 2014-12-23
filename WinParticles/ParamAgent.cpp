@@ -4,42 +4,33 @@
 CParamAgent::CParamAgent(CParticleSys *pSys)
 {
 	psys = pSys;
-	selParam = 0;
+	selParam = MIN_VELOCITY;
 }
 
 CParamAgent::~CParamAgent()
 {
 }
 
-int CParamAgent::GetSelParam()
+CParamAgent::ParamID CParamAgent::GetSelParam()
 {
 	return selParam;
 }
 
-void CParamAgent::SetSelParam(int paramNum)
+void CParamAgent::SetSelParam(ParamID paramNum)
 {
 	selParam = paramNum;
 }
-
-// Parameter ID list:
-// 0: Min velocity
-// 1: Max velocity
-// 2: X acceleration
-// 3: Y acceleration
-// 4: Maximum age
-// 5: Emission rate
-// 6: Emission radius
 
 double CParamAgent::GetValue()
 {
 	return GetValue(selParam);
 }
 
-double CParamAgent::GetValue(int paramNum)
+double CParamAgent::GetValue(ParamID paramNum)
 {
 	double temp1, temp2;
 	switch (paramNum) {
-	case 0: //min velocity
+	case MIN_VELOCITY:
 		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
 			psys->GetVelocity(&temp1, &temp2);
 			return temp1;
@@ -50,7 +41,7 @@ double CParamAgent::GetValue(int paramNum)
 			psys->GetRectVelocityY(&temp1, &temp2);
 			return temp1;
 		}
-	case 1: //max velocity
+	case MAX_VELOCITY:
 		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
 			psys->GetVelocity(&temp1, &temp2);
 			return temp2;
@@ -61,17 +52,17 @@ double CParamAgent::GetValue(int paramNum)
 			psys->GetRectVelocityY(&temp1, &temp2);
 			return temp2;
 		}
-	case 2: //X acceleration
+	case ACCELERATION_X:
 		psys->GetAcceleration(&temp1, &temp2);
 		return temp1;
-	case 3: //Y acceleration
+	case ACCELERATION_Y:
 		psys->GetAcceleration(&temp1, &temp2);
 		return temp2;
-	case 4: //maximum age
+	case MAXIMUM_AGE:
 		return psys->GetMaxAge();
-	case 5: //emission rate
+	case EMISSION_RATE:
 		return psys->GetEmissionRate();
-	case 6: //emission radius
+	case EMISSION_RADIUS:
 		return psys->GetEmissionRadius();
 	default:
 		return 0.0;
@@ -83,11 +74,11 @@ void CParamAgent::SetValue(double newValue)
 	SetValue(selParam, newValue);
 }
 
-void CParamAgent::SetValue(int paramNum, double newValue)
+void CParamAgent::SetValue(ParamID paramNum, double newValue)
 {
 	double temp1, temp2;
 	switch (paramNum) {
-	case 0: //min velocity
+	case MIN_VELOCITY:
 		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
 			psys->GetVelocity(&temp1, &temp2);
 			psys->SetVelocity(newValue, temp2);
@@ -99,7 +90,7 @@ void CParamAgent::SetValue(int paramNum, double newValue)
 			psys->SetRectVelocityY(newValue, temp2);
 		}
 		break;
-	case 1: //max velocity
+	case MAX_VELOCITY:
 		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
 			psys->GetVelocity(&temp1, &temp2);
 			psys->SetVelocity(temp1, newValue);
@@ -111,23 +102,23 @@ void CParamAgent::SetValue(int paramNum, double newValue)
 			psys->SetRectVelocityY(temp1, newValue);
 		}
 		break;
-	case 2: //X acceleration
+	case ACCELERATION_X:
 		psys->GetAcceleration(&temp1, &temp2);
 		psys->SetAcceleration(newValue, temp2);
 		break;
-	case 3: //Y acceleration
+	case ACCELERATION_Y:
 		psys->GetAcceleration(&temp1, &temp2);
 		psys->SetAcceleration(temp1, newValue);
 		break;
-	case 4: //maximum age
+	case MAXIMUM_AGE:
 		if (newValue < 0) newValue = 0.0;
 		psys->SetMaxAge(newValue);
 		break;
-	case 5: //emission rate
+	case EMISSION_RATE:
 		if (newValue < 0) newValue = 0.0;
 		psys->SetEmissionRate(newValue);
 		break;
-	case 6: //emission radius
+	case EMISSION_RADIUS:
 		psys->SetEmissionRadius(newValue);
 		break;
 	}
@@ -141,4 +132,20 @@ bool CParamAgent::GetRectVelYBit()
 void CParamAgent::SetRectVelYBit(bool isYSelected)
 {
 	rectVelYSelected = isYSelected;
+}
+
+CParamAgent::ParamID operator--(CParamAgent::ParamID &var, int)
+{
+	CParamAgent::ParamID original = var;
+	var = (CParamAgent::ParamID)(var - 1);
+	if (var < CParamAgent::ParamID::MIN_PARAM) var = CParamAgent::ParamID::MAX_PARAM;
+	return original;
+}
+
+CParamAgent::ParamID operator++(CParamAgent::ParamID &var, int)
+{
+	CParamAgent::ParamID original = var;
+	var = (CParamAgent::ParamID)(var + 1);
+	if (var > CParamAgent::ParamID::MAX_PARAM) var = CParamAgent::ParamID::MIN_PARAM;
+	return original;
 }

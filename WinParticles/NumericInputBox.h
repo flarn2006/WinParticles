@@ -8,7 +8,7 @@ class CNumericInputBox : public CDisplayItem
 {
 private:
 	CParamAgent *agent;
-	int paramNum;
+	CParamAgent::ParamID paramNum;
 	tstring input;
 	void GetSize(LPSIZE lpSize);
 	void UpdateBounds();
