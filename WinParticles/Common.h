@@ -29,9 +29,16 @@ double RandInRange(double min, double max);
 
 BOOL WorkingMaskBlt(HDC hdcDest, int nXDest, int nYDest, int nWidth, int nHeight, HDC hdcSrc, int nXSrc, int nYSrc, HBITMAP hbmMask, int xMask, int yMask, DWORD dwRop);
 
+template <typename T> T ClampValue(T value, T min, T max)
+{
+	if (value < min) return min;
+	if (value > max) return max;
+	return value;
+}
+
 template <typename T> T WrapValue(T value, T min, T max)
 {
-	if (value < min) return max; // - (min - value);
-	if (value > max) return min; // + (value - max);
+	if (value < min) return max - (min - value);
+	if (value > max) return min + (value - max);
 	return value;
 }

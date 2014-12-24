@@ -136,7 +136,7 @@ void CWinEvents::SelectParam(CParamAgent *agent, CParamAgent::ParamID paramNum, 
 	agent->SetSelParam(selParam);
 	switch (paramNum) {
 	case CParamAgent::ParamID::MIN_VELOCITY: case CParamAgent::ParamID::MAX_VELOCITY: deltaMult = 10.0; break;
-	case CParamAgent::ParamID::MIN_ANGLE: case CParamAgent::ParamID::MAX_ANGLE: deltaMult = 10.0; break; // MIN(/MAX)_ANGLE = MIN(/MAX)_VELOCITY_Y in rect mode
+	case CParamAgent::ParamID::BASE_ANGLE: case CParamAgent::ParamID::ANGLE_SIZE: deltaMult = 10.0; break; // (BASE_)ANGLE(_SIZE) = MIN(/MAX)_VELOCITY_Y in rect mode
 	case CParamAgent::ParamID::ACCELERATION_X: deltaMult = 10.0; break;
 	case CParamAgent::ParamID::ACCELERATION_Y: deltaMult = -10.0; break;
 	case CParamAgent::ParamID::MAXIMUM_AGE: deltaMult = 0.1; break;
@@ -222,8 +222,8 @@ bool CWinEvents::OnCommand(WORD command, WORD eventID)
 	case ID_PARAMS_VM_RECT: SetVelocityMode(CParticleSys::VelocityMode::MODE_RECT, hWnd); break;
 	case ID_PARAMS_MINVEL: SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY, deltaMult); break;
 	case ID_PARAMS_MAXVEL: SelectParam(agent, CParamAgent::ParamID::MAX_VELOCITY, deltaMult); break;
-	case ID_PARAMS_MINANGLE: SelectParam(agent, CParamAgent::ParamID::MIN_ANGLE, deltaMult); break;
-	case ID_PARAMS_MAXANGLE: SelectParam(agent, CParamAgent::ParamID::MAX_ANGLE, deltaMult); break;
+	case ID_PARAMS_MINANGLE: SelectParam(agent, CParamAgent::ParamID::BASE_ANGLE, deltaMult); break;
+	case ID_PARAMS_MAXANGLE: SelectParam(agent, CParamAgent::ParamID::ANGLE_SIZE, deltaMult); break;
 	case ID_PARAMS_MINVELX: SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY_X, deltaMult); break;
 	case ID_PARAMS_MAXVELX: SelectParam(agent, CParamAgent::ParamID::MAX_VELOCITY_X, deltaMult); break;
 	case ID_PARAMS_MINVELY: SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY_Y, deltaMult); break;
@@ -303,8 +303,8 @@ void CWinEvents::OnPaint()
 			out << SELPARAM_CHAR(CParamAgent::ParamID::MIN_VELOCITY) << " Minimum velocity:   " << temp1 << std::endl;
 			out << SELPARAM_CHAR(CParamAgent::ParamID::MAX_VELOCITY) << " Maximum velocity:   " << temp2 << std::endl;
 			psys->GetAngle(&temp1, &temp2);
-			out << SELPARAM_CHAR(CParamAgent::ParamID::MIN_ANGLE) << " Minimum angle:      " << temp1 << '°' << std::endl;
-			out << SELPARAM_CHAR(CParamAgent::ParamID::MAX_ANGLE) << " Maximum angle:      " << temp2 << '°' << std::endl;
+			out << SELPARAM_CHAR(CParamAgent::ParamID::BASE_ANGLE) << " Starting angle:     " << temp1 << '°' << std::endl;
+			out << SELPARAM_CHAR(CParamAgent::ParamID::ANGLE_SIZE) << " Angular size:       " << temp2 << '°' << std::endl;
 		} else {
 			psys->GetRectVelocityX(&temp1, &temp2);
 			out << SELPARAM_CHAR(CParamAgent::ParamID::MIN_VELOCITY_X) << " Minimum X velocity: " << temp1 << std::endl;

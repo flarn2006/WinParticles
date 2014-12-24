@@ -49,8 +49,8 @@ void CParticleSys::DefaultParameters()
 	velocityMode = CParticleSys::VelocityMode::MODE_POLAR;
 	minVelocity = 0.0;
 	maxVelocity = 60.0;
-	minAngle = -180.0;
-	maxAngle = 180.0;
+	baseAngle = -180.0;
+	angleSize = 360.0;
 	minVelX = -60.0;
 	maxVelX = 60.0;
 	minVelY = -60.0;
@@ -90,16 +90,16 @@ void CParticleSys::SetVelocity(double velocity)
 	minVelocity = maxVelocity = velocity;
 }
 
-void CParticleSys::GetAngle(double *min, double *max)
+void CParticleSys::GetAngle(double *base, double *size)
 {
-	if (min) *min = minAngle;
-	if (max) *max = maxAngle;
+	if (base) *base = baseAngle;
+	if (size) *size = angleSize;
 }
 
-void CParticleSys::SetAngle(double min, double max)
+void CParticleSys::SetAngle(double base, double size)
 {
-	minAngle = min;
-	maxAngle = max;
+	baseAngle = base;
+	angleSize = size;
 }
 
 void CParticleSys::GetRectVelocityX(double *min, double *max)
@@ -276,7 +276,11 @@ int CParticleSys::GetLiveParticleCount()
 CParticle &CParticleSys::CreateParticle(double x, double y)
 {
 	CParticle p;
-	double angle;
+	
+	double angle, minAngle, maxAngle;
+	minAngle = baseAngle;
+	maxAngle = baseAngle + angleSize;
+
 	if (velocityMode == CParticleSys::VelocityMode::MODE_POLAR) {
 		angle = RandInRange(minAngle * DEG_TO_RAD, maxAngle * DEG_TO_RAD);
 	} else {

@@ -170,17 +170,17 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 					parseRight >> max;
 					psys->SetVelocity(min, max);
 
-				} else if (left.compare("MinAngle") == 0) {
-					double min, max;
-					psys->GetAngle(&min, &max);
-					parseRight >> min;
-					psys->SetAngle(min, max);
+				} else if (left.compare("BaseAngle") == 0) {
+					double a1, a2;
+					psys->GetAngle(&a1, &a2);
+					parseRight >> a1;
+					psys->SetAngle(a1, a2);
 
-				} else if (left.compare("MaxAngle") == 0) {
-					double min, max;
-					psys->GetAngle(&min, &max);
-					parseRight >> max;
-					psys->SetAngle(min, max);
+				} else if (left.compare("AngularSize") == 0) {
+					double a1, a2;
+					psys->GetAngle(&a1, &a2);
+					parseRight >> a2;
+					psys->SetAngle(a1, a2);
 
 				} else if (left.compare("MinVelocityX") == 0) {
 					double min, max;

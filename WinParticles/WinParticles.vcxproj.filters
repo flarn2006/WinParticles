@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Display Items">
+      <UniqueIdentifier>{467c47a2-5628-44bd-b958-5ec25032f446}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Display Items">
+      <UniqueIdentifier>{88d4c614-c18c-4478-87e7-0018051e465d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -42,28 +48,10 @@
     <ClInclude Include="Common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DisplayItem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NumericInputBox.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ParamAgent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BitmapEditor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CompoundDispItem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GradientEditor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ChaoticGradient.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RootDisplay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PresetManager.h">
@@ -74,6 +62,24 @@
     </ClInclude>
     <ClInclude Include="WinEvents.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BitmapEditor.h">
+      <Filter>Header Files\Display Items</Filter>
+    </ClInclude>
+    <ClInclude Include="CompoundDispItem.h">
+      <Filter>Header Files\Display Items</Filter>
+    </ClInclude>
+    <ClInclude Include="DisplayItem.h">
+      <Filter>Header Files\Display Items</Filter>
+    </ClInclude>
+    <ClInclude Include="GradientEditor.h">
+      <Filter>Header Files\Display Items</Filter>
+    </ClInclude>
+    <ClInclude Include="NumericInputBox.h">
+      <Filter>Header Files\Display Items</Filter>
+    </ClInclude>
+    <ClInclude Include="RootDisplay.h">
+      <Filter>Header Files\Display Items</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -98,28 +104,10 @@
     <ClCompile Include="Common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DisplayItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NumericInputBox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ParamAgent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BitmapEditor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CompoundDispItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GradientEditor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ChaoticGradient.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RootDisplay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PresetManager.cpp">
@@ -130,6 +118,24 @@
     </ClCompile>
     <ClCompile Include="WinEvents.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapEditor.cpp">
+      <Filter>Source Files\Display Items</Filter>
+    </ClCompile>
+    <ClCompile Include="CompoundDispItem.cpp">
+      <Filter>Source Files\Display Items</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayItem.cpp">
+      <Filter>Source Files\Display Items</Filter>
+    </ClCompile>
+    <ClCompile Include="GradientEditor.cpp">
+      <Filter>Source Files\Display Items</Filter>
+    </ClCompile>
+    <ClCompile Include="NumericInputBox.cpp">
+      <Filter>Source Files\Display Items</Filter>
+    </ClCompile>
+    <ClCompile Include="RootDisplay.cpp">
+      <Filter>Source Files\Display Items</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

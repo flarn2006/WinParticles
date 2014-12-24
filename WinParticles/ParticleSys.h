@@ -13,7 +13,7 @@ private:
 	double emitterX, emitterY;
 	VelocityMode velocityMode;
 	double minVelocity, maxVelocity;
-	double minAngle, maxAngle;
+	double baseAngle, angleSize;
 	double minVelX, maxVelX, minVelY, maxVelY;
 	double ax, ay;
 	double maxAge;
@@ -44,8 +44,8 @@ public:
 	void SetVelocity(double min, double max);
 	void SetVelocity(double velocity);
 
-	void GetAngle(double *min, double *max);
-	void SetAngle(double min, double max);
+	void GetAngle(double *base, double *size);
+	void SetAngle(double base, double size);
 
 	void GetRectVelocityX(double *min, double *max);
 	void SetRectVelocityX(double min, double max);
