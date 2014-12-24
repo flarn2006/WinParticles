@@ -21,6 +21,7 @@
 #include <sstream>
 #include <commdlg.h>
 #include <shellapi.h>
+#include <windowsx.h>
 
 #pragma comment(linker,"\"/manifestdependency:type='win32' \
 name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
@@ -187,19 +188,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		winEvents->OnKeyDown(wParam);
 		break;
 	case WM_LBUTTONDOWN:
-		winEvents->OnLButtonDown(LOWORD(lParam), HIWORD(lParam));
+		winEvents->OnLButtonDown(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 	case WM_RBUTTONDOWN:
-		winEvents->OnRButtonDown(LOWORD(lParam), HIWORD(lParam));
+		winEvents->OnRButtonDown(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 	case WM_MBUTTONDOWN:
-		winEvents->OnMButtonDown(LOWORD(lParam), HIWORD(lParam));
+		winEvents->OnMButtonDown(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 	case WM_MOUSEMOVE:
-		winEvents->OnMouseMove(LOWORD(lParam), HIWORD(lParam));
+		winEvents->OnMouseMove(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 	case WM_LBUTTONUP:
-		winEvents->OnLButtonUp(LOWORD(lParam), HIWORD(lParam));
+		winEvents->OnLButtonUp(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 	case WM_MOUSEWHEEL:
 		winEvents->OnMouseWheel((double)GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA);

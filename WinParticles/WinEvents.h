@@ -38,11 +38,11 @@ public:
 	void OnSize();
 	void OnPaint();
 	void OnKeyDown(WORD key);
-	void OnLButtonDown(SHORT x, SHORT y);
-	void OnRButtonDown(SHORT x, SHORT y);
-	void OnMButtonDown(SHORT x, SHORT y);
-	void OnMouseMove(SHORT x, SHORT y);
-	void OnLButtonUp(SHORT x, SHORT y);
+	void OnLButtonDown(int x, int y);
+	void OnRButtonDown(int x, int y);
+	void OnMButtonDown(int x, int y);
+	void OnMouseMove(int x, int y);
+	void OnLButtonUp(int x, int y);
 	void OnMouseWheel(double delta);
 	void OnTimer();
 	void OnDropFiles(HDROP hDrop);

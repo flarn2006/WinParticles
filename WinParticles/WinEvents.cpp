@@ -411,7 +411,7 @@ void CWinEvents::OnKeyDown(WORD key)
 	}
 }
 
-void CWinEvents::OnLButtonDown(SHORT x, SHORT y)
+void CWinEvents::OnLButtonDown(int x, int y)
 {
 	if (mouseControlsParams) {
 		selParam--;
@@ -421,7 +421,7 @@ void CWinEvents::OnLButtonDown(SHORT x, SHORT y)
 	}
 }
 
-void CWinEvents::OnRButtonDown(SHORT x, SHORT y)
+void CWinEvents::OnRButtonDown(int x, int y)
 {
 	if (mouseControlsParams) {
 		selParam++;
@@ -431,12 +431,12 @@ void CWinEvents::OnRButtonDown(SHORT x, SHORT y)
 	}
 }
 
-void CWinEvents::OnMButtonDown(SHORT x, SHORT y)
+void CWinEvents::OnMButtonDown(int x, int y)
 {
 	psys->GetParticles()->clear();
 }
 
-void CWinEvents::OnMouseMove(SHORT x, SHORT y)
+void CWinEvents::OnMouseMove(int x, int y)
 {
 	mouseControlsParams = !display->OccupyingPoint(x, y);
 
@@ -456,7 +456,7 @@ void CWinEvents::OnMouseMove(SHORT x, SHORT y)
 	display->MouseMove(x, y);
 }
 
-void CWinEvents::OnLButtonUp(SHORT x, SHORT y)
+void CWinEvents::OnLButtonUp(int x, int y)
 {
 	display->MouseUp(x, y);
 }
