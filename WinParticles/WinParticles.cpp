@@ -22,6 +22,10 @@
 #include <commdlg.h>
 #include <shellapi.h>
 
+#pragma comment(linker,"\"/manifestdependency:type='win32' \
+name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
+processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+
 #define MAX_LOADSTRING 100
 #define NUM_GRADIENTS 6
 #define MAX_PARAM 6
