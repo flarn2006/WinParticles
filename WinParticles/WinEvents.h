@@ -46,5 +46,7 @@ public:
 	void OnMouseWheel(double delta);
 	void OnTimer();
 	void OnDropFiles(HDROP hDrop);
+	
+	CParamAgent *GetParamAgent();
 };
 

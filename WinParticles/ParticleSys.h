@@ -1,5 +1,6 @@
 #pragma once
 #include "Particle.h"
+#include "Animation.h"
 #include <vector>
 
 class CParticleSys
@@ -25,6 +26,7 @@ private:
 	CGradient *defaultGradient;
 	COLORREF defaultTint;
 	int livingCount;
+	std::vector<CAnimationGeneric*> animations;
 
 public:
 	CParticleSys();
@@ -81,6 +83,8 @@ public:
 	void Draw(HDC hDC, LPRECT rect);
 
 	int GetLiveParticleCount();
+
+	std::vector<CAnimationGeneric*> &GetAnimationsVector();
 
 	CParticle &CreateParticle(double x, double y);
 

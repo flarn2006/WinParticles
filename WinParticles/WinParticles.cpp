@@ -50,6 +50,7 @@ CRootDisplay *display;
 CGradient *gradients[NUM_GRADIENTS];
 CPresetManager *presetMgr;
 int verbosity = 2;
+CWinEvents *winEvents;
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -168,8 +169,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	static CWinEvents *winEvents;
-
 	switch (message) {
 	case WM_CREATE:
 		winEvents = new CWinEvents(hWnd);

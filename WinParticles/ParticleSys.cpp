@@ -216,6 +216,10 @@ void CParticleSys::SimMovingEmitter(double time, double destX, double destY)
 
 	DWORD startTickCount = GetTickCount();
 
+	for (std::vector<CAnimationGeneric*>::iterator i = animations.begin(); i != animations.end(); i++) {
+		(*i)->Run(time);
+	}
+
 	// First, simulate all existing particles.
 	int deadCount = 0;
 	livingCount = 0;
@@ -271,6 +275,11 @@ void CParticleSys::Draw(HDC hDC, LPRECT rect)
 int CParticleSys::GetLiveParticleCount()
 {
 	return livingCount;
+}
+
+std::vector<CAnimationGeneric*> &CParticleSys::GetAnimationsVector()
+{
+	return animations;
 }
 
 CParticle &CParticleSys::CreateParticle(double x, double y)

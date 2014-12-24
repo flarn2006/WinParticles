@@ -136,6 +136,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedParam.h" />
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimFunctions.h" />
     <ClInclude Include="AnimTarget.h" />
     <ClInclude Include="BackBuffer.h" />
     <ClInclude Include="BitmapEditor.h" />
@@ -160,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimatedParam.cpp" />
+    <ClCompile Include="AnimFunctions.cpp" />
     <ClCompile Include="BackBuffer.cpp" />
     <ClCompile Include="BitmapEditor.cpp" />
     <ClCompile Include="ChaoticGradient.cpp" />

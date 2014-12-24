@@ -47,6 +47,7 @@ public:
 		CValueAccessor &operator=(TValue newValue)
 		{
 			animTarget->SetValue(newValue);
+			return *this;
 		}
 	};
 };

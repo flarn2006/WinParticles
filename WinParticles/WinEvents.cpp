@@ -7,6 +7,7 @@
 #include "PresetManager.h"
 #include "resource.h"
 #include "ChaoticGradient.h"
+#include "AnimatedParam.h"
 
 #define MAX_LOADSTRING 100
 #define NUM_GRADIENTS 6
@@ -488,6 +489,11 @@ void CWinEvents::OnDropFiles(HDROP hDrop)
 		MessageBox(hWnd, TEXT("Sorry, you can only drop a single file into this application at a time."), TEXT("Error"), MB_ICONERROR);
 	}
 	DragFinish(hDrop);
+}
+
+CParamAgent *CWinEvents::GetParamAgent()
+{
+	return agent;
 }
 
 INT_PTR CALLBACK CWinEvents::AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
