@@ -28,3 +28,10 @@ COLORREF MultiplyColors(COLORREF a, COLORREF b);
 double RandInRange(double min, double max);
 
 BOOL WorkingMaskBlt(HDC hdcDest, int nXDest, int nYDest, int nWidth, int nHeight, HDC hdcSrc, int nXSrc, int nYSrc, HBITMAP hbmMask, int xMask, int yMask, DWORD dwRop);
+
+template <typename T> T WrapValue(T value, T min, T max)
+{
+	if (value < min) return max; // - (min - value);
+	if (value > max) return min; // + (value - max);
+	return value;
+}

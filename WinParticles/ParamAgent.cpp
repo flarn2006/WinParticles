@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ParamAgent.h"
+#include "Common.h"
 
 CParamAgent::CParamAgent(CParticleSys *pSys)
 {
@@ -109,7 +110,7 @@ void CParamAgent::SetValue(ParamID paramNum, double newValue)
 	case MIN_ANGLE: // MIN_VELOCITY_Y in rect mode
 		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
 			psys->GetAngle(&temp1, &temp2);
-			psys->SetAngle(std::fmod(newValue, 360.0), temp2);
+			psys->SetAngle(WrapValue(newValue, -360.0, 360.0), temp2);
 		} else {
 			psys->GetRectVelocityY(&temp1, &temp2);
 			psys->SetRectVelocityY(newValue, temp2);
@@ -118,7 +119,7 @@ void CParamAgent::SetValue(ParamID paramNum, double newValue)
 	case MAX_ANGLE: // MAX_VELOCITY_Y in rect mode
 		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
 			psys->GetAngle(&temp1, &temp2);
-			psys->SetAngle(temp1, std::fmod(newValue, 360.0));
+			psys->SetAngle(temp1, WrapValue(newValue, -360.0, 360.0));
 		} else {
 			psys->GetRectVelocityY(&temp1, &temp2);
 			psys->SetRectVelocityY(temp1, newValue);
