@@ -19,6 +19,12 @@
     <Filter Include="Source Files\Display Items">
       <UniqueIdentifier>{88d4c614-c18c-4478-87e7-0018051e465d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Animation">
+      <UniqueIdentifier>{5b7f0b62-4239-461e-9eac-c4b6e280dac8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Animation">
+      <UniqueIdentifier>{dd35f6a3-a707-4a9e-968c-23ac1932f211}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -81,6 +87,12 @@
     <ClInclude Include="RootDisplay.h">
       <Filter>Header Files\Display Items</Filter>
     </ClInclude>
+    <ClInclude Include="AnimatedParam.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimTarget.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -136,6 +148,9 @@
     </ClCompile>
     <ClCompile Include="RootDisplay.cpp">
       <Filter>Source Files\Display Items</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatedParam.cpp">
+      <Filter>Source Files\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

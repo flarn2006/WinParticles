@@ -135,6 +135,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AnimatedParam.h" />
+    <ClInclude Include="AnimTarget.h" />
     <ClInclude Include="BackBuffer.h" />
     <ClInclude Include="BitmapEditor.h" />
     <ClInclude Include="ChaoticGradient.h" />
@@ -157,6 +159,7 @@
     <ClInclude Include="WinParticles.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnimatedParam.cpp" />
     <ClCompile Include="BackBuffer.cpp" />
     <ClCompile Include="BitmapEditor.cpp" />
     <ClCompile Include="ChaoticGradient.cpp" />
