@@ -75,6 +75,8 @@ double CParamAgent::GetValue(ParamID paramNum)
 		return psys->GetEmissionRate();
 	case EMISSION_RADIUS:
 		return psys->GetEmissionRadius();
+	case INNER_RADIUS:
+		return psys->GetInnerRadius();
 	default:
 		return 0.0;
 	}
@@ -143,6 +145,9 @@ void CParamAgent::SetValue(ParamID paramNum, double newValue)
 		break;
 	case EMISSION_RADIUS:
 		psys->SetEmissionRadius(newValue);
+		break;
+	case INNER_RADIUS:
+		psys->SetInnerRadius(newValue);
 		break;
 	}
 }

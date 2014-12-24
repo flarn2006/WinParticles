@@ -19,6 +19,7 @@ private:
 	double maxAge;
 	double emissionRate;
 	double emissionRadius;
+	double innerRadius;
 	double timeSinceEmit;
 	CGradient *originalDefGrad;
 	CGradient *defaultGradient;
@@ -65,6 +66,9 @@ public:
 
 	double GetEmissionRadius();
 	void SetEmissionRadius(double emissionRadius);
+
+	double GetInnerRadius();
+	void SetInnerRadius(double innerRadius);
 
 	CGradient *GetDefGradient();
 	void SetDefGradient(CGradient *grad);

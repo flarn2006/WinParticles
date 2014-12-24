@@ -77,6 +77,7 @@ bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components com
 		file << "MaximumAge=" << psys->GetMaxAge() << std::endl;
 		file << "EmissionRate=" << psys->GetEmissionRate() << std::endl;
 		file << "EmissionRadius=" << psys->GetEmissionRadius() << std::endl;
+		file << "InnerRadius=" << psys->GetInnerRadius() << std::endl;
 
 		file << std::endl;
 	}
@@ -231,6 +232,11 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 					double emissionRadius;
 					parseRight >> emissionRadius;
 					psys->SetEmissionRadius(emissionRadius);
+
+				} else if (left.compare("InnerRadius") == 0) {
+					double innerRadius;
+					parseRight >> innerRadius;
+					psys->SetInnerRadius(innerRadius);
 
 				} else if (left.compare("GradientStep") == 0) {
 					std::string left2, right2;

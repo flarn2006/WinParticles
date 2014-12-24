@@ -142,6 +142,7 @@ void CWinEvents::SelectParam(CParamAgent *agent, CParamAgent::ParamID paramNum, 
 	case CParamAgent::ParamID::MAXIMUM_AGE: deltaMult = 0.1; break;
 	case CParamAgent::ParamID::EMISSION_RATE: deltaMult = 10.0; break;
 	case CParamAgent::ParamID::EMISSION_RADIUS: deltaMult = 1.0; break;
+	case CParamAgent::ParamID::INNER_RADIUS: deltaMult = 1.0; break;
 	}
 }
 
@@ -232,6 +233,7 @@ bool CWinEvents::OnCommand(WORD command, WORD eventID)
 	case ID_PARAMS_MAXAGE: SelectParam(agent, CParamAgent::ParamID::MAXIMUM_AGE, deltaMult); break;
 	case ID_PARAMS_EMISSIONRATE: SelectParam(agent, CParamAgent::ParamID::EMISSION_RATE, deltaMult); break;
 	case ID_PARAMS_EMISSIONRADIUS: SelectParam(agent, CParamAgent::ParamID::EMISSION_RADIUS, deltaMult); break;
+	case ID_PARAMS_INNERRADIUS: SelectParam(agent, CParamAgent::ParamID::INNER_RADIUS, deltaMult); break;
 	case ID_PARAMS_TINT:
 		colorDlg.rgbResult = psys->GetDefaultTint();
 		if (ChooseColor(&colorDlg)) {
@@ -317,6 +319,7 @@ void CWinEvents::OnPaint()
 		out << SELPARAM_CHAR(CParamAgent::ParamID::MAXIMUM_AGE) << " Maximum age:        " << psys->GetMaxAge() << std::endl;
 		out << SELPARAM_CHAR(CParamAgent::ParamID::EMISSION_RATE) << " Emission rate:      " << psys->GetEmissionRate() << std::endl;
 		out << SELPARAM_CHAR(CParamAgent::ParamID::EMISSION_RADIUS) << " Emission radius:    " << psys->GetEmissionRadius() << std::endl;
+		out << SELPARAM_CHAR(CParamAgent::ParamID::INNER_RADIUS) << " Inner radius:       " << psys->GetInnerRadius() << std::endl;
 	}
 	if (verbosity >= 2) {
 		out << std::endl;

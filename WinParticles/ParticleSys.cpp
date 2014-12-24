@@ -58,6 +58,7 @@ void CParticleSys::DefaultParameters()
 	maxAge = 1.0;
 	emissionRate = 1000.0;
 	emissionRadius = 0.0;
+	innerRadius = 0.0;
 	ax = 0.0;
 	ay = 0.0;
 }
@@ -177,6 +178,16 @@ void CParticleSys::SetEmissionRadius(double emissionRadius)
 	this->emissionRadius = emissionRadius;
 }
 
+double CParticleSys::GetInnerRadius()
+{
+	return innerRadius;
+}
+
+void CParticleSys::SetInnerRadius(double innerRadius)
+{
+	this->innerRadius = innerRadius;
+}
+
 CGradient *CParticleSys::GetDefGradient()
 {
 	return defaultGradient;
@@ -274,9 +285,9 @@ CParticle &CParticleSys::CreateParticle(double x, double y)
 	double vel = RandInRange(minVelocity, maxVelocity);
 	double radiusMultiplier;
 	if (minVelocity == maxVelocity) {
-		radiusMultiplier = RandInRange(0.0, emissionRadius);
+		radiusMultiplier = RandInRange(innerRadius, emissionRadius);
 	} else {
-		radiusMultiplier = Interpolate(vel, minVelocity, maxVelocity, 0.0, emissionRadius);
+		radiusMultiplier = Interpolate(vel, minVelocity, maxVelocity, innerRadius, emissionRadius);
 	}
 	x += std::cos(angle) * radiusMultiplier;
 	y += std::sin(angle) * radiusMultiplier;
