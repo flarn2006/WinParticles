@@ -1,11 +1,11 @@
 #pragma once
 #include "CompoundDispItem.h"
-#include "AnimatedParam.h"
+#include "Animation.h"
 
 class CAnimEditor : public CCompoundDispItem
 {
 private:
-	CAnimatedParam *animParams;
+	CAnimation<double> *animations;
 	int selectedID;
 	HBITMAP switchBmp;
 	HDC switchBmpDC;
@@ -16,7 +16,7 @@ private:
 	void UpdateBounds();
 
 public:
-	CAnimEditor(CAnimation<float> *animParams);
+	CAnimEditor(CAnimation<double> *animations);
 	~CAnimEditor();
 
 	void SetPosition(int left, int top);

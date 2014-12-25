@@ -4,8 +4,9 @@
 
 extern HINSTANCE hInst;
 
-CAnimEditor::CAnimEditor(CAnimation<float> *animatedParams)
+CAnimEditor::CAnimEditor(CAnimation<double> *animations)
 {
+	this->animations = animations;
 	switchBmp = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_SWITCH));
 	switchBmpDC = CreateCompatibleDC(NULL);
 	SelectObject(switchBmpDC, switchBmp);
