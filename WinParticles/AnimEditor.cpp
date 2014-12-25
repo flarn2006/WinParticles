@@ -12,6 +12,7 @@ CAnimEditor::CAnimEditor(CAnimation<double> *animations)
 	SelectObject(switchBmpDC, switchBmp);
 	SetPosition(0, 0);
 	cyanPen = CreatePen(PS_SOLID, 1, RGB(0, 255, 255));
+	AddSubItem(&enabledSwitch);
 }
 
 CAnimEditor::~CAnimEditor()
@@ -27,6 +28,8 @@ void CAnimEditor::UpdateBounds()
 	bounds.top = topLeft.y;
 	bounds.right = topLeft.x + 256;
 	bounds.bottom = topLeft.y + 128;
+
+	enabledSwitch.SetPosition(bounds.left + 8, bounds.top + 8);
 }
 
 void CAnimEditor::SetPosition(int left, int top)

@@ -1,6 +1,7 @@
 #pragma once
 #include "CompoundDispItem.h"
 #include "Animation.h"
+#include "SwitchCtrl.h"
 
 class CAnimEditor : public CCompoundDispItem
 {
@@ -12,6 +13,7 @@ private:
 	POINT topLeft;
 	RECT bounds;
 	HPEN cyanPen;
+	CSwitchCtrl enabledSwitch;
 
 	void UpdateBounds();
 

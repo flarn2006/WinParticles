@@ -37,7 +37,7 @@ void CRootDisplay::UpdateSize(const LPRECT clientRect)
 {
 	numInputBox->SetPosition((clientRect->left + clientRect->right) / 2, (clientRect->top + clientRect->bottom) / 2);
 	bmpEditor->SetTopRightPos(clientRect->right - 16, clientRect->top + 16);
-	animEditor->SetPosition(clientRect->left + 16, clientRect->bottom - 128);
+	animEditor->SetPosition(clientRect->left + 16, clientRect->bottom - 176);
 }
 
 CNumericInputBox *CRootDisplay::GetNumInputBox()
