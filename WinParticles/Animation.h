@@ -24,6 +24,7 @@ private:
 	AnimFunction function;
 	double currentTime, freq;
 	TValue min, max;
+	bool enabled;
 
 public:
 	CAnimation()
@@ -32,6 +33,7 @@ public:
 		SetFunction(AnimFunctions::Saw);
 		SetRange(0.0, 1.0);
 		SetFrequency(1.0);
+		SetEnabled(false);
 	}
 
 	~CAnimation()
@@ -58,6 +60,11 @@ public:
 	{
 		return freq;
 	}
+
+	bool GetEnabled()
+	{
+		return enabled;
+	}
 	
 	void SetTarget(CAnimTarget<TValue> *target)
 	{
@@ -80,10 +87,17 @@ public:
 		freq = frequency;
 	}
 
+	void SetEnabled(bool enabled)
+	{
+		this->enabled = enabled;
+	}
+
 	void Run(double time)
 	{
-		time *= freq;
-		currentTime = std::fmod(currentTime + time, 1.0);
-		if (target) **target = Interpolate(function(currentTime), 0.0, 1.0, min, max);
+		if (enabled) {
+			time *= freq;
+			currentTime = std::fmod(currentTime + time, 1.0);
+			if (target) **target = Interpolate(function(currentTime), 0.0, 1.0, min, max);
+		}
 	}
 };

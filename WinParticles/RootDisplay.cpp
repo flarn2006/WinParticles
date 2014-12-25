@@ -27,10 +27,17 @@ void CRootDisplay::InitGradientEditor(CGradient *gradient)
 	AddSubItem(gradientEditor);
 }
 
+void CRootDisplay::InitAnimEditor(CAnimation<double> *animations)
+{
+	animEditor = new CAnimEditor(animations);
+	AddSubItem(animEditor);
+}
+
 void CRootDisplay::UpdateSize(const LPRECT clientRect)
 {
 	numInputBox->SetPosition((clientRect->left + clientRect->right) / 2, (clientRect->top + clientRect->bottom) / 2);
 	bmpEditor->SetTopRightPos(clientRect->right - 16, clientRect->top + 16);
+	animEditor->SetPosition(clientRect->left + 16, clientRect->bottom - 128);
 }
 
 CNumericInputBox *CRootDisplay::GetNumInputBox()
@@ -46,4 +53,9 @@ CBitmapEditor *CRootDisplay::GetBitmapEditor()
 CGradientEditor *CRootDisplay::GetGradientEditor()
 {
 	return gradientEditor;
+}
+
+CAnimEditor *CRootDisplay::GetAnimEditor()
+{
+	return animEditor;
 }

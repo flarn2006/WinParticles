@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="AnimatedParam.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimEditor.h" />
     <ClInclude Include="AnimFunctions.h" />
     <ClInclude Include="AnimTarget.h" />
     <ClInclude Include="BackBuffer.h" />
@@ -162,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimatedParam.cpp" />
+    <ClCompile Include="AnimEditor.cpp" />
     <ClCompile Include="AnimFunctions.cpp" />
     <ClCompile Include="BackBuffer.cpp" />
     <ClCompile Include="BitmapEditor.cpp" />
@@ -192,10 +194,12 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="bmptoolbar.bmp" />
+    <Image Include="knob.bmp" />
     <Image Include="particles.bmp" />
     <Image Include="stephandle.bmp" />
     <Image Include="stephandle_color_mask.bmp" />
     <Image Include="stephandle_mask.bmp" />
+    <Image Include="switch.bmp" />
     <Image Include="WinParticles.ico" />
   </ItemGroup>
   <ItemGroup>

@@ -99,6 +99,9 @@
     <ClInclude Include="AnimFunctions.h">
       <Filter>Header Files\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="AnimEditor.h">
+      <Filter>Header Files\Display Items</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -161,6 +164,9 @@
     <ClCompile Include="AnimFunctions.cpp">
       <Filter>Source Files\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="AnimEditor.cpp">
+      <Filter>Source Files\Display Items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WinParticles.rc">
@@ -184,6 +190,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="stephandle_color_mask.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="knob.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="switch.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

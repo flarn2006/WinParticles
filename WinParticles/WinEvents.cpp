@@ -39,7 +39,7 @@ CWinEvents::CWinEvents(HWND hWnd)
 	srand(GetTickCount());
 	psys = new CParticleSys();
 	psys->SetAcceleration(0.0, -600.0);
-
+	
 	agent = new CParamAgent(psys);
 	presetMgr = new CPresetManager(psys);
 
@@ -64,9 +64,17 @@ CWinEvents::CWinEvents(HWND hWnd)
 	// This will be deleted when the background color is changed, so GetStockObject(BLACK_BRUSH) won't work here.
 	backgroundBrush = CreateSolidBrush(0);
 
+	for (int i = 0; i < CParamAgent::ParamID::PARAM_COUNT; i++) {
+		animParams[i].SetParamAgent(agent);
+		animParams[i].SetParamID((CParamAgent::ParamID)i);
+		animations[i].SetTarget(&animParams[i]);
+		psys->GetAnimationsVector().push_back(&animations[i]);
+	}
+
 	display = new CRootDisplay();
 	display->InitBitmapEditor(&bitmap);
 	display->InitGradientEditor(psys->GetDefGradient());
+	display->InitAnimEditor(animations);
 
 	bitmap.LoadDefaultBitmap();
 
@@ -331,7 +339,7 @@ void CWinEvents::OnPaint()
 		out << "[G] Reset gradient presets" << std::endl;
 		out << "[A] Toggle additive drawing " << "(" << (additiveDrawing ? "ON" : "OFF") << ")" << std::endl;
 		out << "[Q] Change text display" << std::endl;
-		out << "[E] Toggle bitmap/gradient editors" << std::endl;
+		out << "[E] Toggle bitmap/gradient/animation editors" << std::endl;
 	}
 
 	clientRect.left += 5; clientRect.top += 5;
@@ -390,6 +398,7 @@ void CWinEvents::OnKeyDown(WORD key)
 				bool enable = !display->GetBitmapEditor()->GetEnabled();
 				display->GetBitmapEditor()->SetEnabled(enable);
 				display->GetGradientEditor()->SetEnabled(enable);
+				display->GetAnimEditor()->SetEnabled(enable);
 			}
 		} else if (key == VK_OEM_MINUS) {
 			deltaMult /= 10;

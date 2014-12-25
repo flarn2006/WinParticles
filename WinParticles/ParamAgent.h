@@ -20,7 +20,8 @@ public:
 		EMISSION_RATE = 7,
 		EMISSION_RADIUS = 8,
 		INNER_RADIUS = 9,
-		MAX_PARAM = 9
+		MAX_PARAM = 9,
+		PARAM_COUNT = MAX_PARAM + 1
 	};
 
 private:
