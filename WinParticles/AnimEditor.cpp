@@ -12,6 +12,7 @@ CAnimEditor::CAnimEditor(CAnimation<double> *animations)
 	SelectObject(switchBmpDC, switchBmp);
 	SetPosition(0, 0);
 	cyanPen = CreatePen(PS_SOLID, 1, RGB(0, 255, 255));
+	enabledSwitch.SetCallback([this](bool newValue) { this->animations[selectedID].SetEnabled(newValue); });
 	AddSubItem(&enabledSwitch);
 }
 
@@ -37,6 +38,11 @@ void CAnimEditor::SetPosition(int left, int top)
 	topLeft.x = left;
 	topLeft.y = top;
 	UpdateBounds();
+}
+
+void CAnimEditor::SetSelectedID(int selectedID)
+{
+	this->selectedID = selectedID;
 }
 
 void CAnimEditor::OnDraw(HDC hDC, const LPRECT clientRect)

@@ -1,6 +1,7 @@
 #pragma once
 #include "AnimTarget.h"
 #include "AnimFunctions.h"
+#include "Common.h"
 #include <cmath>
 
 #ifndef NULL

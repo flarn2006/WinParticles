@@ -17,7 +17,8 @@ CSwitchCtrl::CSwitchCtrl()
 	}
 	instanceCount++;
 	SetPosition(0, 0);
-	boundFlag = NULL;
+	SetState(false);
+	callback = NULL;
 }
 
 CSwitchCtrl::~CSwitchCtrl()
@@ -33,36 +34,34 @@ void CSwitchCtrl::SetPosition(int x, int y)
 {
 	bounds.left = x;
 	bounds.top = y;
-	bounds.right = x + 31;
-	bounds.bottom = y + 15;
+	bounds.right = x + 33;
+	bounds.bottom = y + 17;
 }
 
-void CSwitchCtrl::BindTo(bool &flag)
+void CSwitchCtrl::SetCallback(const Callback &callback)
 {
-	boundFlag = &flag;
+	this->callback = &callback;
 }
 
-void CSwitchCtrl::Unbind()
+void CSwitchCtrl::SetState(bool state)
 {
-	boundFlag = NULL;
+	this->state = state;
+}
+
+bool CSwitchCtrl::GetState()
+{
+	return state;
 }
 
 void CSwitchCtrl::OnDraw(HDC hDC, const LPRECT clientRect)
 {
-	int y;
-	if (boundFlag) {
-		y = *boundFlag ? 16 : 0;
-	} else {
-		y = 0;
-	}
-	BitBlt(hDC, bounds.left, bounds.top, 32, 16, bitmapDC, 0, y, SRCCOPY);
+	BitBlt(hDC, bounds.left, bounds.top, 34, 18, bitmapDC, 0, state ? 18 : 0, SRCCOPY);
 }
 
 void CSwitchCtrl::OnMouseDown(int x, int y)
 {
-	if (boundFlag) {
-		*boundFlag = !*boundFlag;
-	}
+	state = !state;
+	if (callback) (*callback)(state);
 }
 
 bool CSwitchCtrl::OccupiesPoint(int x, int y)

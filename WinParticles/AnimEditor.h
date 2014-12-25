@@ -22,6 +22,7 @@ public:
 	~CAnimEditor();
 
 	void SetPosition(int left, int top);
+	void SetSelectedID(int selectedID);
 	
 	virtual void OnDraw(HDC hDC, const LPRECT clientRect);
 	virtual void OnMouseDown(int x, int y);
