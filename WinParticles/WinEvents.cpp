@@ -153,6 +153,7 @@ void CWinEvents::SelectParam(CParamAgent *agent, CParamAgent::ParamID paramNum, 
 	case CParamAgent::ParamID::EMISSION_RADIUS: deltaMult = 1.0; break;
 	case CParamAgent::ParamID::INNER_RADIUS: deltaMult = 1.0; break;
 	}
+	if (display) display->GetAnimEditor()->SetSelectedID(selParam);
 }
 
 void CWinEvents::SelectGradient(int gradientNum, int &selGradientNum)

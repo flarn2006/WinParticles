@@ -12,7 +12,7 @@ private:
 	static int instanceCount;
 	static HBITMAP bitmap;
 	static HDC bitmapDC;
-	const Callback *callback;
+	Callback callback;
 	bool state;
 	RECT bounds;
 

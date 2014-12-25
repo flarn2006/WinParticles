@@ -18,7 +18,6 @@ CSwitchCtrl::CSwitchCtrl()
 	instanceCount++;
 	SetPosition(0, 0);
 	SetState(false);
-	callback = NULL;
 }
 
 CSwitchCtrl::~CSwitchCtrl()
@@ -40,7 +39,7 @@ void CSwitchCtrl::SetPosition(int x, int y)
 
 void CSwitchCtrl::SetCallback(const Callback &callback)
 {
-	this->callback = &callback;
+	this->callback = callback;
 }
 
 void CSwitchCtrl::SetState(bool state)
@@ -61,7 +60,7 @@ void CSwitchCtrl::OnDraw(HDC hDC, const LPRECT clientRect)
 void CSwitchCtrl::OnMouseDown(int x, int y)
 {
 	state = !state;
-	if (callback) (*callback)(state);
+	callback(state);
 }
 
 bool CSwitchCtrl::OccupiesPoint(int x, int y)
