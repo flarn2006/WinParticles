@@ -15,6 +15,7 @@ CAnimEditor::CAnimEditor(CAnimation<double> *animations)
 	SelectObject(switchBmpDC, switchBmp);
 	SetPosition(0, 0);
 	cyanPen = CreatePen(PS_SOLID, 2, RGB(0, 255, 255));
+	greenPen = CreatePen(PS_SOLID, 2, RGB(0, 255, 0));
 	enabledSwitch.SetCallback([this](bool newValue) {
 		this->animations[selectedID].SetEnabled(newValue);
 	});
@@ -79,10 +80,11 @@ void CAnimEditor::GetLineRect(LPRECT rect, int lineNum)
 void CAnimEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 {
 	SelectObject(hDC, GetStockObject(BLACK_BRUSH));
-	SelectObject(hDC, cyanPen);
+	SelectObject(hDC, animations[selectedID].GetEnabled() ? greenPen : cyanPen);
 	Rectangle(hDC, bounds.left, bounds.top, bounds.right, bounds.bottom);
 
-	SetTextColor(hDC, RGB(0, 255, 255));
+	COLORREF color = animations[selectedID].GetEnabled() ? RGB(0, 255, 0) : RGB(0, 255, 255);
+	SetTextColor(hDC, color);
 	TextOut(hDC, bounds.left + 48, bounds.top + 9, enabledSwitch.GetState() ? TEXT("ENABLED ") : TEXT("DISABLED"), 8);
 
 	tostringstream out;
@@ -104,7 +106,7 @@ void CAnimEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 		RECT line;
 		GetLineRect(&line, highlightLine);
 		SelectObject(hDC, GetStockObject(DC_BRUSH));
-		SetDCBrushColor(hDC, RGB(0, 255, 255));
+		SetDCBrushColor(hDC, color);
 		PatBlt(hDC, line.left, line.top, line.right - line.left, line.bottom - line.top, PATINVERT);
 	}
 

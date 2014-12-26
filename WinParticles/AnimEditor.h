@@ -16,6 +16,7 @@ private:
 	POINT topLeft;
 	RECT bounds;
 	HPEN cyanPen;
+	HPEN greenPen;
 	CSwitchCtrl enabledSwitch;
 	CKnobCtrl freqKnob;
 	int highlightLine = -1;
