@@ -7,6 +7,8 @@
 class CAnimEditor : public CCompoundDispItem
 {
 private:
+	static CAnimation<double>::AnimFunction functionList[5];
+	static LPCTSTR functionNames[5];
 	CAnimation<double> *animations;
 	int selectedID;
 	HBITMAP switchBmp;
@@ -17,6 +19,7 @@ private:
 	CSwitchCtrl enabledSwitch;
 	CKnobCtrl freqKnob;
 	int highlightLine = -1;
+	int selFuncID = 0;
 
 	void UpdateBounds();
 	void GetLineRect(LPRECT rect, int lineNum);
@@ -31,6 +34,7 @@ public:
 	virtual void OnDraw(HDC hDC, const LPRECT clientRect);
 	virtual void OnMouseDown(int x, int y);
 	virtual void OnMouseMove(int x, int y);
+	virtual void OnRightClick(int x, int y);
 	virtual bool OccupiesPoint(int x, int y);
 };
 
