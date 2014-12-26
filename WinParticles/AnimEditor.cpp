@@ -130,6 +130,9 @@ void CAnimEditor::OnMouseDown(int x, int y)
 		selFuncID = (selFuncID + 1) % 5;
 		animations[selectedID].SetFunction(functionList[selFuncID]);
 		break;
+	case 3:
+		animations[selectedID].SetFrequency(1.0);
+		break;
 	default:
 		CCompoundDispItem::OnMouseDown(x, y);
 	}
