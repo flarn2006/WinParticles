@@ -30,6 +30,7 @@ private:
 	void RandomizeGradient(CGradient *gradient);
 	void InitializeGradients(CGradient *gradients[], bool deleteFirst);
 	void SelectGradient(int gradientNum, int &selGradientNum);
+	void UpdateViewMenuChecks();
 
 	static INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 

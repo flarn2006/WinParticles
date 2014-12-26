@@ -83,6 +83,8 @@ CWinEvents::CWinEvents(HWND hWnd)
 		presetMgr->LoadPreset(cmdLine.c_str());
 		if (presetMgr->DidLastPresetIncludeGradient()) SelectGradient(-1, selGradientNum);
 	}
+
+	UpdateViewMenuChecks();
 }
 
 CWinEvents::~CWinEvents()
@@ -259,10 +261,45 @@ bool CWinEvents::OnCommand(WORD command, WORD eventID)
 			backgroundBrush = CreateSolidBrush(backgroundColor);
 		}
 		break;
+	case ID_VIEW_GRADIENTEDITOR:
+		display->GetGradientEditor()->SetEnabled(!display->GetGradientEditor()->GetEnabled());
+		UpdateViewMenuChecks();
+		break;
+	case ID_VIEW_BITMAPEDITOR:
+		display->GetBitmapEditor()->SetEnabled(!display->GetBitmapEditor()->GetEnabled());
+		UpdateViewMenuChecks();
+		break;
+	case ID_VIEW_ANIMATIONEDITOR:
+		display->GetAnimEditor()->SetEnabled(!display->GetAnimEditor()->GetEnabled());
+		UpdateViewMenuChecks();
+		break;
+	case ID_VIEW_SHOWALLTEXT:
+		verbosity = 2;
+		UpdateViewMenuChecks();
+		break;
+	case ID_VIEW_ONLYSHOWPARAMETERS:
+		verbosity = 1;
+		UpdateViewMenuChecks();
+		break;
+	case ID_VIEW_HIDETEXT:
+		verbosity = 0;
+		UpdateViewMenuChecks();
+		break;
 	default:
 		return false;
 	}
 	return true;
+}
+
+void CWinEvents::UpdateViewMenuChecks()
+{
+	HMENU hMenu = GetMenu(hWnd);
+	CheckMenuItem(hMenu, ID_VIEW_GRADIENTEDITOR, MF_CHECK_BOOL(display->GetGradientEditor()->GetEnabled()));
+	CheckMenuItem(hMenu, ID_VIEW_BITMAPEDITOR, MF_CHECK_BOOL(display->GetBitmapEditor()->GetEnabled()));
+	CheckMenuItem(hMenu, ID_VIEW_ANIMATIONEDITOR, MF_CHECK_BOOL(display->GetAnimEditor()->GetEnabled()));
+	
+	const UINT verbosityCommands[] = { ID_VIEW_HIDETEXT, ID_VIEW_ONLYSHOWPARAMETERS, ID_VIEW_SHOWALLTEXT };
+	CheckMenuRadioItem(hMenu, ID_VIEW_SHOWALLTEXT, ID_VIEW_HIDETEXT, verbosityCommands[verbosity], MF_BYCOMMAND);
 }
 
 void CWinEvents::OnSize()
@@ -396,12 +433,14 @@ void CWinEvents::OnKeyDown(WORD key)
 			additiveDrawing = !additiveDrawing;
 		} else if (key == (WPARAM)'Q') {
 			verbosity = (verbosity + 1) % 3;
+			UpdateViewMenuChecks();
 		} else if (key == (WPARAM)'E') {
 			if (!display->GetBitmapEditor()->IsMouseDown() && !display->GetGradientEditor()->IsMouseDown()) {
 				bool enable = !display->GetBitmapEditor()->GetEnabled();
 				display->GetBitmapEditor()->SetEnabled(enable);
 				display->GetGradientEditor()->SetEnabled(enable);
 				display->GetAnimEditor()->SetEnabled(enable);
+				UpdateViewMenuChecks();
 			}
 		} else if (key == VK_OEM_MINUS) {
 			deltaMult /= 10;
