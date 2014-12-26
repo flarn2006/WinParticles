@@ -98,7 +98,7 @@ public:
 		if (enabled) {
 			time *= freq;
 			currentTime = std::fmod(currentTime + time, 1.0);
-			if (target) **target = Interpolate(function(currentTime), 0.0, 1.0, min, max);
+			if (target) target->SetValue(Interpolate(function(currentTime), 0.0, 1.0, min, max));
 		}
 	}
 };

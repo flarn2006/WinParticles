@@ -116,10 +116,10 @@ void CAnimEditor::OnMouseDown(int x, int y)
 	CAnimation<double>::AnimFunction func = animations[selectedID].GetFunction();
 	switch (highlightLine) {
 	case 0:
-		animations[selectedID].SetRange(**animations[selectedID].GetTarget(), max);
+		animations[selectedID].SetRange(animations[selectedID].GetTarget()->GetValue(), max);
 		break;
 	case 1:
-		animations[selectedID].SetRange(min, **animations[selectedID].GetTarget());
+		animations[selectedID].SetRange(min, animations[selectedID].GetTarget()->GetValue());
 		break;
 	case 2:
 		if (func == AnimFunctions::Saw) func = AnimFunctions::Sine;
