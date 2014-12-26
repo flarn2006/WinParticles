@@ -148,6 +148,7 @@
     <ClInclude Include="DisplayItem.h" />
     <ClInclude Include="Gradient.h" />
     <ClInclude Include="GradientEditor.h" />
+    <ClInclude Include="KnobCtrl.h" />
     <ClInclude Include="NumericInputBox.h" />
     <ClInclude Include="ParamAgent.h" />
     <ClInclude Include="Particle.h" />
@@ -174,6 +175,7 @@
     <ClCompile Include="DisplayItem.cpp" />
     <ClCompile Include="Gradient.cpp" />
     <ClCompile Include="GradientEditor.cpp" />
+    <ClCompile Include="KnobCtrl.cpp" />
     <ClCompile Include="NumericInputBox.cpp" />
     <ClCompile Include="ParamAgent.cpp" />
     <ClCompile Include="Particle.cpp" />

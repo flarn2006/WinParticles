@@ -2,6 +2,7 @@
 #include "CompoundDispItem.h"
 #include "Animation.h"
 #include "SwitchCtrl.h"
+#include "KnobCtrl.h"
 
 class CAnimEditor : public CCompoundDispItem
 {
@@ -14,8 +15,11 @@ private:
 	RECT bounds;
 	HPEN cyanPen;
 	CSwitchCtrl enabledSwitch;
+	CKnobCtrl freqKnob;
+	int highlightLine = -1;
 
 	void UpdateBounds();
+	void GetLineRect(LPRECT rect, int lineNum);
 
 public:
 	CAnimEditor(CAnimation<double> *animations);
@@ -26,6 +30,7 @@ public:
 	
 	virtual void OnDraw(HDC hDC, const LPRECT clientRect);
 	virtual void OnMouseDown(int x, int y);
+	virtual void OnMouseMove(int x, int y);
 	virtual bool OccupiesPoint(int x, int y);
 };
 
