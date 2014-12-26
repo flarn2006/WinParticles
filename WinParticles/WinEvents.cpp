@@ -374,6 +374,8 @@ void CWinEvents::OnKeyDown(WORD key)
 				SelectGradient(-1, selGradientNum);
 			}
 		} else if (key == (WPARAM)'R') {
+			psys->DisableAllAnimations();
+			display->GetAnimEditor()->Update();
 			psys->DefaultParameters();
 			SetVelocityMode(psys->GetVelocityMode(), hWnd);
 		} else if (key == (WPARAM)'Z') {
@@ -472,10 +474,13 @@ void CWinEvents::OnLButtonUp(int x, int y)
 	display->MouseUp(x, y);
 }
 
-void CWinEvents::OnMouseWheel(double delta)
+void CWinEvents::OnMouseWheel(short wheelDelta)
 {
-	delta *= deltaMult;
-	agent->SetValue(agent->GetValue() + delta);
+	if (!display->MouseWheel(wheelDelta)) {
+		double delta = (double)wheelDelta / WHEEL_DELTA;
+		delta *= deltaMult;
+		agent->SetValue(agent->GetValue() + delta);
+	}
 }
 
 void CWinEvents::OnTimer()
@@ -504,6 +509,11 @@ void CWinEvents::OnDropFiles(HDROP hDrop)
 CParamAgent *CWinEvents::GetParamAgent()
 {
 	return agent;
+}
+
+double CWinEvents::GetDeltaMult()
+{
+	return deltaMult;
 }
 
 INT_PTR CALLBACK CWinEvents::AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)

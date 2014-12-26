@@ -46,10 +46,11 @@ public:
 	void OnMButtonDown(int x, int y);
 	void OnMouseMove(int x, int y);
 	void OnLButtonUp(int x, int y);
-	void OnMouseWheel(double delta);
+	void OnMouseWheel(short wheelDelta);
 	void OnTimer();
 	void OnDropFiles(HDROP hDrop);
 	
 	CParamAgent *GetParamAgent();
+	double GetDeltaMult();
 };
 

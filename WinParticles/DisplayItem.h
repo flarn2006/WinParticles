@@ -15,6 +15,7 @@ protected:
 	virtual void OnRightClick(int x, int y);
 	virtual void OnMouseLeave();
 	virtual bool OnKeyDown(UINT uCode);
+	virtual bool OnMouseWheel(short wheelDelta);
 	virtual bool OccupiesPoint(int x, int y);
 
 public:
@@ -30,6 +31,7 @@ public:
 	void MouseUp(int x, int y);
 	void RightClick(int x, int y);
 	bool KeyDown(UINT uCode);
+	bool MouseWheel(short wheelDelta);
 	bool OccupyingPoint(int x, int y);
 
 	bool IsMouseDown();

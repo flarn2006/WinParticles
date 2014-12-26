@@ -18,6 +18,7 @@ protected:
 	virtual void OnMouseMove(int x, int y);
 	virtual void OnMouseUp(int x, int y);
 	virtual void OnRightClick(int x, int y);
+	virtual bool OnMouseWheel(short wheelDelta);
 	virtual bool OnKeyDown(UINT uCode);
 	virtual bool OccupiesPoint(int x, int y);
 

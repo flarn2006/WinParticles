@@ -30,12 +30,15 @@ public:
 	~CAnimEditor();
 
 	void SetPosition(int left, int top);
+	void Update();
 	void SetSelectedID(int selectedID);
 	
 	virtual void OnDraw(HDC hDC, const LPRECT clientRect);
 	virtual void OnMouseDown(int x, int y);
 	virtual void OnMouseMove(int x, int y);
 	virtual void OnRightClick(int x, int y);
+	virtual void OnMouseLeave();
+	virtual bool OnMouseWheel(short wheelDelta);
 	virtual bool OccupiesPoint(int x, int y);
 };
 

@@ -85,6 +85,7 @@ public:
 	int GetLiveParticleCount();
 
 	std::vector<CAnimationGeneric*> &GetAnimationsVector();
+	void DisableAllAnimations();
 
 	CParticle &CreateParticle(double x, double y);
 

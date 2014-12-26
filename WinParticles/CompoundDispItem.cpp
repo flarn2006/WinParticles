@@ -69,6 +69,17 @@ void CCompoundDispItem::OnRightClick(int x, int y)
 	}
 }
 
+bool CCompoundDispItem::OnMouseWheel(short wheelDelta)
+{
+	stopHandling = false;
+	bool handledByAny = false;
+	for (int i = subItems.size() - 1; i >= 0; i--) {
+		handledByAny = handledByAny || subItems[i]->MouseWheel(wheelDelta);
+		if (stopHandling) break;
+	}
+	return handledByAny;
+}
+
 bool CCompoundDispItem::OnKeyDown(UINT uCode)
 {
 	stopHandling = false;

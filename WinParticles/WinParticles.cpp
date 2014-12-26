@@ -202,7 +202,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		winEvents->OnLButtonUp(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 	case WM_MOUSEWHEEL:
-		winEvents->OnMouseWheel((double)GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA);
+		winEvents->OnMouseWheel(GET_WHEEL_DELTA_WPARAM(wParam));
 		break;
 	case WM_TIMER:
 		winEvents->OnTimer();

@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "AnimEditor.h"
+#include "WinEvents.h"
 #include "resource.h"
 
 extern HINSTANCE hInst;
+extern CWinEvents *winEvents;
 
 CAnimation<double>::AnimFunction CAnimEditor::functionList[] = { AnimFunctions::Saw, AnimFunctions::Sine, AnimFunctions::Square, AnimFunctions::Triangle, AnimFunctions::Random };
 LPCTSTR CAnimEditor::functionNames[] = { TEXT("Saw"), TEXT("Sine"), TEXT("Square"), TEXT("Triangle"), TEXT("Random") };
@@ -55,9 +57,8 @@ void CAnimEditor::SetPosition(int left, int top)
 	UpdateBounds();
 }
 
-void CAnimEditor::SetSelectedID(int selectedID)
+void CAnimEditor::Update()
 {
-	this->selectedID = selectedID;
 	enabledSwitch.SetState(animations[selectedID].GetEnabled());
 
 	selFuncID = 0;
@@ -67,6 +68,12 @@ void CAnimEditor::SetSelectedID(int selectedID)
 			break;
 		}
 	}
+}
+
+void CAnimEditor::SetSelectedID(int selectedID)
+{
+	this->selectedID = selectedID;
+	Update();
 }
 
 void CAnimEditor::GetLineRect(LPRECT rect, int lineNum)
@@ -158,7 +165,38 @@ void CAnimEditor::OnRightClick(int x, int y)
 	if (highlightLine == 2) {
 		selFuncID--;
 		if (selFuncID < 0) selFuncID = 4;
-		animations[selFuncID].SetFunction(functionList[selFuncID]);
+		animations[selectedID].SetFunction(functionList[selFuncID]);
+	}
+}
+
+void CAnimEditor::OnMouseLeave()
+{
+	highlightLine = -1;
+}
+
+bool CAnimEditor::OnMouseWheel(short wheelDelta)
+{
+	double delta = (double)wheelDelta / WHEEL_DELTA;
+	double min, max;
+	switch (highlightLine) {
+	case -1:
+		return false;
+	case 0:
+		animations[selectedID].GetRange(&min, &max);
+		min += delta * winEvents->GetDeltaMult();
+		animations[selectedID].SetRange(min, max);
+		return true;
+	case 1:
+		animations[selectedID].GetRange(&min, &max);
+		max += delta * winEvents->GetDeltaMult();
+		animations[selectedID].SetRange(min, max);
+		return true;
+	case 3:
+		animations[selectedID].SetFrequency(animations[selectedID].GetFrequency() + delta * winEvents->GetDeltaMult());
+		return true;
+	default:
+		// If any line is highlighted, the mouse wheel shouldn't control the standard parameters.
+		return true;
 	}
 }
 

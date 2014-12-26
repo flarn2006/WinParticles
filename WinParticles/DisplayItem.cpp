@@ -36,6 +36,11 @@ void CDisplayItem::OnMouseLeave()
 {
 }
 
+bool CDisplayItem::OnMouseWheel(short wheelDelta)
+{
+	return false;
+}
+
 bool CDisplayItem::OnKeyDown(UINT uCode)
 {
 	return false;
@@ -97,6 +102,19 @@ bool CDisplayItem::KeyDown(UINT uCode)
 		return OnKeyDown(uCode);
 	else
 		return false;
+}
+
+bool CDisplayItem::MouseWheel(short wheelDelta)
+{
+	if (enabled) {
+		if (mouseLastSeenInside || mouseIsDown) {
+			return OnMouseWheel(wheelDelta);
+		} else {
+			return false;
+		}
+	} else {
+		return false;
+	}
 }
 
 bool CDisplayItem::OccupyingPoint(int x, int y)

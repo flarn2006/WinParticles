@@ -10,8 +10,21 @@
 
 class CAnimationGeneric
 {
+private:
+	bool enabled;
+
 public:
 	virtual void Run(double time) = 0;
+	
+	bool GetEnabled()
+	{
+		return enabled;
+	}
+
+	void SetEnabled(bool enabled)
+	{
+		this->enabled = enabled;
+	}
 };
 
 template <typename TValue>
@@ -25,7 +38,6 @@ private:
 	AnimFunction function;
 	double currentTime, freq;
 	TValue min, max;
-	bool enabled;
 
 public:
 	CAnimation()
@@ -62,11 +74,6 @@ public:
 		return freq;
 	}
 
-	bool GetEnabled()
-	{
-		return enabled;
-	}
-	
 	void SetTarget(CAnimTarget<TValue> *target)
 	{
 		this->target = target;
@@ -88,14 +95,9 @@ public:
 		freq = frequency;
 	}
 
-	void SetEnabled(bool enabled)
-	{
-		this->enabled = enabled;
-	}
-
 	void Run(double time)
 	{
-		if (enabled) {
+		if (GetEnabled()) {
 			time *= freq;
 			currentTime = std::fmod(currentTime + time, 1.0);
 			if (target) target->SetValue(Interpolate(function(currentTime), 0.0, 1.0, min, max));
