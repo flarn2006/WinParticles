@@ -165,6 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimatedParam.cpp" />
+    <ClCompile Include="AnimationGeneric.cpp" />
     <ClCompile Include="AnimEditor.cpp" />
     <ClCompile Include="AnimFunctions.cpp" />
     <ClCompile Include="BackBuffer.cpp" />
@@ -200,6 +201,7 @@
     <Image Include="bmptoolbar.bmp" />
     <Image Include="knob.bmp" />
     <Image Include="particles.bmp" />
+    <Image Include="reset_icon.bmp" />
     <Image Include="stephandle.bmp" />
     <Image Include="stephandle_color_mask.bmp" />
     <Image Include="stephandle_mask.bmp" />

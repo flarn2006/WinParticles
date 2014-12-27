@@ -15,16 +15,10 @@ private:
 
 public:
 	virtual void Run(double time) = 0;
+	virtual void Reset() = 0;
 	
-	bool GetEnabled()
-	{
-		return enabled;
-	}
-
-	void SetEnabled(bool enabled)
-	{
-		this->enabled = enabled;
-	}
+	bool GetEnabled();
+	void SetEnabled(bool enabled);
 };
 
 template <typename TValue>
@@ -102,5 +96,11 @@ public:
 			currentTime = std::fmod(currentTime + time, 1.0);
 			if (target) target->SetValue(Interpolate(function(currentTime), 0.0, 1.0, min, max));
 		}
+	}
+
+	void Reset()
+	{
+		currentTime = 0.0;
+		Run(0);
 	}
 };

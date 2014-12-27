@@ -11,8 +11,10 @@ private:
 	static LPCTSTR functionNames[5];
 	CAnimation<double> *animations;
 	int selectedID;
-	HBITMAP switchBmp;
-	HDC switchBmpDC;
+	HBITMAP resetBmp;
+	HDC resetBmpDC;
+	RECT resetBtnBounds;
+	bool resetBtnHighlighted = false;
 	POINT topLeft;
 	RECT bounds;
 	HPEN cyanPen;

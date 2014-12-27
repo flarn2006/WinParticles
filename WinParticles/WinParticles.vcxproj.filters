@@ -179,6 +179,9 @@
     <ClCompile Include="KnobCtrl.cpp">
       <Filter>Source Files\Display Items</Filter>
     </ClCompile>
+    <ClCompile Include="AnimationGeneric.cpp">
+      <Filter>Source Files\Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WinParticles.rc">
@@ -208,6 +211,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="switch.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="reset_icon.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

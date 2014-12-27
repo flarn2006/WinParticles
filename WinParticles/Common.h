@@ -8,6 +8,7 @@
 #endif
 
 #define DEG_TO_RAD (M_PI / 180.0)
+#define ROOT8_OF_2 1.0905077326652576592070106557607
 
 #ifdef _UNICODE
 	typedef wchar_t tchar_t;

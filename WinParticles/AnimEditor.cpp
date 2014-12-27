@@ -12,19 +12,18 @@ LPCTSTR CAnimEditor::functionNames[] = { TEXT("Saw"), TEXT("Sine"), TEXT("Square
 CAnimEditor::CAnimEditor(CAnimation<double> *animations)
 {
 	this->animations = animations;
-	switchBmp = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_SWITCH));
-	switchBmpDC = CreateCompatibleDC(NULL);
-	SelectObject(switchBmpDC, switchBmp);
 	SetPosition(0, 0);
 	cyanPen = CreatePen(PS_SOLID, 2, RGB(0, 255, 255));
 	greenPen = CreatePen(PS_SOLID, 2, RGB(0, 255, 0));
+	resetBmp = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_RESET_ICON));
+	resetBmpDC = CreateCompatibleDC(NULL);
+	SelectObject(resetBmpDC, resetBmp);
 	enabledSwitch.SetCallback([this](bool newValue) {
 		this->animations[selectedID].SetEnabled(newValue);
 	});
 	freqKnob.SetCallback([this](int delta) {
 		double freq = this->animations[selectedID].GetFrequency();
-		freq += 0.1 * delta;
-		if (std::abs(freq) < 0.000001) freq = 0.0;
+		freq *= std::pow(ROOT8_OF_2, (double)delta);
 		this->animations[selectedID].SetFrequency(freq);
 	});
 	AddSubItem(&enabledSwitch);
@@ -34,8 +33,8 @@ CAnimEditor::CAnimEditor(CAnimation<double> *animations)
 
 CAnimEditor::~CAnimEditor()
 {
-	DeleteDC(switchBmpDC);
-	DeleteObject(switchBmp);
+	DeleteDC(resetBmpDC);
+	DeleteObject(resetBmp);
 	DeleteObject(cyanPen);
 }
 
@@ -47,7 +46,13 @@ void CAnimEditor::UpdateBounds()
 	bounds.bottom = topLeft.y + 122;
 
 	enabledSwitch.SetPosition(bounds.left + 8, bounds.top + 8);
-	freqKnob.SetPosition(bounds.left + 8, bounds.top + 100);
+	freqKnob.SetPosition(bounds.left + 20, bounds.top + 100);
+
+	resetBtnBounds.left = bounds.right - 21;
+	resetBtnBounds.top = bounds.bottom - 21;
+	resetBtnBounds.right = resetBtnBounds.left + 9;
+	resetBtnBounds.bottom = resetBtnBounds.top + 10;
+	InflateRect(&resetBtnBounds, 4, 3);
 }
 
 void CAnimEditor::SetPosition(int left, int top)
@@ -94,6 +99,9 @@ void CAnimEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 	SetTextColor(hDC, color);
 	TextOut(hDC, bounds.left + 48, bounds.top + 9, enabledSwitch.GetState() ? TEXT("ENABLED ") : TEXT("DISABLED"), 8);
 
+	TextOut(hDC, bounds.left + 7, bounds.top + 99, TEXT("-"), 1);
+	TextOut(hDC, bounds.left + 83, bounds.top + 99, TEXT("+"), 1);
+
 	tostringstream out;
 	double min, max;
 	animations[selectedID].GetRange(&min, &max);
@@ -109,6 +117,13 @@ void CAnimEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 	textRect.right = bounds.right;
 	DrawText(hDC, out.str().c_str(), out.str().length(), &textRect, 0);
 
+	BitBlt(hDC, resetBtnBounds.left + 4, resetBtnBounds.top + 3, 10, 11, resetBmpDC, 0, 0, SRCCOPY);
+	if (resetBtnHighlighted) {
+		SelectObject(hDC, GetStockObject(DC_BRUSH));
+		SetDCBrushColor(hDC, color);
+		PatBlt(hDC, resetBtnBounds.left, resetBtnBounds.top, resetBtnBounds.right - resetBtnBounds.left + 1, resetBtnBounds.bottom - resetBtnBounds.top + 1, PATINVERT);
+	}
+
 	if (highlightLine >= 0) {
 		RECT line;
 		GetLineRect(&line, highlightLine);
@@ -122,6 +137,11 @@ void CAnimEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 
 void CAnimEditor::OnMouseDown(int x, int y)
 {
+	if (resetBtnHighlighted) {
+		for (int i = 0; i < CParamAgent::ParamID::PARAM_COUNT; i++) {
+			animations[i].Reset();
+		}
+	}
 	double min, max;
 	animations[selectedID].GetRange(&min, &max);
 
@@ -156,6 +176,8 @@ void CAnimEditor::OnMouseMove(int x, int y)
 			break;
 		}
 	}
+
+	resetBtnHighlighted = PtInRect(&resetBtnBounds, { x, y }) > 0;
 
 	CCompoundDispItem::OnMouseMove(x, y);
 }
