@@ -20,7 +20,11 @@ double AnimFunctions::Square(double time)
 
 double AnimFunctions::Triangle(double time)
 {
-	return 2 * (time - ((time < 0.5) ? 0.0 : 0.5));
+	if (time < 0.5) {
+		return 2 * time;
+	} else {
+		return 2 * (1.0 - time);
+	}
 }
 
 double AnimFunctions::Random(double time)
