@@ -4,10 +4,12 @@
 #include "ChaoticGradient.h"
 #include "ParamAgent.h"
 #include "AnimFunctions.h"
+#include "RootDisplay.h"
 #include <fstream>
 #include <sstream>
 
 extern CParticleBitmap bitmap;
+extern CRootDisplay *display;
 
 CPresetManager::CPresetManager(CParticleSys *psys, CAnimation<double> *animArray)
 {
@@ -62,8 +64,8 @@ bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components com
 			file << "MinVelocity=" << temp1 << std::endl;
 			file << "MaxVelocity=" << temp2 << std::endl;
 			psys->GetAngle(&temp1, &temp2);
-			file << "MinAngle=" << temp1 << std::endl;
-			file << "MaxAngle=" << temp2 << std::endl;
+			file << "BaseAngle=" << temp1 << std::endl;
+			file << "AngularSize=" << temp2 << std::endl;
 		} else {
 			psys->GetRectVelocityX(&temp1, &temp2);
 			file << "MinVelocityX=" << temp1 << std::endl;
@@ -204,6 +206,7 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 					psys->GetVelocity(&min, &max);
 					parseRight >> min;
 					psys->SetVelocity(min, max);
+					psys->DisableAllAnimations();
 
 				} else if (left.compare("MaxVelocity") == 0) {
 					double min, max;
@@ -311,6 +314,42 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 
 				} else if (left.compare("BitmapCellCount") == 0) {
 					parseRight >> bitmapCellCount;
+				} else if (left.length() > 14) {
+					if (left.substr(0, 14).compare("ParamAnimation") == 0) {
+						std::string left2, right2;
+						if (SplitString(left, ':', left2, right2)) {
+							left2 = left2.substr(14);
+							std::istringstream parseRight2(right2);
+							int index;
+							parseRight2 >> index;
+#include "AnimPresetIDMappings.h"
+							// left2 = "Min", "Max", "Func", or "Freq"
+							const int *paramIDMapping = (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) ? paramIDMappingPolar : paramIDMappingRect;
+							if (0 <= index && index < CParamAgent::ParamID::PARAM_COUNT) {  //prevent buffer overflow
+								index = paramIDMapping[index];
+								animArray[index].SetEnabled(true);
+								if (left2.compare("Min") == 0) {
+									double min, max;
+									parseRight >> min;
+									animArray[index].GetRange(NULL, &max);
+									animArray[index].SetRange(min, max);
+								} else if (left2.compare("Max") == 0) {
+									double min, max;
+									parseRight >> max;
+									animArray[index].GetRange(&min, NULL);
+									animArray[index].SetRange(min, max);
+								} else if (left2.compare("Func") == 0) {
+									int funcID;
+									parseRight >> funcID;
+									if (0 <= funcID && funcID < 5) animArray[index].SetFunction(funcIDMapping[funcID]);
+								} else if (left2.compare("Freq") == 0) {
+									double freq;
+									parseRight >> freq;
+									animArray[index].SetFrequency(freq);
+								}
+							}
+						}
+					}
 				}
 
 				if (includesGradient) gradient->PrecalculateColors();
@@ -331,6 +370,7 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 			if (++bitmapRow >= bitmapCellHeight) bitmapRow = -1;
 		}
 	}
+	display->GetAnimEditor()->Update();
 	return true;
 }
 
