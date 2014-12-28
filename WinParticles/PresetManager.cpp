@@ -2,14 +2,17 @@
 #include "PresetManager.h"
 #include "ParticleBitmap.h"
 #include "ChaoticGradient.h"
+#include "ParamAgent.h"
+#include "AnimFunctions.h"
 #include <fstream>
 #include <sstream>
 
 extern CParticleBitmap bitmap;
 
-CPresetManager::CPresetManager(CParticleSys *psys)
+CPresetManager::CPresetManager(CParticleSys *psys, CAnimation<double> *animArray)
 {
 	this->psys = psys;
+	this->animArray = animArray;
 
 	gradient = new CGradient();
 	gradient->AddStep(0.0, 0xFF);
@@ -94,6 +97,44 @@ bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components com
 			file << "GradientStep=" << gradient->GetStepPosition(i) << "," << std::hex << gradient->GetStepColor(i) << std::endl;
 		}
 
+		file << std::endl;
+	}
+
+	if (componentsToSave & PMC_BASIC_PARAMS) { //save animation parameters
+		for (int i = 0; i < CParamAgent::ParamID::PARAM_COUNT; i++) {
+			if (animArray[i].GetEnabled()) {
+#include "AnimPresetIDMappings.h"
+				const int *paramIDMapping = (velMode == CParticleSys::VelocityMode::MODE_POLAR) ? paramIDMappingPolar : paramIDMappingRect;
+				int indexValue = -1;
+				for (int j = 0; j < CParamAgent::PARAM_COUNT; j++) {
+					if (paramIDMapping[j] == i) {
+						indexValue = j;
+						break;
+					}
+				}
+
+				if (indexValue != -1) {
+					double min, max;
+					animArray[i].GetRange(&min, &max);
+					file << "ParamAnimationMin:" << indexValue << "=" << min << std::endl;
+					file << "ParamAnimationMax:" << indexValue << "=" << max << std::endl;
+					
+					int funcIndexValue = -1;
+					for (int j = 0; j < 5; j++) {
+						if (funcIDMapping[j] == animArray[i].GetFunction()) {
+							funcIndexValue = j;
+							break;
+						}
+					}
+
+					if (funcIndexValue != -1) {
+						file << "ParamAnimationFunc:" << indexValue << "=" << funcIndexValue << std::endl;
+					}
+
+					file << "ParamAnimationFreq:" << indexValue << "=" << animArray[i].GetFrequency() << std::endl;
+				}
+			}
+		}
 		file << std::endl;
 	}
 

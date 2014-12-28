@@ -139,6 +139,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimEditor.h" />
     <ClInclude Include="AnimFunctions.h" />
+    <ClInclude Include="AnimPresetIDMappings.h" />
     <ClInclude Include="AnimTarget.h" />
     <ClInclude Include="BackBuffer.h" />
     <ClInclude Include="BitmapEditor.h" />

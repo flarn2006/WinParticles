@@ -41,7 +41,7 @@ CWinEvents::CWinEvents(HWND hWnd)
 	psys->SetAcceleration(0.0, -600.0);
 	
 	agent = new CParamAgent(psys);
-	presetMgr = new CPresetManager(psys);
+	presetMgr = new CPresetManager(psys, animations);
 
 	SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY, deltaMult);
 

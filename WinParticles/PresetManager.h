@@ -4,6 +4,7 @@
 #include <string>
 #include "ParticleSys.h"
 #include "Gradient.h"
+#include "Animation.h"
 
 class CPresetManager
 {
@@ -12,6 +13,7 @@ private:
 
 	CParticleSys *psys;
 	CGradient *gradient;
+	CAnimation<double> *animArray;
 	OPENFILENAME fileDlg;
 	TCHAR filename[FILENAME_MAX_LENGTH];
 	LPCTSTR loadError;
@@ -21,13 +23,13 @@ private:
 
 public:
 	enum Components {
-		PMC_BASIC_PARAMS = 1,
+		PMC_BASIC_PARAMS = 1, //also saves animation
 		PMC_GRADIENT = 2,
 		PMC_BITMAP = 4,
 		PMC_ALL = 7,
 	};
 
-	CPresetManager(CParticleSys *psys);
+	CPresetManager(CParticleSys *psys, CAnimation<double> *animArray);
 	~CPresetManager();
 	bool SavePreset(LPCTSTR filename, Components componentsToSave = PMC_ALL);
 	bool LoadPreset(LPCTSTR filename);

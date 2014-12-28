@@ -108,6 +108,9 @@
     <ClInclude Include="KnobCtrl.h">
       <Filter>Header Files\Display Items</Filter>
     </ClInclude>
+    <ClInclude Include="AnimPresetIDMappings.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
