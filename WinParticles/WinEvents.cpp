@@ -300,6 +300,8 @@ void CWinEvents::UpdateViewMenuChecks()
 	
 	const UINT verbosityCommands[] = { ID_VIEW_HIDETEXT, ID_VIEW_ONLYSHOWPARAMETERS, ID_VIEW_SHOWALLTEXT };
 	CheckMenuRadioItem(hMenu, ID_VIEW_SHOWALLTEXT, ID_VIEW_HIDETEXT, verbosityCommands[verbosity], MF_BYCOMMAND);
+
+	display->UpdateSize(&clientRect); //for animation editor positioning based on gradient editor status
 }
 
 void CWinEvents::OnSize()
