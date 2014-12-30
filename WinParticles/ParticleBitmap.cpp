@@ -137,3 +137,10 @@ void CParticleBitmap::ShiftAllCells(int xOffset, int yOffset)
 	DeleteObject(tempBitmap);
 	DeleteDC(tempDC);
 }
+
+void CParticleBitmap::FloodFill(int x, int y)
+{
+	COLORREF color = ::GetPixel(bitmapDC, x, y);
+	SelectObject(bitmapDC, GetStockObject(color ? BLACK_BRUSH : WHITE_BRUSH));
+	ExtFloodFill(bitmapDC, x, y, color, FLOODFILLSURFACE);
+}

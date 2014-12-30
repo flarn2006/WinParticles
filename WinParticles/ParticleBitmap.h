@@ -31,5 +31,6 @@ public:
 	void CopyToOtherCells(int srcCell);
 	void LoadDefaultBitmap();
 	void ShiftAllCells(int xOffset, int yOffset);
+	void FloodFill(int x, int y);
 };
 

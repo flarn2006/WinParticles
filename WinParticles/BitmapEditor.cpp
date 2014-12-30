@@ -150,6 +150,13 @@ void CBitmapEditor::OnMouseUp(int x, int y)
 	drawing = false;
 }
 
+void CBitmapEditor::OnRightClick(int x, int y)
+{
+	int px = (x - bounds.left) / pixelSize;
+	int py = (y - bounds.top) / pixelSize;
+	bitmap->FloodFill(px, py);
+}
+
 bool CBitmapEditor::OnKeyDown(UINT uCode)
 {
 	if (resizing) {
