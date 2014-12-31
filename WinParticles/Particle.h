@@ -11,8 +11,13 @@ private:
 	double age;
 	double maxAge;
 	COLORREF tint;
-	bool dead;
+	int flags;
 	CGradient *gradient;
+
+	enum Flags {
+		PF_DEAD = 1,
+		PF_NOGRADIENT = 2
+	};
 
 public:
 	CParticle();
@@ -36,7 +41,7 @@ public:
 	double GetAge();
 
 	COLORREF GetTint();
-	void SetTint(COLORREF tint);
+	void SetTint(COLORREF tint, bool ignoreGradient = false);
 
 	void SetDead();
 	bool IsDead();

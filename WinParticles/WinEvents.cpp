@@ -377,7 +377,8 @@ void CWinEvents::OnPaint()
 		out << "[C] Show/hide cursor" << std::endl;
 		out << "[F] Freeze/unfreeze emitter" << std::endl;
 		out << "[G] Reset gradient presets" << std::endl;
-		out << "[A] Toggle additive drawing " << "(" << (additiveDrawing ? "ON" : "OFF") << ")" << std::endl;
+		out << "[A] Toggle additive drawing (" << (additiveDrawing ? "ON" : "OFF") << ")" << std::endl;
+		out << "[S] Static (random) color mode (" << (psys->GetRandomColorMode() ? "ON" : "OFF") << ")" << std::endl;
 		out << "[Q] Change text display" << std::endl;
 		out << "[E] Toggle bitmap/gradient/animation editors" << std::endl;
 	}
@@ -433,6 +434,8 @@ void CWinEvents::OnKeyDown(WORD key)
 			psys->GetParticles()->clear();
 		} else if (key == (WPARAM)'A') {
 			additiveDrawing = !additiveDrawing;
+		} else if (key == (WPARAM)'S') {
+			psys->SetRandomColorMode(!psys->GetRandomColorMode());
 		} else if (key == (WPARAM)'Q') {
 			verbosity = (verbosity + 1) % 3;
 			UpdateViewMenuChecks();

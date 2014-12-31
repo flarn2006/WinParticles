@@ -14,7 +14,7 @@ CParticle::CParticle()
 	age = 0.0;
 	maxAge = 0.0;
 	tint = RGB(255, 255, 255);
-	dead = false;
+	flags = 0;
 }
 
 CParticle::~CParticle()
@@ -88,24 +88,28 @@ COLORREF CParticle::GetTint()
 	return tint;
 }
 
-void CParticle::SetTint(COLORREF tint)
+void CParticle::SetTint(COLORREF tint, bool ignoreGradient)
 {
 	this->tint = tint;
+	if (ignoreGradient)
+		flags |= PF_NOGRADIENT;
+	else
+		flags &= ~PF_NOGRADIENT;
 }
 
 void CParticle::SetDead()
 {
-	dead = true;
+	flags |= PF_DEAD;
 }
 
 bool CParticle::IsDead()
 {
-	return dead;
+	return (flags & PF_DEAD) > 0;
 }
 
 void CParticle::Simulate(double time)
 {
-	if (!dead) {
+	if (!IsDead()) {
 		vx += ax * time;
 		vy += ay * time;
 		px += vx * time;
@@ -120,6 +124,10 @@ void CParticle::Simulate(double time)
 void CParticle::Draw(HDC hDC)
 {
 	double relativeAge = age / maxAge;
-	COLORREF color = MultiplyColors(tint, gradient->ColorAtPoint(relativeAge));
+	COLORREF color;
+	if (flags & PF_NOGRADIENT)
+		color = tint;
+	else
+		color = MultiplyColors(tint, gradient->ColorAtPoint(relativeAge));
 	bitmap.Draw(hDC, (int)px, (int)py, color, relativeAge);
 }

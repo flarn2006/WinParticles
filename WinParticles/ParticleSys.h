@@ -27,6 +27,7 @@ private:
 	COLORREF defaultTint;
 	int livingCount;
 	std::vector<CAnimationGeneric*> animations;
+	bool randomColorMode;
 
 public:
 	CParticleSys();
@@ -81,6 +82,9 @@ public:
 	void SimMovingEmitter(double time, double destX, double destY);
 	void Simulate(double time);
 	void Draw(HDC hDC, LPRECT rect);
+
+	bool GetRandomColorMode();
+	void SetRandomColorMode(bool state);
 
 	int GetLiveParticleCount();
 

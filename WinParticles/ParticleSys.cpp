@@ -19,6 +19,7 @@ CParticleSys::CParticleSys()
 	defaultGradient->SetStep(2, 1.0, RGB(255, 0, 0));
 
 	livingCount = 0;
+	randomColorMode = false;
 }
 
 CParticleSys::~CParticleSys()
@@ -272,6 +273,16 @@ void CParticleSys::Draw(HDC hDC, LPRECT rect)
 	}
 }
 
+bool CParticleSys::GetRandomColorMode()
+{
+	return randomColorMode;
+}
+
+void CParticleSys::SetRandomColorMode(bool state)
+{
+	randomColorMode = state;
+}
+
 int CParticleSys::GetLiveParticleCount()
 {
 	return livingCount;
@@ -324,7 +335,13 @@ CParticle &CParticleSys::CreateParticle(double x, double y)
 	p.SetAcceleration(ax, ay);
 	p.SetMaxAge(maxAge);
 	p.SetGradient(defaultGradient);
-	p.SetTint(defaultTint);
+
+	if (randomColorMode) {
+		p.SetTint(MultiplyColors(defaultTint, defaultGradient->ColorAtPoint(RandInRange(0.0, 1.0))), true);
+	} else {
+		p.SetTint(defaultTint, false);
+	}
+	
 	psys->push_back(p);
 	return psys->back();
 }
