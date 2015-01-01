@@ -114,6 +114,7 @@ void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 	}
 
 	if (resizing) {
+		SelectObject(hDC, GetStockObject(NULL_BRUSH));
 		Rectangle(hDC, bounds.left - 2, bounds.top - 2, bounds.right + 3, bounds.bottom + 3);
 		SetDCBrushColor(hDC, 0xFFFF00);
 		SelectObject(hDC, GetStockObject(DC_BRUSH));
