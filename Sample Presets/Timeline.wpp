@@ -1,0 +1,12 @@
+VelocityMode=RECTANGULAR
+MinVelocityX=600000
+MaxVelocityX=600000
+MinVelocityY=0
+MaxVelocityY=0
+AccelerationX=0
+AccelerationY=0
+MaximumAge=0.001
+EmissionRate=60000
+EmissionRadius=0
+InnerRadius=0
+
