@@ -1,8 +1,8 @@
 VelocityMode=POLAR
 MinVelocity=20
 MaxVelocity=20
-MinAngle=-180
-MaxAngle=360
+BaseAngle=-180
+AngularSize=360
 AccelerationX=0
 AccelerationY=300
 MaximumAge=0.5
@@ -10,10 +10,14 @@ EmissionRate=80
 EmissionRadius=58
 InnerRadius=0
 
-ChaoticGradient
+AdditiveDrawing=1
+RandomColorMode=0
+RandomImageMode=0
+
 GradientStep=0,bfbf
 GradientStep=0.104635,ffff
 GradientStep=1,ffffff
+
 
 BitmapCellWidth=11
 BitmapCellHeight=11

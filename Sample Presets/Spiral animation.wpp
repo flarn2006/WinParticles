@@ -1,14 +1,14 @@
 VelocityMode=POLAR
 MinVelocity=0
 MaxVelocity=25
-BaseAngle=-12
+BaseAngle=156
 AngularSize=0
 AccelerationX=0
 AccelerationY=30
 MaximumAge=1
 EmissionRate=10000
-EmissionRadius=0.328686
-InnerRadius=0.328686
+EmissionRadius=118.689
+InnerRadius=118.689
 
 AdditiveDrawing=1
 RandomColorMode=0

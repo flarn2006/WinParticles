@@ -10,6 +10,10 @@ EmissionRate=100000
 EmissionRadius=120
 InnerRadius=120
 
+AdditiveDrawing=1
+RandomColorMode=0
+RandomImageMode=0
+
 GradientStep=0,ff
 GradientStep=0.25,ffff
 GradientStep=0.5,ff00

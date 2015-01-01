@@ -8,6 +8,11 @@ AccelerationY=0
 MaximumAge=1
 EmissionRate=300
 EmissionRadius=257
+InnerRadius=0
+
+AdditiveDrawing=1
+RandomColorMode=0
+RandomImageMode=0
 
 GradientStep=0,ff
 GradientStep=0.166667,ffff
@@ -23,6 +28,7 @@ GradientStep=0.496489,7ff00
 GradientStep=0.665028,fff900
 GradientStep=0.830893,ff0008
 GradientStep=0.997893,f800ff
+
 
 BitmapCellWidth=10
 BitmapCellHeight=10

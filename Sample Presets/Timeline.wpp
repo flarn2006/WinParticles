@@ -10,3 +10,8 @@ EmissionRate=60000
 EmissionRadius=0
 InnerRadius=0
 
+AdditiveDrawing=1
+RandomColorMode=0
+RandomImageMode=0
+
+
