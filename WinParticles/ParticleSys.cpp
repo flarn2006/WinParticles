@@ -334,6 +334,7 @@ void CParticleSys::DisableAllAnimations()
 {
 	for (std::vector<CAnimationGeneric*>::iterator i = animations.begin(); i != animations.end(); i++) {
 		(*i)->SetEnabled(false);
+		(*i)->Reset();
 	}
 }
 
