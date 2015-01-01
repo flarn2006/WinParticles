@@ -30,6 +30,7 @@ public:
 	void Clear();
 	void InvertAll();
 	void CopyToOtherCells(int srcCell);
+	void Scale(int factor);
 	void LoadDefaultBitmap();
 	void ShiftAllCells(int xOffset, int yOffset);
 	void FloodFill(int x, int y);

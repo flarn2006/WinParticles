@@ -20,6 +20,13 @@ CBitmapEditor::CBitmapEditor(CParticleBitmap *bitmap)
 	toolbarBmp = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BMPTOOLBAR));
 	toolbarDC = CreateCompatibleDC(NULL);
 	SelectObject(toolbarDC, toolbarBmp);
+
+	const BYTE data[] = {
+		0x7F, 0xFF, //01111111 11111111
+		0xBF, 0xFF, //10111111 11111111
+	};
+	grayedPattern = CreateBitmap(2, 2, 1, 1, data);
+	grayedBrush = CreatePatternBrush(grayedPattern);
 }
 
 CBitmapEditor::~CBitmapEditor()
@@ -28,6 +35,8 @@ CBitmapEditor::~CBitmapEditor()
 	DeleteObject(sectionPen);
 	DeleteDC(toolbarDC);
 	DeleteObject(toolbarBmp);
+	DeleteObject(grayedBrush);
+	DeleteObject(grayedPattern);
 }
 
 void CBitmapEditor::UpdateBounds()
@@ -58,6 +67,20 @@ void CBitmapEditor::UpdateBounds(LPRECT clientRect)
 	CopyRect(&lastClientRect, clientRect);
 }
 
+bool CBitmapEditor::CanScaleDown()
+{
+	// Bitmap cell width and height must both be even numbers greater than 1.
+	int cellWidth = bitmap->GetCellWidth();
+	int cellHeight = bitmap->GetCellHeight();
+	return (cellWidth > 1) && (cellHeight > 1) && !(cellWidth & 1) && !(cellHeight & 1);
+}
+
+void CBitmapEditor::GetButtonTopLeft(int btnIndex, LPPOINT topLeft)
+{
+	topLeft->x = toolbarRect.left + 1 + btnIndex * 24;
+	topLeft->y = toolbarRect.top + 1;
+}
+
 void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 {
 	UpdateBounds(clientRect);
@@ -82,11 +105,21 @@ void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 
 	StretchBlt(hDC, toolbarRect.left, toolbarRect.top, TOOLBAR_BMP_WIDTH * 2, TOOLBAR_BMP_HEIGHT * 2, toolbarDC, 0, 0, TOOLBAR_BMP_WIDTH, TOOLBAR_BMP_HEIGHT, SRCCOPY);
 
+	if (!CanScaleDown()) {
+		POINT scaleDownBtnTopLeft;
+		GetButtonTopLeft(4, &scaleDownBtnTopLeft);
+		SelectObject(hDC, grayedBrush);
+		SetTextColor(hDC, 0x808080);
+		PatBlt(hDC, scaleDownBtnTopLeft.x + 1, scaleDownBtnTopLeft.y + 1, 22, 22, PATINVERT);
+	}
+
 	if (resizing) {
 		Rectangle(hDC, bounds.left - 2, bounds.top - 2, bounds.right + 3, bounds.bottom + 3);
 		SetDCBrushColor(hDC, 0xFFFF00);
 		SelectObject(hDC, GetStockObject(DC_BRUSH));
-		PatBlt(hDC, toolbarRect.left + 73, toolbarRect.top + 1, 24, 24, 0x500325);  // ROP 0x50: (PAT & !DEST)
+		POINT resizeBtnTopLeft;
+		GetButtonTopLeft(3, &resizeBtnTopLeft);
+		PatBlt(hDC, resizeBtnTopLeft.x, resizeBtnTopLeft.y, 24, 24, 0x500325);  // ROP 0x50: (PAT & !DEST)
 		
 		LPCTSTR resizeHelpText = TEXT("[WASD] Cell size\n[+/-]  # of cells\n[IJKL] Shift image");
 		RECT textRect;
@@ -129,7 +162,13 @@ void CBitmapEditor::OnMouseDown(int x, int y)
 		case 3: //resize
 			resizing = !resizing;
 			break;
-		case 4: //default
+		case 4: //scale 1/2x
+			if (CanScaleDown()) bitmap->Scale(-2);
+			break;
+		case 5: //scale 2x
+			bitmap->Scale(2);
+			break;
+		case 6: //default
 			bitmap->LoadDefaultBitmap();
 			break;
 		}

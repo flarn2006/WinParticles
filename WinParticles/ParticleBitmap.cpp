@@ -116,6 +116,36 @@ void CParticleBitmap::CopyToOtherCells(int srcCell)
 	}
 }
 
+void CParticleBitmap::Scale(int factor)
+{
+	// Negative factor scales by 1/abs(factor)
+	int width = cellWidth * cellCount;
+	int newWidth, newHeight;
+	if (factor < 0) {
+		factor = -factor;
+		newWidth = width / factor;
+		newHeight = cellHeight / factor;
+	} else {
+		newWidth = width * factor;
+		newHeight = cellHeight * factor;
+	}
+
+	HBITMAP oldBitmap = bitmap;
+	HDC oldBitmapDC = bitmapDC;
+
+	bitmap = CreateCompatibleBitmap(bitmapDC, newWidth, newHeight);
+	bitmapDC = CreateCompatibleDC(bitmapDC);
+	SelectObject(bitmapDC, bitmap);
+
+	StretchBlt(bitmapDC, 0, 0, newWidth, newHeight, oldBitmapDC, 0, 0, width, cellHeight, SRCCOPY);
+
+	DeleteDC(oldBitmapDC);
+	DeleteObject(oldBitmap);
+	
+	cellWidth = newWidth / cellCount;
+	cellHeight = newHeight;
+}
+
 void CParticleBitmap::LoadDefaultBitmap()
 {
 	cellWidth = DEFAULT_CELL_WIDTH;

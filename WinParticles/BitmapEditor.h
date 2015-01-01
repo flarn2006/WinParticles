@@ -18,13 +18,17 @@ private:
 	bool resizing;
 	int pixelSize;
 	RECT lastClientRect;
+	HBITMAP grayedPattern;
+	HBRUSH grayedBrush;
 
-	const int TOOLBAR_BMP_WIDTH = 61;
+	const int TOOLBAR_BMP_WIDTH = 85;
 	const int TOOLBAR_BMP_HEIGHT = 13;
-	const int TOOLBAR_BUTTON_COUNT = 5;
+	const int TOOLBAR_BUTTON_COUNT = 7;
 
 	void UpdateBounds();
 	void UpdateBounds(LPRECT clientRect);
+	bool CanScaleDown();
+	void GetButtonTopLeft(int btnIndex, LPPOINT topLeft);
 
 protected:
 	virtual void OnDraw(HDC hDC, const LPRECT clientRect);
