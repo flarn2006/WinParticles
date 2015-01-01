@@ -184,7 +184,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		winEvents->OnPaint();
 		break;
 	case WM_KEYDOWN:
-		winEvents->OnKeyDown(wParam);
+		winEvents->OnKeyDown((WORD)wParam);
 		break;
 	case WM_LBUTTONDOWN:
 		winEvents->OnLButtonDown(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));

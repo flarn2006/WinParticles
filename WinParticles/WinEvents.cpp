@@ -502,7 +502,7 @@ void CWinEvents::OnMouseMove(int x, int y)
 
 	if (mouseControlsParams) {
 		SetCursor(curEmitter);
-		SetClassLong(hWnd, GCL_HCURSOR, (DWORD)curEmitter);
+		SetClassLongPtr(hWnd, GCLP_HCURSOR, (DWORD)curEmitter);
 		if (mouseMovesEmitter) {
 			emitterX = (double)x;
 			emitterY = (double)y;
@@ -510,7 +510,7 @@ void CWinEvents::OnMouseMove(int x, int y)
 	} else {
 		HCURSOR curArrow = LoadCursor(NULL, IDC_ARROW);
 		SetCursor(curArrow);
-		SetClassLong(hWnd, GCL_HCURSOR, (DWORD)curArrow);
+		SetClassLongPtr(hWnd, GCLP_HCURSOR, (DWORD)curArrow);
 	}
 
 	display->MouseMove(x, y);
