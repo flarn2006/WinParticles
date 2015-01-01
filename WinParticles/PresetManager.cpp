@@ -198,6 +198,7 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 				std::istringstream parseRight(right);
 
 				if (left.compare("VelocityMode") == 0) {
+					psys->DisableAllAnimations();
 					if (right.compare("POLAR") == 0) {
 						psys->SetVelocityMode(CParticleSys::VelocityMode::MODE_POLAR);
 					} else if (right.compare("RECTANGULAR") == 0) {
