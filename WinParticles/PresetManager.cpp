@@ -10,6 +10,7 @@
 
 extern CParticleBitmap bitmap;
 extern CRootDisplay *display;
+extern bool additiveDrawing;
 
 CPresetManager::CPresetManager(CParticleSys *psys, CAnimation<double> *animArray)
 {
@@ -83,6 +84,10 @@ bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components com
 		file << "EmissionRate=" << psys->GetEmissionRate() << std::endl;
 		file << "EmissionRadius=" << psys->GetEmissionRadius() << std::endl;
 		file << "InnerRadius=" << psys->GetInnerRadius() << std::endl;
+		file << std::endl;
+
+		file << "AdditiveDrawing=" << (additiveDrawing ? '1' : '0') << std::endl;
+		file << "RandomColorMode=" << (psys->GetRandomColorMode() ? '1' : '0') << std::endl;
 
 		file << std::endl;
 	}
@@ -281,6 +286,16 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 					double innerRadius;
 					parseRight >> innerRadius;
 					psys->SetInnerRadius(innerRadius);
+
+				} else if (left.compare("AdditiveDrawing") == 0) {
+					int state;
+					parseRight >> state;
+					additiveDrawing = (state > 0);
+
+				} else if (left.compare("RandomColorMode") == 0) {
+					int state;
+					parseRight >> state;
+					psys->SetRandomColorMode(state > 0);
 
 				} else if (left.compare("GradientStep") == 0) {
 					std::string left2, right2;
