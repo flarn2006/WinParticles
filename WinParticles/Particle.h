@@ -11,6 +11,7 @@ private:
 	double age;
 	double maxAge;
 	COLORREF tint;
+	int fixedImage;
 	int flags;
 	CGradient *gradient;
 
@@ -42,6 +43,9 @@ public:
 
 	COLORREF GetTint();
 	void SetTint(COLORREF tint, bool ignoreGradient = false);
+
+	int GetFixedImage();
+	void SetFixedImage(int cellNum = -1);
 
 	void SetDead();
 	bool IsDead();

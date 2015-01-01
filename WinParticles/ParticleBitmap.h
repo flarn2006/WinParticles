@@ -20,6 +20,7 @@ public:
 	int GetCellCount();
 	void Resize(int cellWidth, int cellHeight, int cellCount);
 
+	void Draw(HDC hDC, int ctrX, int ctrY, COLORREF color, int cellNum);
 	void Draw(HDC hDC, int ctrX, int ctrY, COLORREF color, double relativeAge);
 	HBITMAP GetBitmap();
 	HDC GetDC();

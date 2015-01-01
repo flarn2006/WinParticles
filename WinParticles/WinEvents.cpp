@@ -335,7 +335,7 @@ void CWinEvents::OnPaint()
 		out << "DEBUG BUILD (performance is not optimal)" << std::endl;
 #endif
 		out << "Number of particles: " << psys->GetLiveParticleCount();
-#ifdef _DEBUG
+#ifdef _TEST
 		out << " living" << std::endl;
 		out << "                     " << psys->GetParticles()->size() << " total";
 #endif
@@ -379,6 +379,7 @@ void CWinEvents::OnPaint()
 		out << "[G] Reset gradient presets" << std::endl;
 		out << "[A] Toggle additive drawing (" << (additiveDrawing ? "ON" : "OFF") << ")" << std::endl;
 		out << "[S] Static (random) color mode (" << (psys->GetRandomColorMode() ? "ON" : "OFF") << ")" << std::endl;
+		out << "[D] Static (random) image mode (" << (psys->GetRandomImageMode() ? "ON" : "OFF") << ")" << std::endl;
 		out << "[Q] Change text display" << std::endl;
 		out << "[E] Toggle bitmap/gradient/animation editors" << std::endl;
 	}
@@ -436,6 +437,8 @@ void CWinEvents::OnKeyDown(WORD key)
 			additiveDrawing = !additiveDrawing;
 		} else if (key == (WPARAM)'S') {
 			psys->SetRandomColorMode(!psys->GetRandomColorMode());
+		} else if (key == (WPARAM)'D') {
+			psys->SetRandomImageMode(!psys->GetRandomImageMode());
 		} else if (key == (WPARAM)'Q') {
 			verbosity = (verbosity + 1) % 3;
 			UpdateViewMenuChecks();

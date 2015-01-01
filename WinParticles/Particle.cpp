@@ -14,6 +14,7 @@ CParticle::CParticle()
 	age = 0.0;
 	maxAge = 0.0;
 	tint = RGB(255, 255, 255);
+	fixedImage = -1;
 	flags = 0;
 }
 
@@ -97,6 +98,16 @@ void CParticle::SetTint(COLORREF tint, bool ignoreGradient)
 		flags &= ~PF_NOGRADIENT;
 }
 
+int CParticle::GetFixedImage()
+{
+	return fixedImage;
+}
+
+void CParticle::SetFixedImage(int cellNum)
+{
+	fixedImage = cellNum;
+}
+
 void CParticle::SetDead()
 {
 	flags |= PF_DEAD;
@@ -123,11 +134,19 @@ void CParticle::Simulate(double time)
 
 void CParticle::Draw(HDC hDC)
 {
-	double relativeAge = age / maxAge;
-	COLORREF color;
-	if (flags & PF_NOGRADIENT)
-		color = tint;
-	else
-		color = MultiplyColors(tint, gradient->ColorAtPoint(relativeAge));
-	bitmap.Draw(hDC, (int)px, (int)py, color, relativeAge);
+	if (!IsDead()) {
+		double relativeAge = age / maxAge;
+		COLORREF color;
+
+		if (flags & PF_NOGRADIENT)
+			color = tint;
+		else
+			color = MultiplyColors(tint, gradient->ColorAtPoint(relativeAge));
+
+		if (fixedImage >= 0) {
+			bitmap.Draw(hDC, (int)px, (int)py, color, fixedImage);
+		} else {
+			bitmap.Draw(hDC, (int)px, (int)py, color, relativeAge);
+		}
+	}
 }

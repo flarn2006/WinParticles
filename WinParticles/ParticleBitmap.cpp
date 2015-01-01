@@ -56,7 +56,7 @@ void CParticleBitmap::Resize(int cellWidth, int cellHeight, int cellCount)
 	this->cellCount = cellCount;
 }
 
-void CParticleBitmap::Draw(HDC hDC, int ctrX, int ctrY, COLORREF color, double relativeAge)
+void CParticleBitmap::Draw(HDC hDC, int ctrX, int ctrY, COLORREF color, int cellNum)
 {
 	LONG x = ctrX - cellWidth / 2;
 	LONG y = ctrY - cellHeight / 2;
@@ -64,12 +64,17 @@ void CParticleBitmap::Draw(HDC hDC, int ctrX, int ctrY, COLORREF color, double r
 	if (additiveDrawing) {
 		SetBkColor(hDC, 0);
 		SetTextColor(hDC, color);
-		BitBlt(hDC, x, y, cellWidth, cellHeight, bitmapDC, (int)(relativeAge * (double)cellCount) * cellWidth, 0, SRCPAINT);
+		BitBlt(hDC, x, y, cellWidth, cellHeight, bitmapDC, cellNum * cellWidth, 0, SRCPAINT);
 	} else {
 		SelectObject(hDC, GetStockObject(DC_BRUSH));
 		SetDCBrushColor(hDC, color);
-		WorkingMaskBlt(hDC, x, y, cellWidth, cellHeight, hDC, 0, 0, bitmap, (int)(relativeAge * (double)cellCount) * cellWidth, 0, MAKEROP4(0xAA0029, PATCOPY));
+		WorkingMaskBlt(hDC, x, y, cellWidth, cellHeight, hDC, 0, 0, bitmap, cellNum * cellWidth, 0, MAKEROP4(0xAA0029, PATCOPY));
 	}
+}
+
+void CParticleBitmap::Draw(HDC hDC, int ctrX, int ctrY, COLORREF color, double relativeAge)
+{
+	Draw(hDC, ctrX, ctrY, color, (int)(relativeAge * (double)cellCount));
 }
 
 HBITMAP CParticleBitmap::GetBitmap()

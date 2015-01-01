@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include "ParticleSys.h"
 #include "Common.h"
+#include "ParticleBitmap.h"
 #include <cstdlib>
 #include <cmath>
+
+extern CParticleBitmap bitmap;
 
 CParticleSys::CParticleSys()
 {
@@ -19,7 +22,7 @@ CParticleSys::CParticleSys()
 	defaultGradient->SetStep(2, 1.0, RGB(255, 0, 0));
 
 	livingCount = 0;
-	randomColorMode = false;
+	flags = 0;
 }
 
 CParticleSys::~CParticleSys()
@@ -293,12 +296,28 @@ void CParticleSys::Draw(HDC hDC, LPRECT rect)
 
 bool CParticleSys::GetRandomColorMode()
 {
-	return randomColorMode;
+	return (flags & SF_RANDOM_COLOR) > 0;
 }
 
 void CParticleSys::SetRandomColorMode(bool state)
 {
-	randomColorMode = state;
+	if (state)
+		flags |= SF_RANDOM_COLOR;
+	else
+		flags &= ~SF_RANDOM_COLOR;
+}
+
+bool CParticleSys::GetRandomImageMode()
+{
+	return (flags & SF_RANDOM_IMAGE) > 0;
+}
+
+void CParticleSys::SetRandomImageMode(bool state)
+{
+	if (state)
+		flags |= SF_RANDOM_IMAGE;
+	else
+		flags &= ~SF_RANDOM_IMAGE;
 }
 
 int CParticleSys::GetLiveParticleCount()
@@ -354,10 +373,16 @@ CParticle &CParticleSys::CreateParticle(double x, double y)
 	p.SetMaxAge(maxAge);
 	p.SetGradient(defaultGradient);
 
-	if (randomColorMode) {
+	if (flags & SF_RANDOM_COLOR) {
 		p.SetTint(MultiplyColors(defaultTint, defaultGradient->ColorAtPoint(RandInRange(0.0, 1.0))), true);
 	} else {
 		p.SetTint(defaultTint, false);
+	}
+
+	if (flags & SF_RANDOM_IMAGE) {
+		p.SetFixedImage(rand() % bitmap.GetCellCount());
+	} else {
+		p.SetFixedImage(-1);
 	}
 	
 	psys->push_back(p);

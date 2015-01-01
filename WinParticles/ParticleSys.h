@@ -27,7 +27,12 @@ private:
 	COLORREF defaultTint;
 	int livingCount;
 	std::vector<CAnimationGeneric*> animations;
-	bool randomColorMode;
+	int flags;
+
+	enum Flags {
+		SF_RANDOM_COLOR = 1,
+		SF_RANDOM_IMAGE = 2
+	};
 
 public:
 	CParticleSys();
@@ -87,6 +92,8 @@ public:
 
 	bool GetRandomColorMode();
 	void SetRandomColorMode(bool state);
+	bool GetRandomImageMode();
+	void SetRandomImageMode(bool state);
 
 	int GetLiveParticleCount();
 
