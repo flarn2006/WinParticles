@@ -210,7 +210,7 @@ void CParticleSys::SetDefaultTint(COLORREF tint)
 	defaultTint = tint;
 }
 
-void CParticleSys::SimMovingEmitter(double time, double destX, double destY)
+void CParticleSys::Simulate(double time, double destX, double destY)
 {
 	double srcX = emitterX;
 	double srcY = emitterY;
@@ -259,7 +259,25 @@ void CParticleSys::SimMovingEmitter(double time, double destX, double destY)
 
 void CParticleSys::Simulate(double time)
 {
-	SimMovingEmitter(time, emitterX, emitterY);
+	Simulate(time, emitterX, emitterY);
+}
+
+void CParticleSys::SimulateInSteps(double time, double destX, double destY, int steps)
+{
+	double stepTime = time / steps;
+	double dX = (destX - emitterX) / steps;
+	double dY = (destY - emitterY) / steps;
+	for (int i = 0; i < steps; i++) {
+		Simulate(stepTime, emitterX + dX, emitterY + dY);
+	}
+}
+
+void CParticleSys::SimulateInSteps(double time, int steps)
+{
+	double stepTime = time / steps;
+	for (int i = 0; i < steps; i++) {
+		Simulate(stepTime);
+	}
 }
 
 void CParticleSys::Draw(HDC hDC, LPRECT rect)

@@ -529,7 +529,8 @@ void CWinEvents::OnMouseWheel(short wheelDelta)
 
 void CWinEvents::OnTimer()
 {
-	psys->SimMovingEmitter(1.0 / FPS, emitterX, emitterY);
+	//psys->Simulate(1.0 / FPS, emitterX, emitterY);
+	psys->SimulateInSteps(1.0 / FPS, emitterX, emitterY, 128);
 	InvalidateRect(hWnd, NULL, FALSE);
 }
 

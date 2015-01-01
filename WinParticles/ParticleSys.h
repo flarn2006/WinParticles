@@ -79,8 +79,10 @@ public:
 	COLORREF GetDefaultTint();
 	void SetDefaultTint(COLORREF tint);
 
-	void SimMovingEmitter(double time, double destX, double destY);
+	void Simulate(double time, double destX, double destY);
 	void Simulate(double time);
+	void SimulateInSteps(double time, double destX, double destY, int steps);
+	void SimulateInSteps(double time, int steps);
 	void Draw(HDC hDC, LPRECT rect);
 
 	bool GetRandomColorMode();
