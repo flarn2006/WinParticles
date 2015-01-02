@@ -9,6 +9,7 @@ public:
 	enum VelocityMode { MODE_POLAR, MODE_RECT };
 
 private:
+	const int SIMULATION_STEPS = 128; //higher value = less efficient, but animations are more accurate
 	const int DISPOSE_THRESHOLD = 10; //dispose of dead at this percentage dead
 	std::vector<CParticle> *psys;
 	double emitterX, emitterY;

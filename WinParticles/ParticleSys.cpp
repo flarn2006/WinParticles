@@ -267,12 +267,17 @@ void CParticleSys::Simulate(double time)
 
 void CParticleSys::SimulateInSteps(double time, double destX, double destY, int steps)
 {
+#ifdef _DEBUG
+	// for some reason this really slows it down in debug builds
+	Simulate(time, destX, destY);
+#else
 	double stepTime = time / steps;
 	double dX = (destX - emitterX) / steps;
 	double dY = (destY - emitterY) / steps;
 	for (int i = 0; i < steps; i++) {
 		Simulate(stepTime, emitterX + dX, emitterY + dY);
 	}
+#endif
 }
 
 void CParticleSys::SimulateInSteps(double time, int steps)

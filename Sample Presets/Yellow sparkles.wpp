@@ -14,6 +14,7 @@ AdditiveDrawing=1
 RandomColorMode=0
 RandomImageMode=0
 
+ChaoticGradient
 GradientStep=0,bfbf
 GradientStep=0.104635,ffff
 GradientStep=1,ffffff

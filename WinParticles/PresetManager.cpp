@@ -96,7 +96,7 @@ bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components com
 	if (componentsToSave & PMC_GRADIENT) {
 		CGradient *gradient = psys->GetDefGradient();
 
-		if (CChaoticGradient::IsChaotic(gradient)) {
+		if (IsOfType<CChaoticGradient>(gradient)) {
 			file << "ChaoticGradient" << std::endl;
 		}
 
@@ -175,7 +175,7 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 
 	int bitmapRow = -1; //stores current row of bitmap being read; -1 means it's not a bitmap line
 	std::string line;
-	bool chaoticGradient = false;
+	bool specialGradient = false;
 	int bitmapCellWidth = 5;
 	int bitmapCellHeight = 5;
 	int bitmapCellCount = 6;
@@ -185,11 +185,9 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 			bitmap.Resize(bitmapCellWidth, bitmapCellHeight, bitmapCellCount);
 
 		} else if (line.compare("ChaoticGradient") == 0) {
-			if (!CChaoticGradient::IsChaotic(gradient)) {
-				chaoticGradient = true;
-				delete gradient;
-				gradient = new CChaoticGradient();
-			}
+			specialGradient = true;
+			delete gradient;
+			gradient = new CChaoticGradient();
 
 		} else if (bitmapRow == -1) {
 			std::string left, right;
@@ -308,7 +306,7 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 					std::string left2, right2;
 					if (SplitString(right, ',', left2, right2)) {
 						if (!includesGradient) {
-							if (CChaoticGradient::IsChaotic(gradient) && !chaoticGradient) {
+							if (!specialGradient) {
 								delete gradient;
 								gradient = new CGradient();
 							} else {

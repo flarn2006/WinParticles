@@ -29,7 +29,6 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 #define MAX_LOADSTRING 100
 #define NUM_GRADIENTS 6
-#define MAX_PARAM 6
 
 #define SELPARAM_CHAR(x) (selParam == (x) ? '>' : ' ')
 #define MF_CHECK_BOOL(b) ((b) ? MF_CHECKED : MF_UNCHECKED)

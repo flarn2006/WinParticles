@@ -9,7 +9,6 @@ public:
 	CChaoticGradient(int numSteps);
 	~CChaoticGradient();
 
-	static bool IsChaotic(CGradient *gradient);
 	virtual COLORREF ColorAtPoint(double position);
 };
 

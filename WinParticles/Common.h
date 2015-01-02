@@ -43,3 +43,8 @@ template <typename T> T WrapValue(T value, T min, T max)
 	if (value > max) return min + (value - max);
 	return value;
 }
+
+template <typename TSpecific, typename TGeneric> bool IsOfType(TGeneric *object)
+{
+	return (dynamic_cast<TSpecific*>(object) != NULL);
+}

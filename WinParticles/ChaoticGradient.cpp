@@ -18,11 +18,6 @@ CChaoticGradient::~CChaoticGradient()
 {
 }
 
-bool CChaoticGradient::IsChaotic(CGradient *gradient)
-{
-	return (dynamic_cast<CChaoticGradient*>(gradient) != NULL);
-}
-
 COLORREF CChaoticGradient::ColorAtPoint(double position)
 {
 	return CGradient::ColorAtPoint(RandInRange(0.0, 1.0));
