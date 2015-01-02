@@ -11,8 +11,8 @@
 
 #define MAX_LOADSTRING 100
 #define NUM_GRADIENTS 6
-#define FPS 60
-#define SIMULATION_STEPS 128 //higher value = less efficient, but animations are more accurate
+#define MIN_FPS 32
+#define TARGET_FPS 60
 
 #define SELPARAM_CHAR(x) (selParam == (x) ? '>' : ' ')
 #define MF_CHECK_BOOL(b) ((b) ? MF_CHECKED : MF_UNCHECKED)
@@ -52,7 +52,7 @@ CWinEvents::CWinEvents(HWND hWnd)
 	selGradientNum = 0;
 
 	font = CreateFont(0, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, DEFAULT_PITCH, TEXT("Fixedsys"));
-	SetTimer(hWnd, 0, 1000 / (FPS * 3/2), NULL);
+	SetTimer(hWnd, 0, 1000 / (TARGET_FPS * 3/2), NULL);
 	bbuf = new CBackBuffer(hWnd);
 
 	colorDlg.lStructSize = sizeof(colorDlg);
@@ -345,7 +345,8 @@ void CWinEvents::OnPaint()
 		out << "Number of particles: " << psys->GetLiveParticleCount();
 #ifdef _TEST
 		out << " living" << std::endl;
-		out << "                     " << psys->GetParticles()->size() << " total";
+		out << "                     " << psys->GetParticles()->size() << " total" << std::endl;
+		out << "Simulation steps: " << simulationSteps;
 #endif
 		out << std::endl;
 		out << "Use mouse buttons/wheel or arrow keys to edit params" << std::endl;
@@ -541,7 +542,17 @@ void CWinEvents::OnMouseWheel(short wheelDelta)
 void CWinEvents::OnTimer()
 {
 	fpsMonitor.NewFrame();
-	psys->SimulateInSteps((double)fpsMonitor.GetLastFrameTime() / 1000, emitterX, emitterY, SIMULATION_STEPS);
+
+	if (psys->AnyAnimationsEnabled()) {
+		int addThisManySteps = (int)(5.0 * (fpsMonitor.GetFPS() - MIN_FPS));
+		if (addThisManySteps >= 0 || fpsMonitor.GetFPS() < MIN_FPS) simulationSteps += addThisManySteps;
+		if (simulationSteps < 128) simulationSteps = 128;
+	} else {
+		// Multiple steps won't do any good without animation.
+		simulationSteps = 1;
+	}
+
+	psys->SimulateInSteps((double)fpsMonitor.GetLastFrameTime() / 1000, emitterX, emitterY, simulationSteps);
 	InvalidateRect(hWnd, NULL, FALSE);
 }
 

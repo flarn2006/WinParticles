@@ -26,6 +26,7 @@ private:
 	CAnimatedParam animParams[CParamAgent::ParamID::PARAM_COUNT];
 	CAnimation<double> animations[CParamAgent::ParamID::PARAM_COUNT];
 	CFPSMonitor fpsMonitor;
+	int simulationSteps = 1;
 
 	void SelectParam(CParamAgent *agent, CParamAgent::ParamID paramNum, double &deltaMult);
 	void SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd);

@@ -5,7 +5,7 @@
 class CFPSMonitor
 {
 private:
-	const unsigned int AVERAGE_OVER_N_FRAMES = 10;
+	const unsigned int AVERAGE_OVER_N_FRAMES = 8;
 	ULONGLONG lastTickCount;
 	std::deque<unsigned int> lastDifferences;
 	double fps;

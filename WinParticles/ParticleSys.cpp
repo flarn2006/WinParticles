@@ -343,6 +343,14 @@ void CParticleSys::DisableAllAnimations()
 	}
 }
 
+bool CParticleSys::AnyAnimationsEnabled()
+{
+	for (std::vector<CAnimationGeneric*>::iterator i = animations.begin(); i != animations.end(); i++) {
+		if ((*i)->GetEnabled()) return true;
+	}
+	return false;
+}
+
 CParticle &CParticleSys::CreateParticle(double x, double y)
 {
 	CParticle p;
