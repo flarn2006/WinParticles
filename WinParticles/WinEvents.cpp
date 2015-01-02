@@ -13,6 +13,8 @@
 #define NUM_GRADIENTS 6
 #define MIN_FPS 32
 #define TARGET_FPS 60
+#define MIN_STEPS 128
+#define MAX_STEPS 1024
 
 #define SELPARAM_CHAR(x) (selParam == (x) ? '>' : ' ')
 #define MF_CHECK_BOOL(b) ((b) ? MF_CHECKED : MF_UNCHECKED)
@@ -543,10 +545,9 @@ void CWinEvents::OnTimer()
 {
 	fpsMonitor.NewFrame();
 
-	if (psys->AnyAnimationsEnabled()) {
-		int addThisManySteps = (int)(5.0 * (fpsMonitor.GetFPS() - MIN_FPS));
-		if (addThisManySteps >= 0 || fpsMonitor.GetFPS() < MIN_FPS) simulationSteps += addThisManySteps;
-		if (simulationSteps < 128) simulationSteps = 128;
+	if (psys->GetAnimationStatus()) {
+		simulationSteps += (int)(5.0 * (fpsMonitor.GetFPS() - MIN_FPS));
+		simulationSteps = ClampValue(simulationSteps, MIN_STEPS, MAX_STEPS);
 	} else {
 		// Multiple steps won't do any good without animation.
 		simulationSteps = 1;

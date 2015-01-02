@@ -12,6 +12,7 @@ class CAnimationGeneric
 {
 private:
 	bool enabled;
+	double freq;
 
 public:
 	virtual void Run(double time) = 0;
@@ -19,6 +20,8 @@ public:
 	
 	bool GetEnabled();
 	void SetEnabled(bool enabled);
+	double GetFrequency();
+	void SetFrequency(double frequency);
 };
 
 template <typename TValue>
@@ -30,7 +33,7 @@ public:
 private:
 	CAnimTarget<TValue> *target;
 	AnimFunction function;
-	double currentTime, freq;
+	double currentTime;
 	TValue min, max;
 
 public:
@@ -63,11 +66,6 @@ public:
 		if (max) *max = this->max;
 	}
 
-	double GetFrequency()
-	{
-		return freq;
-	}
-
 	void SetTarget(CAnimTarget<TValue> *target)
 	{
 		this->target = target;
@@ -84,15 +82,10 @@ public:
 		this->max = max;
 	}
 
-	void SetFrequency(double frequency)
-	{
-		freq = frequency;
-	}
-
 	void Run(double time)
 	{
 		if (GetEnabled()) {
-			time *= freq;
+			time *= GetFrequency();
 			currentTime = std::fmod(currentTime + time, 1.0);
 			if (target) target->SetValue(Interpolate(function(currentTime), 0.0, 1.0, min, max));
 		}

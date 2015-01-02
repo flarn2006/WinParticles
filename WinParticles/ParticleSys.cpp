@@ -343,12 +343,26 @@ void CParticleSys::DisableAllAnimations()
 	}
 }
 
-bool CParticleSys::AnyAnimationsEnabled()
+bool CParticleSys::GetAnimationStatus()
 {
 	for (std::vector<CAnimationGeneric*>::iterator i = animations.begin(); i != animations.end(); i++) {
 		if ((*i)->GetEnabled()) return true;
 	}
 	return false;
+}
+
+bool CParticleSys::GetAnimationStatus(double &highestFreq)
+{
+	highestFreq = 0.0;
+	bool anyEnabled = false;
+	for (std::vector<CAnimationGeneric*>::iterator i = animations.begin(); i != animations.end(); i++) {
+		if ((*i)->GetEnabled()) {
+			double freq = (*i)->GetFrequency();
+			if (freq > highestFreq) highestFreq = freq;
+			anyEnabled = true;
+		}
+	}
+	return anyEnabled;
 }
 
 CParticle &CParticleSys::CreateParticle(double x, double y)

@@ -99,7 +99,8 @@ public:
 
 	std::vector<CAnimationGeneric*> &GetAnimationsVector();
 	void DisableAllAnimations();
-	bool AnyAnimationsEnabled();
+	bool GetAnimationStatus();
+	bool GetAnimationStatus(double &highestFreq);
 
 	CParticle &CreateParticle(double x, double y);
 
