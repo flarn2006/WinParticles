@@ -534,9 +534,8 @@ void CWinEvents::OnMouseWheel(short wheelDelta)
 
 void CWinEvents::OnTimer()
 {
-	//psys->Simulate(1.0 / FPS, emitterX, emitterY);
-	psys->SimulateInSteps(1.0 / FPS, emitterX, emitterY, SIMULATION_STEPS);
 	fpsMonitor.NewFrame();
+	psys->SimulateInSteps((double)fpsMonitor.GetLastFrameTime() / 1000, emitterX, emitterY, SIMULATION_STEPS);
 	InvalidateRect(hWnd, NULL, FALSE);
 }
 

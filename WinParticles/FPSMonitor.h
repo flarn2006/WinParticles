@@ -5,14 +5,15 @@
 class CFPSMonitor
 {
 private:
-	const int AVERAGE_OVER_N_FRAMES = 10;
+	const unsigned int AVERAGE_OVER_N_FRAMES = 10;
 	ULONGLONG lastTickCount;
-	std::deque<int> lastDifferences;
-	float fps;
+	std::deque<unsigned int> lastDifferences;
+	double fps;
 
 public:
 	CFPSMonitor();
 	void NewFrame();
-	float GetFPS();
+	double GetFPS();
+	unsigned int GetLastFrameTime();
 };
 
