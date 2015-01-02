@@ -5,7 +5,9 @@
 CRootDisplay::CRootDisplay()
 {
 	numInputBox = new CNumericInputBox();
+	helpText = new CHelpText();
 	AddSubItem(numInputBox);
+	AddSubItem(helpText);
 }
 
 CRootDisplay::~CRootDisplay()
@@ -13,6 +15,7 @@ CRootDisplay::~CRootDisplay()
 	delete numInputBox;
 	delete bmpEditor;
 	delete gradientEditor;
+	delete animEditor;
 }
 
 void CRootDisplay::InitBitmapEditor(CParticleBitmap *bitmap)
@@ -38,6 +41,12 @@ void CRootDisplay::UpdateSize(const LPRECT clientRect)
 	numInputBox->SetPosition((clientRect->left + clientRect->right) / 2, (clientRect->top + clientRect->bottom) / 2);
 	bmpEditor->SetTopRightPos(clientRect->right - 16, clientRect->top + 16);
 	animEditor->SetPosition(clientRect->left + 16, clientRect->bottom - (gradientEditor->GetEnabled() ? 176 : 144));
+	helpText->SetBottomRight(clientRect->bottom - (gradientEditor->GetEnabled() ? 40 : 8), clientRect->right - 8);
+}
+
+void CRootDisplay::SetHelpText(const tstring &text)
+{
+	helpText->SetText(text);
 }
 
 CNumericInputBox *CRootDisplay::GetNumInputBox()
@@ -58,4 +67,9 @@ CGradientEditor *CRootDisplay::GetGradientEditor()
 CAnimEditor *CRootDisplay::GetAnimEditor()
 {
 	return animEditor;
+}
+
+CHelpText *CRootDisplay::GetHelpText()
+{
+	return helpText;
 }

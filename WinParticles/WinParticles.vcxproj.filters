@@ -114,6 +114,9 @@
     <ClInclude Include="FPSMonitor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HelpText.h">
+      <Filter>Header Files\Display Items</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -190,6 +193,9 @@
     </ClCompile>
     <ClCompile Include="FPSMonitor.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HelpText.cpp">
+      <Filter>Source Files\Display Items</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

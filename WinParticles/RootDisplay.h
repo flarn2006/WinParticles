@@ -5,6 +5,7 @@
 #include "GradientEditor.h"
 #include "Gradient.h"
 #include "AnimEditor.h"
+#include "HelpText.h"
 
 class CRootDisplay : public CCompoundDispItem
 {
@@ -13,6 +14,7 @@ private:
 	CBitmapEditor *bmpEditor;
 	CGradientEditor *gradientEditor;
 	CAnimEditor *animEditor;
+	CHelpText *helpText;
 
 public:
 	CRootDisplay(); // You MUST also call the Init... functions
@@ -23,10 +25,12 @@ public:
 	void InitAnimEditor(CAnimation<double> *animations);
 
 	void UpdateSize(const LPRECT clientRect);
+	void SetHelpText(const tstring &text = TEXT(""));
 
 	CNumericInputBox *GetNumInputBox();
 	CBitmapEditor *GetBitmapEditor();
 	CGradientEditor *GetGradientEditor();
 	CAnimEditor *GetAnimEditor();
+	CHelpText *GetHelpText();
 };
 
