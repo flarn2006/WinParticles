@@ -13,8 +13,6 @@
 #define NUM_GRADIENTS 6
 #define MIN_FPS 32
 #define TARGET_FPS 60
-#define MIN_STEPS 128
-#define MAX_STEPS 1024
 
 #define SELPARAM_CHAR(x) (selParam == (x) ? '>' : ' ')
 #define MF_CHECK_BOOL(b) ((b) ? MF_CHECKED : MF_UNCHECKED)
@@ -344,11 +342,13 @@ void CWinEvents::OnPaint()
 		out << "DEBUG BUILD (performance is not optimal)" << std::endl;
 #endif
 		out << "FPS: " << fpsMonitor.GetFPS() << std::endl;
+		out << "Min steps: " << minSteps << std::endl;
+		out << "Steps:     " << simulationSteps << std::endl;
+		out << "Max steps: " << maxSteps << std::endl;
 		out << "Number of particles: " << psys->GetLiveParticleCount();
 #ifdef _TEST
 		out << " living" << std::endl;
-		out << "                     " << psys->GetParticles()->size() << " total" << std::endl;
-		out << "Simulation steps: " << simulationSteps;
+		out << "                     " << psys->GetParticles()->size() << " total";
 #endif
 		out << std::endl;
 		out << "Use mouse buttons/wheel or arrow keys to edit params" << std::endl;
@@ -546,9 +546,12 @@ void CWinEvents::OnTimer()
 {
 	fpsMonitor.NewFrame();
 
-	if (psys->GetAnimationStatus()) {
+	double highestFreq;
+	if (psys->GetAnimationStatus(highestFreq)) {
+		minSteps = ClampValue((int)(32.0 * highestFreq / fpsMonitor.GetFPS()), 1, 1024);
+		maxSteps = minSteps * 8;
 		simulationSteps += (int)(5.0 * (fpsMonitor.GetFPS() - MIN_FPS));
-		simulationSteps = ClampValue(simulationSteps, MIN_STEPS, MAX_STEPS);
+		simulationSteps = ClampValue(simulationSteps, minSteps, maxSteps);
 	} else {
 		// Multiple steps won't do any good without animation.
 		simulationSteps = 1;
