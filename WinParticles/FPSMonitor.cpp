@@ -8,9 +8,6 @@ CFPSMonitor::CFPSMonitor()
 
 void CFPSMonitor::NewFrame()
 {
-	// TODO: Calculate the average without having to store the last 10 values
-	// (I know it's possible; I think that's how most scientific calculators work.)
-
 	ULONGLONG tickCount = GetTickCount64();
 	int difference = (int)(tickCount - lastTickCount);
 	lastDifferences.push_back(difference);
