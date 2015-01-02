@@ -111,6 +111,9 @@
     <ClInclude Include="AnimPresetIDMappings.h">
       <Filter>Header Files\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="FPSMonitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -184,6 +187,9 @@
     </ClCompile>
     <ClCompile Include="AnimationGeneric.cpp">
       <Filter>Source Files\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="FPSMonitor.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -4,6 +4,7 @@
 #include "BackBuffer.h"
 #include "ParamAgent.h"
 #include "AnimatedParam.h"
+#include "FPSMonitor.h"
 
 class CWinEvents
 {
@@ -24,6 +25,7 @@ private:
 	HBRUSH backgroundBrush;
 	CAnimatedParam animParams[CParamAgent::ParamID::PARAM_COUNT];
 	CAnimation<double> animations[CParamAgent::ParamID::PARAM_COUNT];
+	CFPSMonitor fpsMonitor;
 
 	void SelectParam(CParamAgent *agent, CParamAgent::ParamID paramNum, double &deltaMult);
 	void SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd);

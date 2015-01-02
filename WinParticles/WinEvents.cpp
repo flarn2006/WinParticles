@@ -335,6 +335,7 @@ void CWinEvents::OnPaint()
 #ifdef _DEBUG
 		out << "DEBUG BUILD (performance is not optimal)" << std::endl;
 #endif
+		out << "FPS: " << fpsMonitor.GetFPS() << std::endl;
 		out << "Number of particles: " << psys->GetLiveParticleCount();
 #ifdef _TEST
 		out << " living" << std::endl;
@@ -535,6 +536,7 @@ void CWinEvents::OnTimer()
 {
 	//psys->Simulate(1.0 / FPS, emitterX, emitterY);
 	psys->SimulateInSteps(1.0 / FPS, emitterX, emitterY, SIMULATION_STEPS);
+	fpsMonitor.NewFrame();
 	InvalidateRect(hWnd, NULL, FALSE);
 }
 
