@@ -52,7 +52,7 @@ CWinEvents::CWinEvents(HWND hWnd)
 	selGradientNum = 0;
 
 	font = CreateFont(0, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, DEFAULT_PITCH, TEXT("Fixedsys"));
-	SetTimer(hWnd, 0, 1000 / FPS, NULL);
+	SetTimer(hWnd, 0, 1000 / (FPS * 3/2), NULL);
 	bbuf = new CBackBuffer(hWnd);
 
 	colorDlg.lStructSize = sizeof(colorDlg);
