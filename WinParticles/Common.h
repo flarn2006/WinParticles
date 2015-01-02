@@ -30,6 +30,10 @@ double RandInRange(double min, double max);
 
 BOOL WorkingMaskBlt(HDC hdcDest, int nXDest, int nYDest, int nWidth, int nHeight, HDC hdcSrc, int nXSrc, int nYSrc, HBITMAP hbmMask, int xMask, int yMask, DWORD dwRop);
 
+// Note: "HTML" is simply referring to the color format (#RRGGBB). This program does not manipulate HTML files.
+void ColorToHTML(COLORREF color, std::string &str);
+void ColorToHTML(COLORREF color, std::wstring &str);
+
 template <typename T> T ClampValue(T value, T min, T max)
 {
 	if (value < min) return min;

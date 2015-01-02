@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "Common.h"
+#include <iomanip>
 
 double Interpolate(double value, double inputMin, double inputMax, double outputMin, double outputMax)
 {
@@ -40,4 +42,20 @@ BOOL WorkingMaskBlt(HDC hdcDest, int nXDest, int nYDest, int nWidth, int nHeight
 	}
 
 	return MaskBlt(hdcDest, nXDest, nYDest, nWidth, nHeight, hdcSrc, nXSrc, nYSrc, hbmMask, xMask, yMask, dwRop);
+}
+
+void ColorToHTML(COLORREF color, std::string &str)
+{
+	std::ostringstream out;
+	out << std::hex << std::uppercase << std::setw(2);
+	out << "#" << GetRValue(color) << GetGValue(color) << GetBValue(color);
+	str = out.str();
+}
+
+void ColorToHTML(COLORREF color, std::wstring &str)
+{
+	std::wostringstream out;
+	out << std::hex << std::uppercase << std::setw(2);
+	out << L"#" << GetRValue(color) << GetGValue(color) << GetBValue(color);
+	str = out.str();
 }

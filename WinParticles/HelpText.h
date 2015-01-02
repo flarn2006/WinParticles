@@ -15,5 +15,6 @@ public:
 	CHelpText();
 	void SetBottomRight(int bottom, int right);
 	void SetText(const tstring &text = TEXT(""));
+	const tstring &GetText();
 };
 

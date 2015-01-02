@@ -31,6 +31,6 @@ public:
 	CBitmapEditor *GetBitmapEditor();
 	CGradientEditor *GetGradientEditor();
 	CAnimEditor *GetAnimEditor();
-	CHelpText *GetHelpText();
+	CHelpText *GetHelpTextObj();
 };
 

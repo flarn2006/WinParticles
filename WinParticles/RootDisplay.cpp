@@ -69,7 +69,7 @@ CAnimEditor *CRootDisplay::GetAnimEditor()
 	return animEditor;
 }
 
-CHelpText *CRootDisplay::GetHelpText()
+CHelpText *CRootDisplay::GetHelpTextObj()
 {
 	return helpText;
 }

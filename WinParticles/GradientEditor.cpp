@@ -3,10 +3,12 @@
 #include "Resource.h"
 #include "Common.h"
 #include "ParticleBitmap.h"
+#include "RootDisplay.h"
 
 extern HINSTANCE hInst;
 extern CHOOSECOLOR colorDlg;
 extern CParticleBitmap bitmap;  // to get number of cells (sub-images)
+extern CRootDisplay *display;
 
 CGradientEditor::CGradientEditor(CGradient *gradient)
 {
@@ -82,6 +84,12 @@ CGradientEditor::CStepHandle *CGradientEditor::AddGradientStep(int x)
 	gradient->PrecalculateColors();
 	SetGradient(gradient);
 	return stepHandles[index];
+}
+
+void CGradientEditor::OnMouseMove(int x, int y)
+{
+	display->SetHelpText(TEXT("Click (and optionally drag) to add a new step to the gradient."));
+	CCompoundDispItem::OnMouseMove(x, y);
 }
 
 void CGradientEditor::OnMouseDown(int x, int y)
@@ -181,6 +189,7 @@ void CGradientEditor::CStepHandle::OnMouseDown(int x, int y)
 
 void CGradientEditor::CStepHandle::OnMouseMove(int x, int y)
 {
+	display->SetHelpText(TEXT("Right click to change color, or right click while dragging to delete."));
 	if (dragging && posInfoSet) {
 		int deltaX = x - lastDragX;
 		double deltaPos = Interpolate(deltaX, posXMin, posXMax, 0.0, 1.0);

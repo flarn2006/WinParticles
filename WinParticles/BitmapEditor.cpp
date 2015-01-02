@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "BitmapEditor.h"
 #include "resource.h"
+#include "RootDisplay.h"
 
 extern HINSTANCE hInst;
 extern HFONT font;
 extern int verbosity;
+extern CRootDisplay *display;
 
 CBitmapEditor::CBitmapEditor(CParticleBitmap *bitmap)
 {
@@ -182,6 +184,29 @@ void CBitmapEditor::OnMouseMove(int x, int y)
 		int px = (x - bounds.left) / pixelSize;
 		int py = (y - bounds.top) / pixelSize;
 		bitmap->SetPixel(px, py, drawingState);
+	} else {
+		tstring text;
+		for (int i = 0; i < TOOLBAR_BUTTON_COUNT; i++) {
+			POINT topLeft;
+			RECT btnRect;
+			GetButtonTopLeft(i, &topLeft);
+			btnRect.left = topLeft.x;
+			btnRect.top = topLeft.y;
+			btnRect.right = btnRect.left + 23;
+			btnRect.bottom = btnRect.top + 23;
+			if (PtInRect(&btnRect, { x, y })) {
+				switch (i) {
+				case 0: text = TEXT("Erases the entire bitmap."); break;
+				case 1: text = TEXT("Inverts the entire bitmap."); break;
+				case 2: text = TEXT("Copies the first sub-image to all others."); break;
+				case 3: text = resizing ? TEXT("Click when done resizing.") : TEXT("Click to edit the dimensions of the image."); break;
+				case 4: text = TEXT("Scales the image down by a factor of 1/2."); break;
+				case 5: text = TEXT("Scales the image up by a factor of 2."); break;
+				case 6: text = TEXT("Click to restore the default bitmap."); break;
+				}
+				display->SetHelpText(text);
+			}
+		}
 	}
 }
 

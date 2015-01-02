@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "AnimEditor.h"
 #include "WinEvents.h"
+#include "RootDisplay.h"
 #include "resource.h"
 
 extern HINSTANCE hInst;
 extern CWinEvents *winEvents;
+extern CRootDisplay *display;
 
 CAnimation<double>::AnimFunction CAnimEditor::functionList[] = { AnimFunctions::Saw, AnimFunctions::Sine, AnimFunctions::Square, AnimFunctions::Triangle, AnimFunctions::Random };
 LPCTSTR CAnimEditor::functionNames[] = { TEXT("Saw"), TEXT("Sine"), TEXT("Square"), TEXT("Triangle"), TEXT("Random") };
@@ -178,6 +180,16 @@ void CAnimEditor::OnMouseMove(int x, int y)
 	}
 
 	resetBtnHighlighted = PtInRect(&resetBtnBounds, { x, y }) > 0;
+
+	if (resetBtnHighlighted) {
+		display->SetHelpText(TEXT("Resets (and synchronizes) all animations."));
+	} else {
+		switch (highlightLine) {
+		case 0: case 1: display->SetHelpText(TEXT("Click to set to current value.")); break;
+		case 2: display->SetHelpText(TEXT("Click to change the function used for animation. Right click to go back.")); break;
+		case 3: display->SetHelpText(TEXT("Click to reset to 1.")); break;
+		}
+	}
 
 	CCompoundDispItem::OnMouseMove(x, y);
 }

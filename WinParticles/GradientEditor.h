@@ -52,6 +52,7 @@ private:
 
 protected:
 	virtual void OnDraw(HDC hDC, const LPRECT clientRect);
+	virtual void OnMouseMove(int x, int y);
 	virtual void OnMouseDown(int x, int y);
 	virtual void OnRightClick(int x, int y);
 	virtual bool OccupiesPoint(int x, int y);

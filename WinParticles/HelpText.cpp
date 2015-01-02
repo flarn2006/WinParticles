@@ -32,3 +32,8 @@ void CHelpText::SetText(const tstring &text)
 {
 	this->text = text;
 }
+
+const tstring &CHelpText::GetText()
+{
+	return text;
+}
