@@ -12,6 +12,7 @@
 #define MAX_LOADSTRING 100
 #define NUM_GRADIENTS 6
 #define FPS 60
+#define SIMULATION_STEPS 128 //higher value = less efficient, but animations are more accurate
 
 #define SELPARAM_CHAR(x) (selParam == (x) ? '>' : ' ')
 #define MF_CHECK_BOOL(b) ((b) ? MF_CHECKED : MF_UNCHECKED)
@@ -533,7 +534,7 @@ void CWinEvents::OnMouseWheel(short wheelDelta)
 void CWinEvents::OnTimer()
 {
 	//psys->Simulate(1.0 / FPS, emitterX, emitterY);
-	psys->SimulateInSteps(1.0 / FPS, emitterX, emitterY, 128);
+	psys->SimulateInSteps(1.0 / FPS, emitterX, emitterY, SIMULATION_STEPS);
 	InvalidateRect(hWnd, NULL, FALSE);
 }
 
