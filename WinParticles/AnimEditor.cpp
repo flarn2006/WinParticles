@@ -2,6 +2,7 @@
 #include "AnimEditor.h"
 #include "WinEvents.h"
 #include "RootDisplay.h"
+#include "NumericInputBox.h"
 #include "resource.h"
 
 extern HINSTANCE hInst;
@@ -146,24 +147,43 @@ void CAnimEditor::OnMouseDown(int x, int y)
 	}
 	double min, max;
 	animations[selectedID].GetRange(&min, &max);
-
 	CAnimation<double>::AnimFunction func = animations[selectedID].GetFunction();
+
+	CNumericInputBox::Callback callback;
+	tstring prompt;
+	bool openInputBox = false;
 	switch (highlightLine) {
 	case 0:
-		animations[selectedID].SetRange(animations[selectedID].GetTarget()->GetValue(), max);
+		openInputBox = true;
+		prompt = TEXT("Min value:");
+		callback = [this, max](double value) {
+			animations[selectedID].SetRange(value, max);
+		};
 		break;
 	case 1:
-		animations[selectedID].SetRange(min, animations[selectedID].GetTarget()->GetValue());
+		openInputBox = true;
+		prompt = TEXT("Max value:");
+		callback = [this, min](double value) {
+			animations[selectedID].SetRange(min, value);
+		};
 		break;
 	case 2:
 		selFuncID = (selFuncID + 1) % 5;
 		animations[selectedID].SetFunction(functionList[selFuncID]);
 		break;
 	case 3:
-		animations[selectedID].SetFrequency(1.0);
+		openInputBox = true;
+		prompt = TEXT("Frequency:");
+		callback = [this](double value) {
+			animations[selectedID].SetFrequency(value);
+		};
 		break;
 	default:
 		CCompoundDispItem::OnMouseDown(x, y);
+	}
+
+	if (openInputBox) {
+		display->GetNumInputBox()->PromptForValue(callback, prompt);
 	}
 }
 
@@ -185,9 +205,9 @@ void CAnimEditor::OnMouseMove(int x, int y)
 		display->SetHelpText(TEXT("Resets (and synchronizes) all animations."));
 	} else {
 		switch (highlightLine) {
-		case 0: case 1: display->SetHelpText(TEXT("Click to set to current value.")); break;
-		case 2: display->SetHelpText(TEXT("Click to change the function used for animation. Right click to go back.")); break;
-		case 3: display->SetHelpText(TEXT("Click to reset to 1.")); break;
+		case 0: case 1: display->SetHelpText(TEXT("Left click = type in new value. Right click = set to current value. Or use mouse wheel.")); break;
+		case 2: display->SetHelpText(TEXT("Left click to change the function used for animation. Right click to go back.")); break;
+		case 3: display->SetHelpText(TEXT("Left click = type in new value. Right click = reset to 1 Hz. Or use mouse wheel.")); break;
 		}
 	}
 
@@ -196,10 +216,32 @@ void CAnimEditor::OnMouseMove(int x, int y)
 
 void CAnimEditor::OnRightClick(int x, int y)
 {
-	if (highlightLine == 2) {
+	// Fun (but irrelevant) fact: this is the first actual need I had for the Window->Split function.
+	// Until now I never saw the need if you couldn't split with two separate documents, but I needed
+	// to be able to see code from CAnimEditor::OnMouseDown while editing this, but didn't want to
+	// keep scrolling. Then I got the idea to use that long-neglected feature! Anyway, doubt you care.
+	// Now back to our regularly-scheduled source code. :)
+
+	double min, max;
+	animations[selectedID].GetRange(&min, &max);
+	
+	switch (highlightLine) {
+	case 0:
+		animations[selectedID].SetRange(animations[selectedID].GetTarget()->GetValue(), max);
+		break;
+	case 1:
+		animations[selectedID].SetRange(min, animations[selectedID].GetTarget()->GetValue());
+		break;
+	case 2:
 		selFuncID--;
 		if (selFuncID < 0) selFuncID = 4;
 		animations[selectedID].SetFunction(functionList[selFuncID]);
+		break;
+	case 3:
+		animations[selectedID].SetFrequency(1.0);
+		break;
+	default:
+		CCompoundDispItem::OnRightClick(x, y);
 	}
 }
 
