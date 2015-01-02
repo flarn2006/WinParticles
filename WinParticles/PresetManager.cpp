@@ -65,7 +65,7 @@ bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components com
 			file << "MinVelocity=" << temp1 << std::endl;
 			file << "MaxVelocity=" << temp2 << std::endl;
 			psys->GetAngle(&temp1, &temp2);
-			file << "BaseAngle=" << temp1 << std::endl;
+			file << "CenterAngle=" << temp1 << std::endl;
 			file << "AngularSize=" << temp2 << std::endl;
 		} else {
 			psys->GetRectVelocityX(&temp1, &temp2);
@@ -179,6 +179,9 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 	int bitmapCellWidth = 5;
 	int bitmapCellHeight = 5;
 	int bitmapCellCount = 6;
+	bool legacyBaseAngleSpecified = false; //for compatibility with presets from v1.1.1
+	double legacyBaseAngle;
+
 	while (std::getline(file, line)) {
 		if (line.compare("StartBitmap") == 0) {
 			bitmapRow = 0;
@@ -220,6 +223,10 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 					psys->SetVelocity(min, max);
 
 				} else if (left.compare("BaseAngle") == 0) {
+					legacyBaseAngleSpecified = true;
+					parseRight >> legacyBaseAngle;
+
+				} else if (left.compare("CenterAngle") == 0) {
 					double a1, a2;
 					psys->GetAngle(&a1, &a2);
 					parseRight >> a1;
@@ -227,8 +234,12 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 
 				} else if (left.compare("AngularSize") == 0) {
 					double a1, a2;
-					psys->GetAngle(&a1, &a2);
 					parseRight >> a2;
+					if (legacyBaseAngleSpecified) {
+						a1 = legacyBaseAngle + a2 / 2;
+					} else {
+						psys->GetAngle(&a1, NULL);
+					}
 					psys->SetAngle(a1, a2);
 
 				} else if (left.compare("MinVelocityX") == 0) {

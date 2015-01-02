@@ -370,8 +370,8 @@ CParticle &CParticleSys::CreateParticle(double x, double y)
 	CParticle p;
 	
 	double angle, minAngle, maxAngle;
-	minAngle = baseAngle;
-	maxAngle = baseAngle + angleSize;
+	minAngle = baseAngle - angleSize / 2;
+	maxAngle = baseAngle + angleSize / 2;
 
 	if (velocityMode == CParticleSys::VelocityMode::MODE_POLAR) {
 		angle = RandInRange(minAngle * DEG_TO_RAD, maxAngle * DEG_TO_RAD);

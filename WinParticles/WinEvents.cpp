@@ -363,7 +363,7 @@ void CWinEvents::OnPaint()
 			out << SELPARAM_CHAR(CParamAgent::ParamID::MIN_VELOCITY) << " Minimum velocity:   " << temp1 << std::endl;
 			out << SELPARAM_CHAR(CParamAgent::ParamID::MAX_VELOCITY) << " Maximum velocity:   " << temp2 << std::endl;
 			psys->GetAngle(&temp1, &temp2);
-			out << SELPARAM_CHAR(CParamAgent::ParamID::BASE_ANGLE) << " Starting angle:     " << temp1 << '°' << std::endl;
+			out << SELPARAM_CHAR(CParamAgent::ParamID::BASE_ANGLE) << " Center angle:       " << temp1 << '°' << std::endl;
 			out << SELPARAM_CHAR(CParamAgent::ParamID::ANGLE_SIZE) << " Angular size:       " << temp2 << '°' << std::endl;
 		} else {
 			psys->GetRectVelocityX(&temp1, &temp2);
