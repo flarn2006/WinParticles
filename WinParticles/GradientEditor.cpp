@@ -88,7 +88,9 @@ CGradientEditor::CStepHandle *CGradientEditor::AddGradientStep(int x)
 
 void CGradientEditor::OnMouseMove(int x, int y)
 {
-	display->SetHelpText(TEXT("Click (and optionally drag) to add a new step to the gradient."));
+	COLORREF colorHere = gradient->ColorAtPoint(Interpolate(x, clientRect->left, clientRect->right, 0.0, 1.0));
+	tstring colorStr; ColorToHTML(colorHere, colorStr);
+	display->SetHelpText(TEXT("Click (and optionally drag) to add a new step to the gradient. [color here: ") + colorStr + TEXT("]"));
 	CCompoundDispItem::OnMouseMove(x, y);
 }
 
@@ -189,7 +191,8 @@ void CGradientEditor::CStepHandle::OnMouseDown(int x, int y)
 
 void CGradientEditor::CStepHandle::OnMouseMove(int x, int y)
 {
-	display->SetHelpText(TEXT("Right click to change color, or right click while dragging to delete."));
+	tstring colorStr; ColorToHTML(gradient->GetStepColor(stepIndex), colorStr);
+	display->SetHelpText(TEXT("Right click to change color, or right click while dragging to delete. [color = " + colorStr + TEXT("]")));
 	if (dragging && posInfoSet) {
 		int deltaX = x - lastDragX;
 		double deltaPos = Interpolate(deltaX, posXMin, posXMax, 0.0, 1.0);
