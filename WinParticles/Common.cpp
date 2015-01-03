@@ -47,7 +47,7 @@ BOOL WorkingMaskBlt(HDC hdcDest, int nXDest, int nYDest, int nWidth, int nHeight
 void ColorToHTML(COLORREF color, std::string &str)
 {
 	char buf[8];
-	sprintf_s(buf, "#%02X%02X%02X", GetRValue(color), GetGValue(color), GetBValue(color));
+	sprintf_s(buf, 8, "#%02X%02X%02X", GetRValue(color), GetGValue(color), GetBValue(color));
 	str = buf;
 }
 
