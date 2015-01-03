@@ -549,8 +549,8 @@ void CWinEvents::OnTimer()
 	double highestFreq;
 	if (psys->GetAnimationStatus(highestFreq)) {
 		minSteps = (int)(32.0 * highestFreq / fpsMonitor.GetFPS());
-		maxSteps = max(1, minSteps * 8);
-		minSteps = ClampValue(minSteps, 1, 1024);
+		maxSteps = max(8, minSteps * 8);
+		minSteps = ClampValue(minSteps, 8, 1024);
 		simulationSteps += (int)(5.0 * (fpsMonitor.GetFPS() - MIN_FPS));
 		simulationSteps = ClampValue(simulationSteps, minSteps, maxSteps);
 	} else {
