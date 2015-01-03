@@ -14,15 +14,13 @@ private:
 		double position;
 	};
 
-	std::vector<Step> *steps;
+	std::vector<Step> steps;
 	COLORREF precalc[PRECALC_STEPS];
 	bool usePrecalc;
 
 public:
 	CGradient();
-	CGradient(const CGradient &other);
 	CGradient(int numSteps);
-	~CGradient();
 
 	COLORREF GetStepColor(int index);
 	double GetStepPosition(int index);
