@@ -13,7 +13,9 @@ private:
 
 public:
 	CParticleBitmap();
+	CParticleBitmap(const CParticleBitmap &other);
 	~CParticleBitmap();
+	const CParticleBitmap &operator=(const CParticleBitmap &other);
 
 	int GetCellWidth();
 	int GetCellHeight();

@@ -10,12 +10,24 @@ CParticleBitmap::CParticleBitmap()
 {
 	bitmap = NULL;
 	bitmapDC = CreateCompatibleDC(NULL);
+	LoadDefaultBitmap();
+}
+
+CParticleBitmap::CParticleBitmap(const CParticleBitmap &other) : CParticleBitmap()
+{
+	*this = other;
 }
 
 CParticleBitmap::~CParticleBitmap()
 {
 	DeleteDC(bitmapDC);
 	DeleteObject(bitmap);
+}
+
+const CParticleBitmap &CParticleBitmap::operator=(const CParticleBitmap &other)
+{
+	Resize(other.cellWidth, other.cellHeight, other.cellCount);
+	BitBlt(bitmapDC, 0, 0, cellWidth * cellCount, cellHeight, other.bitmapDC, 0, 0, SRCCOPY);
 }
 
 int CParticleBitmap::GetCellWidth()
