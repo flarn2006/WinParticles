@@ -45,6 +45,11 @@ int CParticleBitmap::GetCellCount()
 	return cellCount;
 }
 
+int CParticleBitmap::GetPixelCount()
+{
+	return cellWidth * cellHeight * cellCount;
+}
+
 void CParticleBitmap::Resize(int cellWidth, int cellHeight, int cellCount)
 {
 	int width = cellWidth * cellCount;

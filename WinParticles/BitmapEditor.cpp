@@ -12,6 +12,7 @@ CBitmapEditor::CBitmapEditor(CParticleBitmap *bitmap)
 {
 	this->bitmap = bitmap;
 	borderPen = CreatePen(PS_SOLID, 1, 0x808080);
+	borderPenLight = CreatePen(PS_SOLID, 1, 0x404040);
 	sectionPen = CreatePen(PS_SOLID, 1, 0xFF8080);
 	topRightPos.x = 0;
 	topRightPos.y = 0;
@@ -34,6 +35,7 @@ CBitmapEditor::CBitmapEditor(CParticleBitmap *bitmap)
 CBitmapEditor::~CBitmapEditor()
 {
 	DeleteObject(borderPen);
+	DeleteObject(borderPenLight);
 	DeleteObject(sectionPen);
 	DeleteDC(toolbarDC);
 	DeleteObject(toolbarBmp);
@@ -77,6 +79,11 @@ bool CBitmapEditor::CanScaleDown()
 	return (cellWidth > 1) && (cellHeight > 1) && !(cellWidth & 1) && !(cellHeight & 1);
 }
 
+bool CBitmapEditor::CanScaleUp()
+{
+	return (bitmap->GetCellWidth() < 128) && (bitmap->GetCellHeight() < 128);
+}
+
 void CBitmapEditor::GetButtonTopLeft(int btnIndex, LPPOINT topLeft)
 {
 	topLeft->x = toolbarRect.left + 1 + btnIndex * 24;
@@ -87,16 +94,24 @@ void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 {
 	UpdateBounds(clientRect);
 
-	SelectObject(hDC, (pixelSize > 2) ? borderPen : GetStockObject(BLACK_PEN));
-	for (int y = 0; y < bmpSize.cy; y++) {
-		for (int x = 0; x < bmpSize.cx; x++) {
-			SelectObject(hDC, GetStockObject(bitmap->GetPixel(x, y) ? WHITE_BRUSH : BLACK_BRUSH));
-			int px = bounds.left + pixelSize * x;
-			int py = bounds.top + pixelSize * y;
-			Rectangle(hDC, px, py, px + pixelSize + 1, py + pixelSize + 1);
+	// Draw the bitmap
+	SetTextColor(hDC, 0xFFFFFF);
+	StretchBlt(hDC, bounds.left, bounds.top, bmpSize.cx * pixelSize, bmpSize.cy * pixelSize, bitmap->GetDC(), 0, 0, bmpSize.cx, bmpSize.cy, SRCCOPY);
+	
+	// Draw the middle grid lines (but only if the pixels are big enough)
+	if (pixelSize > 2) {
+		SelectObject(hDC, (pixelSize > 4) ? borderPen : borderPenLight);
+		for (int x = 1; x < bmpSize.cx; x++) {
+			MoveToEx(hDC, bounds.left + pixelSize * x, bounds.top, NULL);
+			LineTo(hDC, bounds.left + pixelSize * x, bounds.bottom);
+		}
+		for (int y = 1; y < bmpSize.cy; y++) {
+			MoveToEx(hDC, bounds.left, bounds.top + pixelSize * y, NULL);
+			LineTo(hDC, bounds.right, bounds.top + pixelSize * y);
 		}
 	}
 
+	// Draw the rectangles for each cell
 	SelectObject(hDC, sectionPen);
 	SelectObject(hDC, GetStockObject(NULL_BRUSH));
 	for (int i = 0; i < bitmap->GetCellCount(); i++) {
@@ -105,14 +120,22 @@ void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 		Rectangle(hDC, bounds.left + sectionWidth * i, bounds.top, bounds.left + sectionWidth * (i + 1) + 1, bounds.top + sectionHeight + 1);
 	}
 
+	// Draw the toolbar
 	StretchBlt(hDC, toolbarRect.left, toolbarRect.top, TOOLBAR_BMP_WIDTH * 2, TOOLBAR_BMP_HEIGHT * 2, toolbarDC, 0, 0, TOOLBAR_BMP_WIDTH, TOOLBAR_BMP_HEIGHT, SRCCOPY);
 
+	SelectObject(hDC, grayedBrush);
+	SetTextColor(hDC, 0x808080);
+
 	if (!CanScaleDown()) {
-		POINT scaleDownBtnTopLeft;
-		GetButtonTopLeft(4, &scaleDownBtnTopLeft);
-		SelectObject(hDC, grayedBrush);
-		SetTextColor(hDC, 0x808080);
-		PatBlt(hDC, scaleDownBtnTopLeft.x + 1, scaleDownBtnTopLeft.y + 1, 22, 22, PATINVERT);
+		POINT btnTopLeft;
+		GetButtonTopLeft(4, &btnTopLeft);
+		PatBlt(hDC, btnTopLeft.x + 1, btnTopLeft.y + 1, 22, 22, PATINVERT);
+	}
+
+	if (!CanScaleUp()) {
+		POINT btnTopLeft;
+		GetButtonTopLeft(5, &btnTopLeft);
+		PatBlt(hDC, btnTopLeft.x + 1, btnTopLeft.y + 1, 22, 22, PATINVERT);
 	}
 
 	if (resizing) {
@@ -169,7 +192,7 @@ void CBitmapEditor::OnMouseDown(int x, int y)
 			if (CanScaleDown()) bitmap->Scale(-2);
 			break;
 		case 5: //scale 2x
-			bitmap->Scale(2);
+			if (CanScaleUp()) bitmap->Scale(2);
 			break;
 		case 6: //default
 			bitmap->LoadDefaultBitmap();

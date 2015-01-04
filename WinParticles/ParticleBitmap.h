@@ -20,6 +20,7 @@ public:
 	int GetCellWidth();
 	int GetCellHeight();
 	int GetCellCount();
+	int GetPixelCount();
 	void Resize(int cellWidth, int cellHeight, int cellCount);
 
 	void Draw(HDC hDC, int ctrX, int ctrY, COLORREF color, int cellNum);

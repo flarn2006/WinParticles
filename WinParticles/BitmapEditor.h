@@ -5,7 +5,7 @@
 class CBitmapEditor : public CDisplayItem
 {
 private:
-	HPEN borderPen, sectionPen;
+	HPEN borderPen, borderPenLight, sectionPen;
 	CParticleBitmap *bitmap;
 	POINT topRightPos;
 	SIZE bmpSize;
@@ -28,6 +28,7 @@ private:
 	void UpdateBounds();
 	void UpdateBounds(LPRECT clientRect);
 	bool CanScaleDown();
+	bool CanScaleUp();
 	void GetButtonTopLeft(int btnIndex, LPPOINT topLeft);
 
 protected:
