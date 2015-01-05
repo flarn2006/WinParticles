@@ -13,7 +13,6 @@
 #include "ParamAgent.h"
 #include "BitmapEditor.h"
 #include "GradientEditor.h"
-#include "ChaoticGradient.h"
 #include "PresetManager.h"
 #include "WinEvents.h"
 #include <string>
@@ -46,7 +45,7 @@ CParticleBitmap bitmap;
 HFONT font;
 tstring cmdLine;
 CRootDisplay *display;
-CGradient *gradients[NUM_GRADIENTS];
+CGradient gradients[NUM_GRADIENTS];
 CPresetManager *presetMgr;
 int verbosity = 2;
 CWinEvents *winEvents;

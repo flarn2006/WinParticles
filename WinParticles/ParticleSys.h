@@ -10,7 +10,7 @@ public:
 
 private:
 	const int DISPOSE_THRESHOLD = 10; //dispose of dead at this percentage dead
-	std::vector<CParticle> *psys;
+	std::vector<CParticle> psys;
 	double emitterX, emitterY;
 	VelocityMode velocityMode;
 	double minVelocity, maxVelocity;
@@ -22,8 +22,7 @@ private:
 	double emissionRadius;
 	double innerRadius;
 	double timeSinceEmit;
-	CGradient *originalDefGrad;
-	CGradient *defaultGradient;
+	CGradient gradient;
 	COLORREF defaultTint;
 	int livingCount;
 	std::vector<CAnimationGeneric*> animations;
@@ -36,7 +35,6 @@ private:
 
 public:
 	CParticleSys();
-	~CParticleSys();
 
 	std::vector<CParticle> *GetParticles();
 
@@ -78,8 +76,8 @@ public:
 	double GetInnerRadius();
 	void SetInnerRadius(double innerRadius);
 
-	CGradient *GetDefGradient();
-	void SetDefGradient(CGradient *grad);
+	CGradient &GetGradient();
+	void SetGradient(const CGradient &gradient);
 
 	COLORREF GetDefaultTint();
 	void SetDefaultTint(COLORREF tint);

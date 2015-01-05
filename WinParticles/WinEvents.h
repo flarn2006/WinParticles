@@ -32,8 +32,8 @@ private:
 
 	void SelectParam(CParamAgent *agent, CParamAgent::ParamID paramNum, double &deltaMult);
 	void SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd);
-	void RandomizeGradient(CGradient *gradient);
-	void InitializeGradients(CGradient *gradients[], bool deleteFirst);
+	void RandomizeGradient(CGradient &gradient);
+	void InitializeGradients(CGradient *gradients);
 	void SelectGradient(int gradientNum, int &selGradientNum);
 	void UpdateViewMenuChecks();
 

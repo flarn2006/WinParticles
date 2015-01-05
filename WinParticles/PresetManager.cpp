@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "PresetManager.h"
 #include "ParticleBitmap.h"
-#include "ChaoticGradient.h"
 #include "ParamAgent.h"
 #include "AnimFunctions.h"
 #include "RootDisplay.h"
@@ -94,11 +93,7 @@ bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components com
 	}
 
 	if (componentsToSave & PMC_GRADIENT) {
-		CGradient *gradient = psys->GetDefGradient();
-
-		if (IsOfType<CChaoticGradient>(gradient)) {
-			file << "ChaoticGradient" << std::endl;
-		}
+		CGradient *gradient = &psys->GetGradient();
 
 		unsigned int stepCount = gradient->GetStepCount();
 		for (unsigned int i = 0; i < stepCount; i++) {
@@ -175,7 +170,6 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 
 	int bitmapRow = -1; //stores current row of bitmap being read; -1 means it's not a bitmap line
 	std::string line;
-	bool specialGradient = false;
 	int bitmapCellWidth = 5;
 	int bitmapCellHeight = 5;
 	int bitmapCellCount = 6;
@@ -188,9 +182,7 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 			bitmap.Resize(bitmapCellWidth, bitmapCellHeight, bitmapCellCount);
 
 		} else if (line.compare("ChaoticGradient") == 0) {
-			specialGradient = true;
-			delete gradient;
-			gradient = new CChaoticGradient();
+			//TODO: Turn on chaotic flag
 
 		} else if (bitmapRow == -1) {
 			std::string left, right;
@@ -317,12 +309,7 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 					std::string left2, right2;
 					if (SplitString(right, ',', left2, right2)) {
 						if (!includesGradient) {
-							if (!specialGradient) {
-								delete gradient;
-								gradient = new CGradient();
-							} else {
-								gradient->DeleteAllSteps();
-							}
+							gradient->DeleteAllSteps();
 							includesGradient = true;
 						}
 						std::istringstream parseLeft2(left2);

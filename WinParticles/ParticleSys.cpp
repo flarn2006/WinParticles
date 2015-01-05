@@ -9,31 +9,22 @@ extern CParticleBitmap bitmap;
 
 CParticleSys::CParticleSys()
 {
-	psys = new std::vector<CParticle>();
 	emitterX = 0.0;
 	emitterY = 0.0;
 	timeSinceEmit = 0.0;
 	defaultTint = RGB(255, 255, 255);
 	DefaultParameters();
 	
-	originalDefGrad = defaultGradient = new CGradient(3);
-	defaultGradient->SetStep(0, 0.0, RGB(0, 255, 0));
-	defaultGradient->SetStep(1, 0.5, RGB(255, 255, 0));
-	defaultGradient->SetStep(2, 1.0, RGB(255, 0, 0));
+	gradient.AddStep(0.0, 0xFFFFFF);
+	gradient.AddStep(1.0, 0xFFFFFF);
 
 	livingCount = 0;
 	flags = 0;
 }
 
-CParticleSys::~CParticleSys()
-{
-	delete psys;
-	if (defaultGradient == originalDefGrad) delete defaultGradient;
-}
-
 std::vector<CParticle> *CParticleSys::GetParticles()
 {
-	return psys;
+	return &psys;
 }
 
 void CParticleSys::GetEmitterPos(double *x, double *y)
@@ -192,15 +183,14 @@ void CParticleSys::SetInnerRadius(double innerRadius)
 	this->innerRadius = innerRadius;
 }
 
-CGradient *CParticleSys::GetDefGradient()
+CGradient &CParticleSys::GetGradient()
 {
-	return defaultGradient;
+	return gradient;
 }
 
-void CParticleSys::SetDefGradient(CGradient *gradient)
+void CParticleSys::SetGradient(const CGradient &gradient)
 {
-	if (defaultGradient == originalDefGrad) delete defaultGradient;
-	defaultGradient = gradient;
+	this->gradient = gradient;
 }
 
 COLORREF CParticleSys::GetDefaultTint()
@@ -227,7 +217,7 @@ void CParticleSys::Simulate(double time, double destX, double destY)
 	// First, simulate all existing particles.
 	int deadCount = 0;
 	livingCount = 0;
-	for (std::vector<CParticle>::iterator i = psys->begin(); i != psys->end(); i++) {
+	for (std::vector<CParticle>::iterator i = psys.begin(); i != psys.end(); i++) {
 		i->Simulate(time);
 
 		if (i->IsDead())
@@ -256,8 +246,8 @@ void CParticleSys::Simulate(double time, double destX, double destY)
 	emitterX = destX;
 	emitterY = destY;
 
-	if (!psys->empty())
-		if (100 * deadCount / (signed)psys->size() >= DISPOSE_THRESHOLD) DisposeOfDead();
+	if (!psys.empty())
+		if (100 * deadCount / (signed)psys.size() >= DISPOSE_THRESHOLD) DisposeOfDead();
 }
 
 void CParticleSys::Simulate(double time)
@@ -290,7 +280,7 @@ void CParticleSys::SimulateInSteps(double time, int steps)
 
 void CParticleSys::Draw(HDC hDC, LPRECT rect)
 {
-	for (std::vector<CParticle>::iterator i = psys->begin(); i != psys->end(); i++) {
+	for (std::vector<CParticle>::iterator i = psys.begin(); i != psys.end(); i++) {
 		double x, y;
 		i->GetPosition(&x, &y);
 		if (rect->left <= x && x <= rect->right && rect->top <= y && y <= rect->bottom) {
@@ -399,10 +389,10 @@ CParticle &CParticleSys::CreateParticle(double x, double y)
 
 	p.SetAcceleration(ax, ay);
 	p.SetMaxAge(maxAge);
-	p.SetGradient(defaultGradient);
+	p.SetGradient(&gradient);
 
 	if (flags & SF_RANDOM_COLOR) {
-		p.SetTint(MultiplyColors(defaultTint, defaultGradient->ColorAtPoint(RandInRange(0.0, 1.0))), true);
+		p.SetTint(MultiplyColors(defaultTint, gradient.ColorAtPoint(RandInRange(0.0, 1.0))), true);
 	} else {
 		p.SetTint(defaultTint, false);
 	}
@@ -413,21 +403,20 @@ CParticle &CParticleSys::CreateParticle(double x, double y)
 		p.SetFixedImage(-1);
 	}
 	
-	psys->push_back(p);
-	return psys->back();
+	psys.push_back(p);
+	return psys.back();
 }
 
 void CParticleSys::DisposeOfDead()
 {
-	std::vector<CParticle> *newVec = new std::vector<CParticle>();
+	std::vector<CParticle> newVec;
 
-	for (std::vector<CParticle>::iterator i = psys->begin(); i != psys->end(); i++) {
+	for (std::vector<CParticle>::iterator i = psys.begin(); i != psys.end(); i++) {
 		if (!i->IsDead()) {
-			newVec->push_back(*i);
+			newVec.push_back(*i);
 		}
 	}
 
-	delete psys;
 	psys = newVec;
 }
 

@@ -209,7 +209,6 @@
     <ClInclude Include="AnimTarget.h" />
     <ClInclude Include="BackBuffer.h" />
     <ClInclude Include="BitmapEditor.h" />
-    <ClInclude Include="ChaoticGradient.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="CompoundDispItem.h" />
     <ClInclude Include="DisplayItem.h" />
@@ -239,7 +238,6 @@
     <ClCompile Include="AnimFunctions.cpp" />
     <ClCompile Include="BackBuffer.cpp" />
     <ClCompile Include="BitmapEditor.cpp" />
-    <ClCompile Include="ChaoticGradient.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="CompoundDispItem.cpp" />
     <ClCompile Include="DisplayItem.cpp" />

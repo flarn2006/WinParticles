@@ -6,11 +6,10 @@
 #include "RootDisplay.h"
 #include "PresetManager.h"
 #include "resource.h"
-#include "ChaoticGradient.h"
 #include "AnimatedParam.h"
 
 #define MAX_LOADSTRING 100
-#define NUM_GRADIENTS 6
+#define NUM_GRADIENTS 5
 #define MIN_FPS 32
 #define TARGET_FPS 60
 
@@ -27,7 +26,7 @@ extern CParticleBitmap bitmap;
 extern HFONT font;
 extern tstring cmdLine;
 extern CRootDisplay *display;
-extern CGradient *gradients[NUM_GRADIENTS];
+extern CGradient gradients[NUM_GRADIENTS];
 extern CPresetManager *presetMgr;
 extern int verbosity;
 
@@ -46,9 +45,9 @@ CWinEvents::CWinEvents(HWND hWnd)
 
 	SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY, deltaMult);
 
-	InitializeGradients(gradients, false);
+	InitializeGradients(gradients);
 
-	psys->SetDefGradient(gradients[0]);
+	psys->SetGradient(gradients[0]);
 	selGradientNum = 0;
 
 	font = CreateFont(0, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, DEFAULT_PITCH, TEXT("Fixedsys"));
@@ -74,7 +73,7 @@ CWinEvents::CWinEvents(HWND hWnd)
 
 	display = new CRootDisplay();
 	display->InitBitmapEditor(&bitmap);
-	display->InitGradientEditor(psys->GetDefGradient());
+	display->InitGradientEditor(&psys->GetGradient());
 	display->InitAnimEditor(animations);
 
 	bitmap.LoadDefaultBitmap();
@@ -95,51 +94,33 @@ CWinEvents::~CWinEvents()
 	delete agent;
 	delete presetMgr;
 	DeleteObject(font);
-	for (int i = 0; i < NUM_GRADIENTS; i++) {
-		delete gradients[i];
-	}
 	delete display;
 }
 
-void CWinEvents::InitializeGradients(CGradient *gradients[], bool deleteFirst)
+void CWinEvents::InitializeGradients(CGradient *gradients)
 {
-	if (deleteFirst) {
-		for (int i = 0; i < NUM_GRADIENTS; i++) {
-			delete gradients[i];
-		}
-	}
+	gradients[0].AddStep(0.0, RGB(255, 255, 0));
+	gradients[0].AddStep(0.25, RGB(255, 0, 0));
+	gradients[0].AddStep(0.5, RGB(0, 0, 0));
+	gradients[0].AddStep(0.51, RGB(64, 64, 64));
+	gradients[0].AddStep(1.0, RGB(0, 0, 0));
 
-	gradients[0] = new CGradient(5);
-	gradients[0]->SetStep(0, 0.0, RGB(255, 255, 0));
-	gradients[0]->SetStep(1, 0.25, RGB(255, 0, 0));
-	gradients[0]->SetStep(2, 0.5, RGB(0, 0, 0));
-	gradients[0]->SetStep(3, 0.51, RGB(64, 64, 64));
-	gradients[0]->SetStep(4, 1.0, RGB(0, 0, 0));
+	gradients[1].AddStep(0.0, RGB(255, 0, 0));
+	gradients[1].AddStep(1.0 / 6, RGB(255, 255, 0));
+	gradients[1].AddStep(2.0 / 6, RGB(0, 255, 0));
+	gradients[1].AddStep(3.0 / 6, RGB(0, 255, 255));
+	gradients[1].AddStep(4.0 / 6, RGB(0, 0, 255));
+	gradients[1].AddStep(5.0 / 6, RGB(255, 0, 255));
+	gradients[1].AddStep(1.0, RGB(255, 0, 0));
 
-	gradients[1] = new CGradient(7);
-	gradients[1]->SetStep(0, 0.0, RGB(255, 0, 0));
-	gradients[1]->SetStep(1, 1.0 / 6, RGB(255, 255, 0));
-	gradients[1]->SetStep(2, 2.0 / 6, RGB(0, 255, 0));
-	gradients[1]->SetStep(3, 3.0 / 6, RGB(0, 255, 255));
-	gradients[1]->SetStep(4, 4.0 / 6, RGB(0, 0, 255));
-	gradients[1]->SetStep(5, 5.0 / 6, RGB(255, 0, 255));
-	gradients[1]->SetStep(6, 1.0, RGB(255, 0, 0));
+	gradients[2].AddStep(0.0, RGB(255, 255, 255));
+	gradients[2].AddStep(1.0, RGB(0, 0, 0));
 
-	gradients[2] = new CGradient(2);
-	gradients[2]->SetStep(0, 0.0, RGB(255, 255, 255));
-	gradients[2]->SetStep(1, 1.0, RGB(0, 0, 0));
+	gradients[3].AddStep(0.0, RGB(255, 255, 255));
+	gradients[3].AddStep(1.0, RGB(255, 255, 255));
 
-	gradients[3] = new CGradient(2);
-	gradients[3]->SetStep(0, 0.0, RGB(255, 255, 255));
-	gradients[3]->SetStep(1, 1.0, RGB(255, 255, 255));
-
-	gradients[4] = new CGradient(5);
+	gradients[4] = CGradient(5);
 	RandomizeGradient(gradients[4]);
-
-	gradients[5] = new CChaoticGradient(3);
-	gradients[5]->SetStep(0, 0.0, 0x000000);
-	gradients[5]->SetStep(1, 0.5, 0xFF8000);
-	gradients[5]->SetStep(2, 1.0, 0xFFFFFF);
 }
 
 void CWinEvents::SelectParam(CParamAgent *agent, CParamAgent::ParamID paramNum, double &deltaMult)
@@ -167,10 +148,10 @@ void CWinEvents::SelectGradient(int gradientNum, int &selGradientNum)
 	if (gradientNum == -1) {
 		toSelect = presetMgr->GetGradient();
 	} else {
-		toSelect = gradients[gradientNum];
+		toSelect = &gradients[gradientNum];
 	}
 
-	psys->SetDefGradient(toSelect);
+	psys->SetGradient(*toSelect);
 	display->GetGradientEditor()->SetGradient(toSelect);
 }
 
@@ -192,13 +173,13 @@ void CWinEvents::SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd)
 	EnableMenuItem(hMenu, ID_PARAMS_MAXVELY, mode != CParticleSys::VelocityMode::MODE_RECT);
 }
 
-void CWinEvents::RandomizeGradient(CGradient *gradient)
+void CWinEvents::RandomizeGradient(CGradient &gradient)
 {
-	int count = gradient->GetStepCount();
+	int count = gradient.GetStepCount();
 	for (int i = 0; i < count; i++) {
 		double position = RandInRange(0.0, 1.0);
 		COLORREF color = RGB(rand() % 256, rand() % 256, rand() % 256);
-		gradient->SetStep(i, position, color);
+		gradient.SetStep(i, position, color);
 	}
 }
 
@@ -441,7 +422,7 @@ void CWinEvents::OnKeyDown(WORD key)
 		} else if (key == (WPARAM)'F') {
 			mouseMovesEmitter = !mouseMovesEmitter;
 		} else if (key == (WPARAM)'G') {
-			InitializeGradients(gradients, true);
+			InitializeGradients(gradients);
 			SelectGradient(selGradientNum, selGradientNum);
 			psys->GetParticles()->clear();
 		} else if (key == (WPARAM)'A') {
