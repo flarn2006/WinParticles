@@ -30,7 +30,8 @@ private:
 
 	enum Flags {
 		SF_RANDOM_COLOR = 1,
-		SF_RANDOM_IMAGE = 2
+		SF_RANDOM_IMAGE = 2,
+		SF_CHAOTIC_GRADIENT = 4
 	};
 
 public:
@@ -92,6 +93,8 @@ public:
 	void SetRandomColorMode(bool state);
 	bool GetRandomImageMode();
 	void SetRandomImageMode(bool state);
+	bool GetChaoticGradientFlag();
+	void SetChaoticGradientFlag(bool state);
 
 	int GetLiveParticleCount();
 

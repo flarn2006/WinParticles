@@ -315,6 +315,19 @@ void CParticleSys::SetRandomImageMode(bool state)
 		flags &= ~SF_RANDOM_IMAGE;
 }
 
+bool CParticleSys::GetChaoticGradientFlag()
+{
+	return (flags & SF_CHAOTIC_GRADIENT) > 0;
+}
+
+void CParticleSys::SetChaoticGradientFlag(bool state)
+{
+	if (state)
+		flags |= SF_CHAOTIC_GRADIENT;
+	else
+		flags &= ~SF_CHAOTIC_GRADIENT;
+}
+
 int CParticleSys::GetLiveParticleCount()
 {
 	return livingCount;
