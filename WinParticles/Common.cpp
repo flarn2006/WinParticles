@@ -57,23 +57,3 @@ void ColorToHTML(COLORREF color, std::wstring &str)
 	swprintf_s(buf, 8, L"#%02X%02X%02X", GetRValue(color), GetGValue(color), GetBValue(color));
 	str = buf;
 }
-
-std::ostream &operator<<(std::ostream &os, const SkipToCharA &skip)
-{
-	std::ostringstream &oss = dynamic_cast<std::ostringstream&>(os);
-	std::string::size_type length = oss.str().length();
-	for (std::string::size_type i = length; i < skip.pos; i++) {
-		oss << skip.pad;
-	}
-	return os;
-}
-
-std::wostream &operator<<(std::wostream &os, const SkipToCharW &skip)
-{
-	std::wostringstream &oss = dynamic_cast<std::wostringstream&>(os);
-	std::wstring::size_type length = oss.str().length();
-	for (std::string::size_type i = length; i < skip.pos; i++) {
-		oss << skip.pad;
-	}
-	return os;
-}

@@ -81,5 +81,13 @@ typedef basic_SkipToChar<char> SkipToCharA;
 typedef basic_SkipToChar<wchar_t> SkipToCharW;
 typedef basic_SkipToChar<tchar_t> SkipToChar;
 
-std::ostream &operator<<(std::ostream &os, const SkipToCharA &skip);
-std::wostream &operator<<(std::wostream &os, const SkipToCharW &skip);
+template <typename _Elem>
+std::basic_ostream<_Elem> &operator<<(std::basic_ostream<_Elem> &os, const basic_SkipToChar<_Elem> &skip)
+{
+	std::basic_ostringstream<_Elem> &oss = dynamic_cast<std::basic_ostringstream<_Elem>&>(os);
+	typename std::basic_string<_Elem>::size_type length = oss.str().length();
+	for (typename std::basic_string<_Elem>::size_type i = length; i < skip.pos; i++) {
+		oss << skip.pad;
+	}
+	return os;
+}
