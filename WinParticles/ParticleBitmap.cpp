@@ -28,6 +28,7 @@ const CParticleBitmap &CParticleBitmap::operator=(const CParticleBitmap &other)
 {
 	Resize(other.cellWidth, other.cellHeight, other.cellCount);
 	BitBlt(bitmapDC, 0, 0, cellWidth * cellCount, cellHeight, other.bitmapDC, 0, 0, SRCCOPY);
+	return *this;
 }
 
 int CParticleBitmap::GetCellWidth()

@@ -132,21 +132,26 @@ void CParticle::Simulate(double time)
 	}
 }
 
-void CParticle::Draw(HDC hDC)
+void CParticle::Draw(HDC hDC, COLORREF color)
 {
 	if (!IsDead()) {
-		double relativeAge = age / maxAge;
-		COLORREF color;
-
-		if (flags & PF_NOGRADIENT)
-			color = tint;
-		else
-			color = MultiplyColors(tint, gradient->ColorAtPoint(relativeAge));
-
 		if (fixedImage >= 0) {
 			bitmap.Draw(hDC, (int)px, (int)py, color, fixedImage);
 		} else {
-			bitmap.Draw(hDC, (int)px, (int)py, color, relativeAge);
+			bitmap.Draw(hDC, (int)px, (int)py, color, age / maxAge);
 		}
 	}
+}
+
+void CParticle::Draw(HDC hDC)
+{
+	Draw(hDC, GetColor());
+}
+
+COLORREF CParticle::GetColor()
+{
+	if (flags & PF_NOGRADIENT)
+		return tint;
+	else
+		return MultiplyColors(tint, gradient->ColorAtPoint(age / maxAge));
 }

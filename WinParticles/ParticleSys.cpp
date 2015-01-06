@@ -284,7 +284,10 @@ void CParticleSys::Draw(HDC hDC, LPRECT rect)
 		double x, y;
 		i->GetPosition(&x, &y);
 		if (rect->left <= x && x <= rect->right && rect->top <= y && y <= rect->bottom) {
-			i->Draw(hDC);
+			if (GetChaoticGradientFlag())
+				i->Draw(hDC, gradient.ColorAtPoint(RandInRange(0.0, 1.0)));
+			else
+				i->Draw(hDC);
 		}
 	}
 }

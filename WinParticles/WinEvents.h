@@ -21,6 +21,7 @@ private:
 	bool cursorHidden = false;
 	bool randomizeGradientOnSelect = false;
 	bool mouseMovesEmitter = true;
+	bool firstSizeEvent = true;
 	COLORREF backgroundColor = 0;
 	HBRUSH backgroundBrush;
 	CAnimatedParam animParams[CParamAgent::ParamID::PARAM_COUNT];

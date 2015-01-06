@@ -51,6 +51,8 @@ public:
 	bool IsDead();
 
 	void Simulate(double time);
+	void Draw(HDC hDC, COLORREF color);
 	void Draw(HDC hDC);
+	COLORREF GetColor();
 };
 

@@ -33,7 +33,7 @@ extern int verbosity;
 CWinEvents::CWinEvents(HWND hWnd)
 {
 	this->hWnd = hWnd;
-
+	emitterX = emitterY = 0;
 	DragAcceptFiles(hWnd, TRUE);
 
 	srand(GetTickCount());
@@ -51,7 +51,7 @@ CWinEvents::CWinEvents(HWND hWnd)
 	selGradientNum = 0;
 
 	font = CreateFont(0, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, DEFAULT_PITCH, TEXT("Fixedsys"));
-	SetTimer(hWnd, 0, 1000 / (TARGET_FPS * 3/2), NULL);
+	// Looking for the SetTimer call? It's in OnSize now, so that the simulation doesn't actually begin until the emitter is first positioned in the center.
 	bbuf = new CBackBuffer(hWnd);
 
 	colorDlg.lStructSize = sizeof(colorDlg);
@@ -297,6 +297,14 @@ void CWinEvents::OnSize()
 	bbuf->UpdateSize();
 	GetClientRect(hWnd, &clientRect);
 	display->UpdateSize(&clientRect);
+
+	if (firstSizeEvent) {
+		// clientRect.left and clientRect.top are always zero, according to MSDN. So it's like a SIZE structure, but it uses 8 extra bytes! Yay! =D
+		emitterX = (double)(clientRect.right / 2);
+		emitterY = (double)(clientRect.bottom / 2);
+		SetTimer(hWnd, 0, 1000 / (TARGET_FPS * 3 / 2), NULL);
+		firstSizeEvent = false;
+	}
 }
 
 void CWinEvents::OnPaint()
@@ -370,7 +378,7 @@ void CWinEvents::OnPaint()
 		out << "[F] Freeze/unfreeze emitter" << std::endl;
 		out << "[G] Reset gradient presets" << std::endl;
 		out << "[A] Toggle additive drawing (" << (additiveDrawing ? "ON" : "OFF") << ")" << std::endl;
-		out << "[S] Static (random) color mode (" << (psys->GetRandomColorMode() ? "ON" : "OFF") << ")" << std::endl;
+		out << "[S] Static (random) color mode (" << (psys->GetChaoticGradientFlag() ? "CHAOTIC" : (psys->GetRandomColorMode() ? "ON" : "OFF")) << ")" << std::endl;
 		out << "[D] Static (random) image mode (" << (psys->GetRandomImageMode() ? "ON" : "OFF") << ")" << std::endl;
 		out << "[Q] Change text display" << std::endl;
 		out << "[E] Toggle bitmap/gradient/animation editors" << std::endl;
@@ -402,38 +410,61 @@ void CWinEvents::OnKeyDown(WORD key)
 				}
 				SelectGradient(key - 0x31, selGradientNum);
 			}
+		
 		} else if (key == (WPARAM)'0') {
 			if (display->GetGradientEditor()->IsOKToSwitchGradients()) {
 				SelectGradient(-1, selGradientNum);
 			}
+		
 		} else if (key == (WPARAM)'R') {
 			psys->DisableAllAnimations();
 			display->GetAnimEditor()->Update();
 			psys->DefaultParameters();
 			SetVelocityMode(psys->GetVelocityMode(), hWnd);
+		
 		} else if (key == (WPARAM)'Z') {
 			if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR)
 				SetVelocityMode(CParticleSys::VelocityMode::MODE_RECT, hWnd);
 			else
 				SetVelocityMode(CParticleSys::VelocityMode::MODE_POLAR, hWnd);
+		
 		} else if (key == (WPARAM)'C') {
 			cursorHidden = !cursorHidden;
 			ShowCursor(!cursorHidden);
+		
 		} else if (key == (WPARAM)'F') {
 			mouseMovesEmitter = !mouseMovesEmitter;
+		
 		} else if (key == (WPARAM)'G') {
 			InitializeGradients(gradients);
 			SelectGradient(selGradientNum, selGradientNum);
 			psys->GetParticles()->clear();
+		
 		} else if (key == (WPARAM)'A') {
 			additiveDrawing = !additiveDrawing;
+		
 		} else if (key == (WPARAM)'S') {
-			psys->SetRandomColorMode(!psys->GetRandomColorMode());
+			if (psys->GetChaoticGradientFlag()) {
+				psys->SetChaoticGradientFlag(false);
+				psys->SetRandomColorMode(false);
+			} else {
+				if (psys->GetRandomColorMode()) {
+					psys->SetChaoticGradientFlag(true);
+				} else {
+					psys->SetRandomColorMode(true);
+				}
+			}
+
 		} else if (key == (WPARAM)'D') {
 			psys->SetRandomImageMode(!psys->GetRandomImageMode());
+		
+		} else if (key == (WPARAM)'H') {
+			psys->SetChaoticGradientFlag(!psys->GetChaoticGradientFlag());
+		
 		} else if (key == (WPARAM)'Q') {
 			verbosity = (verbosity + 1) % 3;
 			UpdateViewMenuChecks();
+		
 		} else if (key == (WPARAM)'E') {
 			if (!display->GetBitmapEditor()->IsMouseDown() && !display->GetGradientEditor()->IsMouseDown()) {
 				bool enable = !display->GetBitmapEditor()->GetEnabled();
@@ -442,21 +473,28 @@ void CWinEvents::OnKeyDown(WORD key)
 				display->GetAnimEditor()->SetEnabled(enable);
 				UpdateViewMenuChecks();
 			}
+		
 		} else if (key == VK_OEM_MINUS) {
 			deltaMult /= 10;
+		
 		} else if (key == VK_OEM_PLUS) {
 			deltaMult *= 10;
+		
 		} else if (key == VK_RETURN) {
 			GetClientRect(hWnd, &clientRect);
 			display->GetNumInputBox()->PromptForValue(agent);
+		
 		} else if (key == VK_UP) {
 			selParam--;
 			SelectParam(agent, selParam, deltaMult);
+		
 		} else if (key == VK_DOWN) {
 			selParam++;
 			SelectParam(agent, selParam, deltaMult);
+		
 		} else if (key == VK_LEFT) {
 			agent->SetValue(agent->GetValue() - deltaMult);
+		
 		} else if (key == VK_RIGHT) {
 			agent->SetValue(agent->GetValue() + deltaMult);
 		}

@@ -1,7 +1,7 @@
 VelocityMode=POLAR
 MinVelocity=20
 MaxVelocity=20
-BaseAngle=-180
+CenterAngle=0
 AngularSize=360
 AccelerationX=0
 AccelerationY=300
@@ -11,10 +11,9 @@ EmissionRadius=58
 InnerRadius=0
 
 AdditiveDrawing=1
-RandomColorMode=0
 RandomImageMode=0
 
-ChaoticGradient
+RandomColorMode=2
 GradientStep=0,bfbf
 GradientStep=0.104635,ffff
 GradientStep=1,ffffff

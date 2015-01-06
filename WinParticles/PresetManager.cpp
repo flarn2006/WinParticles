@@ -86,7 +86,6 @@ bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components com
 		file << std::endl;
 
 		file << "AdditiveDrawing=" << (additiveDrawing ? '1' : '0') << std::endl;
-		file << "RandomColorMode=" << (psys->GetRandomColorMode() ? '1' : '0') << std::endl;
 		file << "RandomImageMode=" << (psys->GetRandomImageMode() ? '1' : '0') << std::endl;
 
 		file << std::endl;
@@ -94,6 +93,8 @@ bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components com
 
 	if (componentsToSave & PMC_GRADIENT) {
 		CGradient *gradient = &psys->GetGradient();
+
+		file << "RandomColorMode=" << (psys->GetChaoticGradientFlag() ? '2' : (psys->GetRandomColorMode() ? '1' : '0')) << std::endl;
 
 		unsigned int stepCount = gradient->GetStepCount();
 		for (unsigned int i = 0; i < stepCount; i++) {
@@ -173,6 +174,7 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 	int bitmapCellWidth = 5;
 	int bitmapCellHeight = 5;
 	int bitmapCellCount = 6;
+	bool chaoticGradientSpecified = false;
 	bool legacyBaseAngleSpecified = false; //for compatibility with presets from v1.1.1
 	double legacyBaseAngle;
 
@@ -182,7 +184,8 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 			bitmap.Resize(bitmapCellWidth, bitmapCellHeight, bitmapCellCount);
 
 		} else if (line.compare("ChaoticGradient") == 0) {
-			//TODO: Turn on chaotic flag
+			psys->SetChaoticGradientFlag(true);
+			chaoticGradientSpecified = true;
 
 		} else if (bitmapRow == -1) {
 			std::string left, right;
@@ -298,7 +301,9 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 				} else if (left.compare("RandomColorMode") == 0) {
 					int state;
 					parseRight >> state;
-					psys->SetRandomColorMode(state > 0);
+					psys->SetChaoticGradientFlag((state & 2) > 0);
+					psys->SetRandomColorMode((state & 1) > 0);
+					if (state & 2) chaoticGradientSpecified = true; //don't turn it back off when it reads the first GradientStep
 
 				} else if (left.compare("RandomImageMode") == 0) {
 					int state;
@@ -311,6 +316,9 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 						if (!includesGradient) {
 							gradient->DeleteAllSteps();
 							includesGradient = true;
+						}
+						if (!chaoticGradientSpecified) {
+							psys->SetChaoticGradientFlag(false);
 						}
 						std::istringstream parseLeft2(left2);
 						std::istringstream parseRight2(right2);
