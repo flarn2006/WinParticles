@@ -302,6 +302,7 @@ void CWinEvents::OnSize()
 		// clientRect.left and clientRect.top are always zero, according to MSDN. So it's like a SIZE structure, but it uses 8 extra bytes! Yay! =D
 		emitterX = (double)(clientRect.right / 2);
 		emitterY = (double)(clientRect.bottom / 2);
+		psys->SetEmitterPos(emitterX, emitterY);
 		SetTimer(hWnd, 0, 1000 / (TARGET_FPS * 3 / 2), NULL);
 		firstSizeEvent = false;
 	}
