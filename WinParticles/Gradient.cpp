@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Gradient.h"
-#include "Common.h"
 
 CGradient::CGradient()
 {
@@ -60,7 +59,7 @@ unsigned int CGradient::AddStep(double position, COLORREF color)
 void CGradient::DeleteStep(int index)
 {
 	usePrecalc = false;
-	
+	DeleteVectorItem(steps, index);
 }
 
 void CGradient::DeleteAllSteps()

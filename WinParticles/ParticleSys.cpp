@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ParticleSys.h"
-#include "Common.h"
 #include "ParticleBitmap.h"
 #include <cstdlib>
 #include <cmath>

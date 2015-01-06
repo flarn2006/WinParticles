@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Particle.h"
-#include "Common.h"
 #include "ParticleBitmap.h"
 
 extern CParticleBitmap bitmap;

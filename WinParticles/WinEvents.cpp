@@ -2,7 +2,6 @@
 #include "WinEvents.h"
 #include <commdlg.h>
 #include "ParticleBitmap.h"
-#include "Common.h"
 #include "RootDisplay.h"
 #include "PresetManager.h"
 #include "resource.h"

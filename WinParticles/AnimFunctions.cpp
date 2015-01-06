@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "AnimFunctions.h"
-#include "Common.h"
 #include <cmath>
 
 double AnimFunctions::Saw(double time)

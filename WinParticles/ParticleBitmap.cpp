@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ParticleBitmap.h"
 #include "Resource.h"
-#include "Common.h"
 
 extern HINSTANCE hInst;
 extern bool additiveDrawing;

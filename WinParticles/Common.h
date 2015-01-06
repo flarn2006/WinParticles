@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <string>
 #include <sstream>
+#include <vector>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -51,4 +52,14 @@ template <typename T> T WrapValue(T value, T min, T max)
 template <typename TSpecific, typename TGeneric> bool IsOfType(TGeneric *object)
 {
 	return (dynamic_cast<TSpecific*>(object) != NULL);
+}
+
+template <typename T> void DeleteVectorItem(std::vector<T> &vector, typename std::vector<T>::size_type index)
+{
+	std::vector<T>::size_type size = vector.size();
+	std::vector<T> newVec;
+	for (std::vector<T>::size_type i = 0; i < size; i++) {
+		newVec.push_back(vector[i >= index ? i + 1 : i]);
+	}
+	vector = newVec;
 }

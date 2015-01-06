@@ -6,7 +6,6 @@
 #include "ParticleSys.h"
 #include "BackBuffer.h"
 #include "Gradient.h"
-#include "Common.h"
 #include "DisplayItem.h"
 #include "RootDisplay.h"
 #include "NumericInputBox.h"

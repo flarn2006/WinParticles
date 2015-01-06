@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ParamAgent.h"
-#include "Common.h"
 
 CParamAgent::CParamAgent(CParticleSys *pSys)
 {

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "GradientEditor.h"
 #include "Resource.h"
-#include "Common.h"
 #include "ParticleBitmap.h"
 #include "RootDisplay.h"
 
