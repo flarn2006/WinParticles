@@ -50,7 +50,7 @@ CWinEvents::CWinEvents(HWND hWnd)
 	selGradientNum = 0;
 
 	font = CreateFont(0, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, DEFAULT_PITCH, TEXT("Fixedsys"));
-	// Looking for the SetTimer call? It's in OnSize now, so that the simulation doesn't actually begin until the emitter is first positioned in the center.
+	SetTimer(hWnd, 0, 1000 / (TARGET_FPS * 3 / 2), NULL); 
 	bbuf = new CBackBuffer(hWnd);
 
 	colorDlg.lStructSize = sizeof(colorDlg);
@@ -302,7 +302,6 @@ void CWinEvents::OnSize()
 		emitterX = (double)(clientRect.right / 2);
 		emitterY = (double)(clientRect.bottom / 2);
 		psys->SetEmitterPos(emitterX, emitterY);
-		SetTimer(hWnd, 0, 1000 / (TARGET_FPS * 3 / 2), NULL);
 		firstSizeEvent = false;
 	}
 }
@@ -330,16 +329,11 @@ void CWinEvents::OnPaint()
 #ifdef _DEBUG
 		out << "DEBUG BUILD (performance is not optimal)" << std::endl;
 #endif
-		out << "FPS: " << fpsMonitor.GetFPS() << std::endl;
-		out << "Min steps: " << minSteps << std::endl;
-		out << "Steps:     " << simulationSteps << std::endl;
-		out << "Max steps: " << maxSteps << std::endl;
-		out << "Number of particles: " << psys->GetLiveParticleCount();
-#ifdef _TEST
-		out << " living" << std::endl;
-		out << "                     " << psys->GetParticles()->size() << " total";
-#endif
-		out << std::endl;
+		tostringstream fpsStepsLine;
+		fpsStepsLine << "FPS: " << fpsMonitor.GetFPS() << SkipToChar(14);
+		fpsStepsLine << "Steps: " << simulationSteps << SkipToChar(27) << "(Min: " << minSteps << SkipToChar(39) << "Max: " << maxSteps << ")";
+		out << fpsStepsLine.str() << std::endl;
+		out << "Number of particles: " << psys->GetParticles()->size() << std::endl;
 		out << "Use mouse buttons/wheel or arrow keys to edit params" << std::endl;
 		out << "Press ENTER to type a value directly" << std::endl;
 	}
@@ -462,7 +456,7 @@ void CWinEvents::OnKeyDown(WORD key)
 			psys->SetChaoticGradientFlag(!psys->GetChaoticGradientFlag());
 		
 		} else if (key == (WPARAM)'Q') {
-			verbosity = (verbosity + 1) % 3;
+			verbosity = (verbosity + 1) % 2;
 			UpdateViewMenuChecks();
 		
 		} else if (key == (WPARAM)'E') {

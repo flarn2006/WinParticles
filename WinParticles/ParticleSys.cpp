@@ -17,11 +17,10 @@ CParticleSys::CParticleSys()
 	gradient.AddStep(0.0, 0xFFFFFF);
 	gradient.AddStep(1.0, 0xFFFFFF);
 
-	livingCount = 0;
 	flags = 0;
 }
 
-std::vector<CParticle> *CParticleSys::GetParticles()
+std::list<CParticle> *CParticleSys::GetParticles()
 {
 	return &psys;
 }
@@ -214,15 +213,15 @@ void CParticleSys::Simulate(double time, double destX, double destY)
 	}
 
 	// First, simulate all existing particles.
-	int deadCount = 0;
-	livingCount = 0;
-	for (std::vector<CParticle>::iterator i = psys.begin(); i != psys.end(); i++) {
+	std::list<CParticle>::iterator i = psys.begin();
+	while (i != psys.end()) {
 		i->Simulate(time);
 
-		if (i->IsDead())
-			deadCount++;
-		else
-			livingCount++;
+		if (i->IsDead()) {
+			psys.erase(i++);
+		} else {
+			i++;
+		}
 
 		if (GetTickCount() > startTickCount + 250) break;
 	}
@@ -244,9 +243,6 @@ void CParticleSys::Simulate(double time, double destX, double destY)
 
 	emitterX = destX;
 	emitterY = destY;
-
-	if (!psys.empty())
-		if (100 * deadCount / (signed)psys.size() >= DISPOSE_THRESHOLD) DisposeOfDead();
 }
 
 void CParticleSys::Simulate(double time)
@@ -279,7 +275,7 @@ void CParticleSys::SimulateInSteps(double time, int steps)
 
 void CParticleSys::Draw(HDC hDC, LPRECT rect)
 {
-	for (std::vector<CParticle>::iterator i = psys.begin(); i != psys.end(); i++) {
+	for (std::list<CParticle>::iterator i = psys.begin(); i != psys.end(); i++) {
 		double x, y;
 		i->GetPosition(&x, &y);
 		if (rect->left <= x && x <= rect->right && rect->top <= y && y <= rect->bottom) {
@@ -328,11 +324,6 @@ void CParticleSys::SetChaoticGradientFlag(bool state)
 		flags |= SF_CHAOTIC_GRADIENT;
 	else
 		flags &= ~SF_CHAOTIC_GRADIENT;
-}
-
-int CParticleSys::GetLiveParticleCount()
-{
-	return livingCount;
 }
 
 std::vector<CAnimationGeneric*> &CParticleSys::GetAnimationsVector()
@@ -400,8 +391,6 @@ CParticle &CParticleSys::CreateParticle(double x, double y)
 		p.SetVelocity(RandInRange(minVelX, maxVelX), RandInRange(minVelY, maxVelY));
 	}
 
-	livingCount++;
-
 	p.SetAcceleration(ax, ay);
 	p.SetMaxAge(maxAge);
 	p.SetGradient(&gradient);
@@ -420,19 +409,6 @@ CParticle &CParticleSys::CreateParticle(double x, double y)
 	
 	psys.push_back(p);
 	return psys.back();
-}
-
-void CParticleSys::DisposeOfDead()
-{
-	std::vector<CParticle> newVec;
-
-	for (std::vector<CParticle>::iterator i = psys.begin(); i != psys.end(); i++) {
-		if (!i->IsDead()) {
-			newVec.push_back(*i);
-		}
-	}
-
-	psys = newVec;
 }
 
 const char *CParticleSys::VelocityModeText(CParticleSys::VelocityMode mode)

@@ -2,6 +2,7 @@
 #include "Particle.h"
 #include "Animation.h"
 #include <vector>
+#include <list>
 
 class CParticleSys
 {
@@ -10,7 +11,7 @@ public:
 
 private:
 	const int DISPOSE_THRESHOLD = 10; //dispose of dead at this percentage dead
-	std::vector<CParticle> psys;
+	std::list<CParticle> psys;
 	double emitterX, emitterY;
 	VelocityMode velocityMode;
 	double minVelocity, maxVelocity;
@@ -24,7 +25,6 @@ private:
 	double timeSinceEmit;
 	CGradient gradient;
 	COLORREF defaultTint;
-	int livingCount;
 	std::vector<CAnimationGeneric*> animations;
 	int flags;
 
@@ -37,7 +37,7 @@ private:
 public:
 	CParticleSys();
 
-	std::vector<CParticle> *GetParticles();
+	std::list<CParticle> *GetParticles();
 
 	void GetEmitterPos(double *x, double *y);
 	void SetEmitterPos(double x, double y);
@@ -96,16 +96,12 @@ public:
 	bool GetChaoticGradientFlag();
 	void SetChaoticGradientFlag(bool state);
 
-	int GetLiveParticleCount();
-
 	std::vector<CAnimationGeneric*> &GetAnimationsVector();
 	void DisableAllAnimations();
 	bool GetAnimationStatus();
 	bool GetAnimationStatus(double &highestFreq);
 
 	CParticle &CreateParticle(double x, double y);
-
-	void DisposeOfDead();
 
 	static const char *VelocityModeText(VelocityMode mode);
 };

@@ -58,8 +58,28 @@ template <typename T> void DeleteVectorItem(std::vector<T> &vector, typename std
 {
 	std::vector<T>::size_type size = vector.size();
 	std::vector<T> newVec;
-	for (std::vector<T>::size_type i = 0; i < size; i++) {
+	for (std::vector<T>::size_type i = 0; i < size - 1; i++) {
 		newVec.push_back(vector[i >= index ? i + 1 : i]);
 	}
 	vector = newVec;
 }
+
+template <typename _Elem>
+struct basic_SkipToChar
+{
+	std::string::size_type pos;
+	_Elem pad;
+	
+	basic_SkipToChar(std::string::size_type position, _Elem paddingChar = (_Elem)' ')
+	{
+		pos = position;
+		pad = paddingChar;
+	}
+};
+
+typedef basic_SkipToChar<char> SkipToCharA;
+typedef basic_SkipToChar<wchar_t> SkipToCharW;
+typedef basic_SkipToChar<tchar_t> SkipToChar;
+
+std::ostream &operator<<(std::ostream &os, const SkipToCharA &skip);
+std::wostream &operator<<(std::wostream &os, const SkipToCharW &skip);
