@@ -49,6 +49,7 @@ private:
 	LPRECT clientRect;
 
 	CStepHandle *AddGradientStep(int x);
+	void UpdatePsysGradient();
 
 protected:
 	virtual void OnDraw(HDC hDC, const LPRECT clientRect);

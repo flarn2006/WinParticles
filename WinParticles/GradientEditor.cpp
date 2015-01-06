@@ -3,11 +3,13 @@
 #include "Resource.h"
 #include "ParticleBitmap.h"
 #include "RootDisplay.h"
+#include "ParticleSys.h"
 
 extern HINSTANCE hInst;
 extern CHOOSECOLOR colorDlg;
 extern CParticleBitmap bitmap;  // to get number of cells (sub-images)
 extern CRootDisplay *display;
+extern CParticleSys *psys;
 
 CGradientEditor::CGradientEditor(CGradient *gradient)
 {
@@ -85,6 +87,11 @@ CGradientEditor::CStepHandle *CGradientEditor::AddGradientStep(int x)
 	return stepHandles[index];
 }
 
+void CGradientEditor::UpdatePsysGradient()
+{
+	psys->SetGradient(*gradient);
+}
+
 void CGradientEditor::OnMouseMove(int x, int y)
 {
 	COLORREF colorHere = gradient->ColorAtPoint(Interpolate(x, clientRect->left, clientRect->right, 0.0, 1.0));
@@ -98,6 +105,7 @@ void CGradientEditor::OnMouseDown(int x, int y)
 	CCompoundDispItem::OnMouseDown(x, y);
 	if (!GetStopHandlingFlag()) {
 		AddGradientStep(x)->StartDragging(x);
+		UpdatePsysGradient();
 	}
 }
 
@@ -106,6 +114,7 @@ void CGradientEditor::OnRightClick(int x, int y)
 	CCompoundDispItem::OnRightClick(x, y);
 	if (!GetStopHandlingFlag()) {
 		AddGradientStep(x);
+		UpdatePsysGradient();
 	}
 }
 
@@ -197,6 +206,7 @@ void CGradientEditor::CStepHandle::OnMouseMove(int x, int y)
 		double deltaPos = Interpolate(deltaX, posXMin, posXMax, 0.0, 1.0);
 		gradient->SetStepPosition(stepIndex, gradient->GetStepPosition(stepIndex) + deltaPos);
 		lastDragX = x;
+		parent->UpdatePsysGradient();
 	}
 }
 
@@ -204,6 +214,7 @@ void CGradientEditor::CStepHandle::OnMouseUp(int x, int y)
 {
 	dragging = false;
 	gradient->PrecalculateColors();
+	parent->UpdatePsysGradient();
 }
 
 void CGradientEditor::CStepHandle::OnRightClick(int x, int y)
@@ -214,13 +225,15 @@ void CGradientEditor::CStepHandle::OnRightClick(int x, int y)
 			gradient->DeleteStep(stepIndex);
 			parent->SetGradient(gradient);
 			gradient->PrecalculateColors();
+			parent->UpdatePsysGradient();
 		}
 	} else {
 		colorDlg.rgbResult = gradient->GetStepColor(stepIndex);
 		if (ChooseColor(&colorDlg)) {
 			gradient->SetStepColor(stepIndex, colorDlg.rgbResult);
+			gradient->PrecalculateColors();
+			parent->UpdatePsysGradient();
 		}
-		gradient->PrecalculateColors();
 	}
 	parent->StopHandlingSubItemEvents();
 }
