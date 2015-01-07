@@ -22,7 +22,6 @@ private:
 
 public:
 	CParticle();
-	~CParticle();
 
 	void GetPosition(double *x, double *y);
 	void SetPosition(double x, double y);

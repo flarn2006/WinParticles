@@ -17,10 +17,6 @@ CParticle::CParticle()
 	flags = 0;
 }
 
-CParticle::~CParticle()
-{
-}
-
 void CParticle::GetPosition(double *x, double *y)
 {
 	if (x) *x = px;
