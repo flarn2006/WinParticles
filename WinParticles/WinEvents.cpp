@@ -456,7 +456,7 @@ void CWinEvents::OnKeyDown(WORD key)
 			psys->SetChaoticGradientFlag(!psys->GetChaoticGradientFlag());
 		
 		} else if (key == (WPARAM)'Q') {
-			verbosity = (verbosity + 1) % 2;
+			verbosity = (verbosity + 1) % 3;
 			UpdateViewMenuChecks();
 		
 		} else if (key == (WPARAM)'E') {
