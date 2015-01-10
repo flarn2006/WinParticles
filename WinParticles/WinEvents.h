@@ -13,7 +13,6 @@ private:
 	CBackBuffer *bbuf;
 	int selGradientNum;
 	double emitterX, emitterY;
-	double deltaMult;
 	COLORREF customColors[16];
 	bool mouseControlsParams = true;
 	CParamAgent *agent;

@@ -48,6 +48,7 @@ CGradient gradients[NUM_GRADIENTS];
 CPresetManager *presetMgr;
 int verbosity = 2;
 CWinEvents *winEvents;
+double deltaMult;
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);

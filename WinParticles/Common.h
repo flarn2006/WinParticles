@@ -16,11 +16,13 @@
 	typedef std::wstring tstring;
 	typedef std::wistringstream tistringstream;
 	typedef std::wostringstream tostringstream;
+	#define to_tstring std::to_wstring
 #else
 	typedef char tchar_t;
 	typedef std::string tstring;
 	typedef std::istringstream tistringstream;
 	typedef std::ostringstream tostringstream;
+	#define to_tstring std::to_string
 #endif
 
 double Interpolate(double value, double inputMin, double inputMax, double outputMin, double outputMax);

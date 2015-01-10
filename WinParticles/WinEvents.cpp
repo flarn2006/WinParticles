@@ -28,6 +28,7 @@ extern CRootDisplay *display;
 extern CGradient gradients[NUM_GRADIENTS];
 extern CPresetManager *presetMgr;
 extern int verbosity;
+extern double deltaMult;
 
 CWinEvents::CWinEvents(HWND hWnd)
 {

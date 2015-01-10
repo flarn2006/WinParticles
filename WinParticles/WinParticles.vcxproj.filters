@@ -25,6 +25,12 @@
     <Filter Include="Source Files\Animation">
       <UniqueIdentifier>{dd35f6a3-a707-4a9e-968c-23ac1932f211}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Text Items">
+      <UniqueIdentifier>{ae714c87-a6bf-4a48-a932-932b8cbb1b13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Text Items">
+      <UniqueIdentifier>{d96dd02c-7b2a-45eb-acaa-fe7524703ef3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -114,6 +120,15 @@
     <ClInclude Include="HelpText.h">
       <Filter>Header Files\Display Items</Filter>
     </ClInclude>
+    <ClInclude Include="SelectableTextItem.h">
+      <Filter>Header Files\Text Items</Filter>
+    </ClInclude>
+    <ClInclude Include="TextItem.h">
+      <Filter>Header Files\Text Items</Filter>
+    </ClInclude>
+    <ClInclude Include="AdjustableTextItem.h">
+      <Filter>Header Files\Text Items</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -190,6 +205,15 @@
     </ClCompile>
     <ClCompile Include="HelpText.cpp">
       <Filter>Source Files\Display Items</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectableTextItem.cpp">
+      <Filter>Source Files\Text Items</Filter>
+    </ClCompile>
+    <ClCompile Include="TextItem.cpp">
+      <Filter>Source Files\Text Items</Filter>
+    </ClCompile>
+    <ClCompile Include="AdjustableTextItem.cpp">
+      <Filter>Source Files\Text Items</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -201,6 +201,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AdjustableTextItem.h" />
     <ClInclude Include="AnimatedParam.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimEditor.h" />
@@ -225,13 +226,16 @@
     <ClInclude Include="PresetManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RootDisplay.h" />
+    <ClInclude Include="SelectableTextItem.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SwitchCtrl.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TextItem.h" />
     <ClInclude Include="WinEvents.h" />
     <ClInclude Include="WinParticles.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AdjustableTextItem.cpp" />
     <ClCompile Include="AnimatedParam.cpp" />
     <ClCompile Include="AnimationGeneric.cpp" />
     <ClCompile Include="AnimEditor.cpp" />
@@ -253,6 +257,7 @@
     <ClCompile Include="ParticleSys.cpp" />
     <ClCompile Include="PresetManager.cpp" />
     <ClCompile Include="RootDisplay.cpp" />
+    <ClCompile Include="SelectableTextItem.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -262,6 +267,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Test|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SwitchCtrl.cpp" />
+    <ClCompile Include="TextItem.cpp" />
     <ClCompile Include="WinEvents.cpp" />
     <ClCompile Include="WinParticles.cpp" />
   </ItemGroup>
