@@ -220,6 +220,7 @@
     <ClInclude Include="KnobCtrl.h" />
     <ClInclude Include="NumericInputBox.h" />
     <ClInclude Include="ParamAgent.h" />
+    <ClInclude Include="ParamTextItem.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleBitmap.h" />
     <ClInclude Include="ParticleSys.h" />
@@ -252,6 +253,7 @@
     <ClCompile Include="KnobCtrl.cpp" />
     <ClCompile Include="NumericInputBox.cpp" />
     <ClCompile Include="ParamAgent.cpp" />
+    <ClCompile Include="ParamTextItem.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleBitmap.cpp" />
     <ClCompile Include="ParticleSys.cpp" />

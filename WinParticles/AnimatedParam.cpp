@@ -16,7 +16,7 @@ CAnimatedParam::~CAnimatedParam()
 {
 }
 
-double CAnimatedParam::GetValue()
+double CAnimatedParam::GetValue() const
 {
 	if (agent) {
 		return agent->GetValue(paramID);

@@ -21,12 +21,12 @@ void CParamAgent::SetSelParam(ParamID paramNum)
 	selParam = paramNum;
 }
 
-double CParamAgent::GetValue()
+double CParamAgent::GetValue() const
 {
 	return GetValue(selParam);
 }
 
-double CParamAgent::GetValue(ParamID paramNum)
+double CParamAgent::GetValue(ParamID paramNum) const
 {
 	double temp1, temp2;
 	switch (paramNum) {

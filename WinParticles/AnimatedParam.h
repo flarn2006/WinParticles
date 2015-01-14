@@ -13,7 +13,7 @@ public:
 	CAnimatedParam(CParamAgent *agent, CParamAgent::ParamID paramID = CParamAgent::ParamID::MIN_PARAM);
 	~CAnimatedParam();
 
-	virtual double GetValue();
+	virtual double GetValue() const;
 	virtual void SetValue(double newValue);
 
 	void SetParamAgent(CParamAgent *agent);

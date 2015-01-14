@@ -129,6 +129,9 @@
     <ClInclude Include="AdjustableTextItem.h">
       <Filter>Header Files\Text Items</Filter>
     </ClInclude>
+    <ClInclude Include="ParamTextItem.h">
+      <Filter>Header Files\Text Items</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -213,6 +216,9 @@
       <Filter>Source Files\Text Items</Filter>
     </ClCompile>
     <ClCompile Include="AdjustableTextItem.cpp">
+      <Filter>Source Files\Text Items</Filter>
+    </ClCompile>
+    <ClCompile Include="ParamTextItem.cpp">
       <Filter>Source Files\Text Items</Filter>
     </ClCompile>
   </ItemGroup>

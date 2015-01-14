@@ -33,8 +33,8 @@ public:
 	~CParamAgent();
 	ParamID GetSelParam();
 	void SetSelParam(ParamID paramNum);
-	double GetValue();
-	double GetValue(ParamID paramNum);
+	double GetValue() const;
+	double GetValue(ParamID paramNum) const;
 	void SetValue(double newValue);
 	void SetValue(ParamID paramNum, double newValue);
 };
