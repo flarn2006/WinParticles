@@ -310,7 +310,6 @@ void CWinEvents::OnSize()
 void CWinEvents::OnPaint()
 {
 	tostringstream out;
-	double temp1, temp2;
 	PAINTSTRUCT ps;
 
 	HDC hDC = bbuf->GetDC();
