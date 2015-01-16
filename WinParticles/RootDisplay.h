@@ -6,6 +6,7 @@
 #include "Gradient.h"
 #include "AnimEditor.h"
 #include "HelpText.h"
+#include "TextDisplay.h"
 
 class CRootDisplay : public CCompoundDispItem
 {
@@ -15,6 +16,7 @@ private:
 	CGradientEditor *gradientEditor;
 	CAnimEditor *animEditor;
 	CHelpText *helpText;
+	CTextDisplay *textDisplay;
 
 public:
 	CRootDisplay(); // You MUST also call the Init... functions
@@ -32,5 +34,6 @@ public:
 	CGradientEditor *GetGradientEditor();
 	CAnimEditor *GetAnimEditor();
 	CHelpText *GetHelpTextObj();
+	CTextDisplay *GetTextDisplay();
 };
 

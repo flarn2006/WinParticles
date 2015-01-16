@@ -325,68 +325,6 @@ void CWinEvents::OnPaint()
 	// Draw all active display items
 	display->Draw(hDC, &clientRect);
 
-	// Draw text display
-	if (verbosity >= 2) {
-#ifdef _DEBUG
-		out << "DEBUG BUILD (performance is not optimal)" << std::endl;
-#endif
-		tostringstream fpsStepsLine;
-		fpsStepsLine << "FPS: " << fpsMonitor.GetFPS() << SkipToChar(14);
-		fpsStepsLine << "Steps: " << simulationSteps << SkipToChar(27) << "(Min: " << minSteps << SkipToChar(39) << "Max: " << maxSteps << ")";
-		out << fpsStepsLine.str() << std::endl;
-		out << "Number of particles: " << psys->GetParticles()->size() << std::endl;
-		out << "Use mouse buttons/wheel or arrow keys to edit params" << std::endl;
-		out << "Press ENTER to type a value directly" << std::endl;
-	}
-	if (verbosity >= 1) {
-		out << "[-+] Adjustment multiplier: " << deltaMult << std::endl;
-		out << "[Z]  Velocity mode: " << CParticleSys::VelocityModeText(psys->GetVelocityMode()) << std::endl;
-		out << "Current parameters:" << std::endl;
-		if (psys->GetVelocityMode() == CParticleSys::VelocityMode::MODE_POLAR) {
-			psys->GetVelocity(&temp1, &temp2);
-			out << SELPARAM_CHAR(CParamAgent::ParamID::MIN_VELOCITY) << " Minimum velocity:   " << temp1 << std::endl;
-			out << SELPARAM_CHAR(CParamAgent::ParamID::MAX_VELOCITY) << " Maximum velocity:   " << temp2 << std::endl;
-			psys->GetAngle(&temp1, &temp2);
-			out << SELPARAM_CHAR(CParamAgent::ParamID::BASE_ANGLE) << " Center angle:       " << temp1 << '°' << std::endl;
-			out << SELPARAM_CHAR(CParamAgent::ParamID::ANGLE_SIZE) << " Angular size:       " << temp2 << '°' << std::endl;
-		} else {
-			psys->GetRectVelocityX(&temp1, &temp2);
-			out << SELPARAM_CHAR(CParamAgent::ParamID::MIN_VELOCITY_X) << " Minimum X velocity: " << temp1 << std::endl;
-			out << SELPARAM_CHAR(CParamAgent::ParamID::MAX_VELOCITY_X) << " Maximum X velocity: " << temp2 << std::endl;
-			psys->GetRectVelocityY(&temp1, &temp2);
-			out << SELPARAM_CHAR(CParamAgent::ParamID::MIN_VELOCITY_Y) << " Minimum Y velocity: " << temp1 << std::endl;
-			out << SELPARAM_CHAR(CParamAgent::ParamID::MAX_VELOCITY_Y) << " Maximum Y velocity: " << temp2 << std::endl;
-		}
-		psys->GetAcceleration(&temp1, &temp2);
-		out << SELPARAM_CHAR(CParamAgent::ParamID::ACCELERATION_X) << " X acceleration:     " << temp1 << std::endl;
-		out << SELPARAM_CHAR(CParamAgent::ParamID::ACCELERATION_Y) << " Y acceleration:     " << temp2 << std::endl;
-		out << SELPARAM_CHAR(CParamAgent::ParamID::MAXIMUM_AGE) << " Maximum age:        " << psys->GetMaxAge() << std::endl;
-		out << SELPARAM_CHAR(CParamAgent::ParamID::EMISSION_RATE) << " Emission rate:      " << psys->GetEmissionRate() << std::endl;
-		out << SELPARAM_CHAR(CParamAgent::ParamID::EMISSION_RADIUS) << " Emission radius:    " << psys->GetEmissionRadius() << std::endl;
-		out << SELPARAM_CHAR(CParamAgent::ParamID::INNER_RADIUS) << " Inner radius:       " << psys->GetInnerRadius() << std::endl;
-	}
-	if (verbosity >= 2) {
-		out << std::endl;
-		out << "Press 0 - " << NUM_GRADIENTS << " to change colors" << std::endl;
-		out << "[R] Reset parameters" << std::endl;
-		out << "[C] Show/hide cursor" << std::endl;
-		out << "[F] Freeze/unfreeze emitter" << std::endl;
-		out << "[G] Reset gradient presets" << std::endl;
-		out << "[A] Toggle additive drawing (" << (additiveDrawing ? "ON" : "OFF") << ")" << std::endl;
-		out << "[S] Static (random) color mode (" << (psys->GetChaoticGradientFlag() ? "CHAOTIC" : (psys->GetRandomColorMode() ? "ON" : "OFF")) << ")" << std::endl;
-		out << "[D] Static (random) image mode (" << (psys->GetRandomImageMode() ? "ON" : "OFF") << ")" << std::endl;
-		out << "[Q] Change text display" << std::endl;
-		out << "[E] Toggle bitmap/gradient/animation editors" << std::endl;
-	}
-
-	clientRect.left += 5; clientRect.top += 5;
-	SetTextColor(hDC, 0x000000);
-	DrawText(hDC, out.str().c_str(), (int)out.str().length(), &clientRect, 0);
-	clientRect.left -= 1; clientRect.top -= 1;
-	SetTextColor(hDC, 0xFFFF00);
-	DrawText(hDC, out.str().c_str(), (int)out.str().length(), &clientRect, 0);
-	clientRect.left -= 4; clientRect.top -= 4;
-
 	hDC = BeginPaint(hWnd, &ps);
 	bbuf->CopyToFront(hDC);
 	EndPaint(hWnd, &ps);
@@ -499,8 +437,7 @@ void CWinEvents::OnKeyDown(WORD key)
 void CWinEvents::OnLButtonDown(int x, int y)
 {
 	if (mouseControlsParams) {
-		selParam--;
-		SelectParam(agent, selParam, deltaMult);
+		display->GetTextDisplay()->LeftClick();
 	} else {
 		display->MouseDown(x, y);
 	}
@@ -509,8 +446,7 @@ void CWinEvents::OnLButtonDown(int x, int y)
 void CWinEvents::OnRButtonDown(int x, int y)
 {
 	if (mouseControlsParams) {
-		selParam++;
-		SelectParam(agent, selParam, deltaMult);
+		display->GetTextDisplay()->RightClick();
 	} else {
 		display->RightClick(x, y);
 	}
@@ -550,9 +486,7 @@ void CWinEvents::OnLButtonUp(int x, int y)
 void CWinEvents::OnMouseWheel(short wheelDelta)
 {
 	if (!display->MouseWheel(wheelDelta)) {
-		double delta = (double)wheelDelta / WHEEL_DELTA;
-		delta *= deltaMult;
-		agent->SetValue(agent->GetValue() + delta);
+		display->GetTextDisplay()->MouseWheel(wheelDelta);
 	}
 }
 

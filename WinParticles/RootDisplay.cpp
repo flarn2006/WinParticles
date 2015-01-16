@@ -1,13 +1,14 @@
 #include "stdafx.h"
 #include "RootDisplay.h"
 
-
 CRootDisplay::CRootDisplay()
 {
 	numInputBox = new CNumericInputBox();
 	helpText = new CHelpText();
+	textDisplay = new CTextDisplay();
 	AddSubItem(numInputBox);
 	AddSubItem(helpText);
+	AddSubItem(textDisplay);
 }
 
 CRootDisplay::~CRootDisplay()
@@ -16,6 +17,8 @@ CRootDisplay::~CRootDisplay()
 	delete bmpEditor;
 	delete gradientEditor;
 	delete animEditor;
+	delete helpText;
+	delete textDisplay;
 }
 
 void CRootDisplay::InitBitmapEditor(CParticleBitmap *bitmap)
@@ -72,4 +75,9 @@ CAnimEditor *CRootDisplay::GetAnimEditor()
 CHelpText *CRootDisplay::GetHelpTextObj()
 {
 	return helpText;
+}
+
+CTextDisplay *CRootDisplay::GetTextDisplay()
+{
+	return textDisplay;
 }
