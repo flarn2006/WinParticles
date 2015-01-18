@@ -538,7 +538,7 @@ void CWinEvents::SetupTextDisplay(CTextDisplay &td)
 	td.AddItem(new CDynamicTextItem([this](tostringstream &ss) {
 		ss << "FPS: " << fpsMonitor.GetFPS() << SkipToChar(14);
 		ss << "Steps: " << simulationSteps << SkipToChar(27) << "(Min: " << minSteps << SkipToChar(39) << "Max: " << maxSteps << ")";
-	}, 1));
+	}));
 
 	td.AddItem(new CDynamicTextItem([](tostringstream &ss) {
 		ss << "[-+] Adjustment multiplier: " << deltaMult;
@@ -546,7 +546,7 @@ void CWinEvents::SetupTextDisplay(CTextDisplay &td)
 
 	td.AddItem(new CDynamicTextItem([](tostringstream &ss) {
 		ss << "[Z]  Velocity mode: " << CParticleSys::VelocityModeText(psys->GetVelocityMode());
-	}, 1));
+	}));
 
 	td.AddText(TEXT(""));
 	td.AddText(TEXT("Current parameters:"));
