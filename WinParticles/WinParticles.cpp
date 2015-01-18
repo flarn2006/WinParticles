@@ -35,7 +35,6 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
-CParamAgent::ParamID selParam;
 CParticleSys *psys;
 HCURSOR curEmitter;
 bool additiveDrawing = true;

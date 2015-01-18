@@ -4,6 +4,7 @@
 class CTextItem
 {
 private:
+	bool visibility = true;
 	int minVerbosity = 2;
 
 public:
@@ -11,6 +12,9 @@ public:
 	virtual bool IsSelectable() const;
 	int GetMinVerbosity() const;
 	void SetMinVerbosity(int verbosity);
+	bool GetVisibility() const;
+	void SetVisibility(bool visibility);
+	bool IsVisible() const;
 };
 
 class CStaticTextItem : public CTextItem

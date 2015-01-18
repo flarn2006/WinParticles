@@ -213,6 +213,7 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="CompoundDispItem.h" />
     <ClInclude Include="DisplayItem.h" />
+    <ClInclude Include="DynamicTextItem.h" />
     <ClInclude Include="FPSMonitor.h" />
     <ClInclude Include="Gradient.h" />
     <ClInclude Include="GradientEditor.h" />
@@ -247,6 +248,7 @@
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="CompoundDispItem.cpp" />
     <ClCompile Include="DisplayItem.cpp" />
+    <ClCompile Include="DynamicTextItem.cpp" />
     <ClCompile Include="FPSMonitor.cpp" />
     <ClCompile Include="Gradient.cpp" />
     <ClCompile Include="GradientEditor.cpp" />

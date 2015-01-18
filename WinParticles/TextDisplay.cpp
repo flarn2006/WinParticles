@@ -21,7 +21,7 @@ void CTextDisplay::OnDraw(HDC hDC, const LPRECT clientRect)
 	tostringstream out;
 	
 	for (std::vector<CTextItem*>::iterator i = items.begin(); i != items.end(); i++) {
-		if (verbosity >= (*i)->GetMinVerbosity()) {
+		if ((*i)->IsVisible()) {
 			tstring text;
 			(*i)->GetText(text);
 			out << text << std::endl;
@@ -43,15 +43,15 @@ void CTextDisplay::OnDraw(HDC hDC, const LPRECT clientRect)
 
 void CTextDisplay::AddItem(CTextItem *item)
 {
+	items.push_back(item);
+
 	if (item->IsSelectable()) {
-		selectableIndices.push_back(items.size());
+		selectableIndices.push_back(items.size() - 1);
 		if (noSelection) {
-			selIndex = items.size();
+			SetSelectedItem(dynamic_cast<CSelectableTextItem*>(item));
 			noSelection = false;
 		}
 	}
-
-	items.push_back(item);
 }
 
 CStaticTextItem *CTextDisplay::AddText(const tstring &text)
@@ -74,7 +74,7 @@ void CTextDisplay::LeftClick()
 void CTextDisplay::RightClick()
 {
 	if (!noSelection) {
-		if (selIndex >= selectableIndices.size())
+		if (selIndex >= selectableIndices.size() - 1)
 			SetSelectedIndex(0);
 		else
 			SetSelectedIndex(selIndex + 1);
@@ -99,15 +99,16 @@ CSelectableTextItem *CTextDisplay::GetSelectedItem()
 
 void CTextDisplay::SetSelectedIndex(SelIndex index)
 {
-	GetSelectedItem()->SetSelected(false);
+	if (!noSelection) GetSelectedItem()->SetSelected(false);
 	selIndex = index;
+	noSelection = false;
 	GetSelectedItem()->SetSelected(true);
 }
 
 bool CTextDisplay::SetSelectedItem(CSelectableTextItem *item)
 {
 	for (SelIndex i = 0; i < selectableIndices.size(); i++) {
-		if (items[i] == item) {
+		if (items[selectableIndices[i]] == item) {
 			SetSelectedIndex(i);
 			return true;
 		}

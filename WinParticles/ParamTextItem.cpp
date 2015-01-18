@@ -1,16 +1,26 @@
 #include "stdafx.h"
 #include "ParamTextItem.h"
 #include "AnimatedParam.h"
+#include "RootDisplay.h"
+
+extern CRootDisplay *display;
 
 CParamTextItem::CParamTextItem()
 {
 	target = NULL;
 	targetIsMine = false;
+	animID = -1;
 }
 
 CParamTextItem::~CParamTextItem()
 {
 	if (targetIsMine) delete target;
+}
+
+void CParamTextItem::OnSelected()
+{
+	CAdjustableTextItem::OnSelected();
+	if (animID >= 0) display->GetAnimEditor()->SetSelectedID(animID);
 }
 
 void CParamTextItem::SetTarget(CAnimTarget<double> &target)
@@ -35,4 +45,9 @@ double CParamTextItem::GetValue() const
 void CParamTextItem::SetValue(double value)
 {
 	target->SetValue(value);
+}
+
+void CParamTextItem::SetAnimID(int animID)
+{
+	this->animID = animID;
 }

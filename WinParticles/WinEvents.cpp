@@ -6,6 +6,9 @@
 #include "PresetManager.h"
 #include "resource.h"
 #include "AnimatedParam.h"
+#include "TextItem.h"
+#include "DynamicTextItem.h"
+#include "ParamTextItem.h"
 
 #define MAX_LOADSTRING 100
 #define NUM_GRADIENTS 5
@@ -16,7 +19,6 @@
 #define MF_CHECK_BOOL(b) ((b) ? MF_CHECKED : MF_UNCHECKED)
 
 extern HINSTANCE hInst;
-extern CParamAgent::ParamID selParam;
 extern CParticleSys *psys;
 extern HCURSOR curEmitter;
 extern bool additiveDrawing;
@@ -42,8 +44,6 @@ CWinEvents::CWinEvents(HWND hWnd)
 	
 	agent = new CParamAgent(psys);
 	presetMgr = new CPresetManager(psys, animations);
-
-	SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY, deltaMult);
 
 	InitializeGradients(gradients);
 
@@ -75,6 +75,7 @@ CWinEvents::CWinEvents(HWND hWnd)
 	display->InitBitmapEditor(&bitmap);
 	display->InitGradientEditor(&psys->GetGradient());
 	display->InitAnimEditor(animations);
+	SetupTextDisplay(*display->GetTextDisplay());
 
 	bitmap.LoadDefaultBitmap();
 
@@ -123,23 +124,6 @@ void CWinEvents::InitializeGradients(CGradient *gradients)
 	RandomizeGradient(gradients[4]);
 }
 
-void CWinEvents::SelectParam(CParamAgent *agent, CParamAgent::ParamID paramNum, double &deltaMult)
-{
-	selParam = paramNum;
-	agent->SetSelParam(selParam);
-	switch (paramNum) {
-	case CParamAgent::ParamID::MIN_VELOCITY: case CParamAgent::ParamID::MAX_VELOCITY: deltaMult = 10.0; break;
-	case CParamAgent::ParamID::BASE_ANGLE: case CParamAgent::ParamID::ANGLE_SIZE: deltaMult = 10.0; break; // (BASE_)ANGLE(_SIZE) = MIN(/MAX)_VELOCITY_Y in rect mode
-	case CParamAgent::ParamID::ACCELERATION_X: deltaMult = 10.0; break;
-	case CParamAgent::ParamID::ACCELERATION_Y: deltaMult = -10.0; break;
-	case CParamAgent::ParamID::MAXIMUM_AGE: deltaMult = 0.1; break;
-	case CParamAgent::ParamID::EMISSION_RATE: deltaMult = 10.0; break;
-	case CParamAgent::ParamID::EMISSION_RADIUS: deltaMult = 1.0; break;
-	case CParamAgent::ParamID::INNER_RADIUS: deltaMult = 1.0; break;
-	}
-	if (display) display->GetAnimEditor()->SetSelectedID(selParam);
-}
-
 void CWinEvents::SelectGradient(int gradientNum, int &selGradientNum)
 {
 	CGradient *toSelect;
@@ -171,6 +155,18 @@ void CWinEvents::SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd)
 	EnableMenuItem(hMenu, ID_PARAMS_MAXVELX, mode != CParticleSys::VelocityMode::MODE_RECT);
 	EnableMenuItem(hMenu, ID_PARAMS_MINVELY, mode != CParticleSys::VelocityMode::MODE_RECT);
 	EnableMenuItem(hMenu, ID_PARAMS_MAXVELY, mode != CParticleSys::VelocityMode::MODE_RECT);
+
+	if (mode == CParticleSys::VelocityMode::MODE_RECT) {
+		paramTextItems[0]->SetPrefixSuffixText(TEXT("Minimum X velocity: "), TEXT(""));
+		paramTextItems[1]->SetPrefixSuffixText(TEXT("Maximum X velocity: "), TEXT(""));
+		paramTextItems[2]->SetPrefixSuffixText(TEXT("Minimum Y velocity: "), TEXT(""));
+		paramTextItems[3]->SetPrefixSuffixText(TEXT("Maximum Y velocity: "), TEXT(""));
+	} else {
+		paramTextItems[0]->SetPrefixSuffixText(TEXT("Minimum velocity:   "), TEXT(""));
+		paramTextItems[1]->SetPrefixSuffixText(TEXT("Maximum velocity:   "), TEXT(""));
+		paramTextItems[2]->SetPrefixSuffixText(TEXT("Center angle:       "), TEXT(""));
+		paramTextItems[3]->SetPrefixSuffixText(TEXT("Angular size:       "), TEXT(""));
+	}
 }
 
 void CWinEvents::RandomizeGradient(CGradient &gradient)
@@ -214,20 +210,20 @@ bool CWinEvents::OnCommand(WORD command, WORD eventID)
 		break;
 	case ID_PARAMS_VM_POLAR: SetVelocityMode(CParticleSys::VelocityMode::MODE_POLAR, hWnd); break;
 	case ID_PARAMS_VM_RECT: SetVelocityMode(CParticleSys::VelocityMode::MODE_RECT, hWnd); break;
-	case ID_PARAMS_MINVEL: SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY, deltaMult); break;
-	case ID_PARAMS_MAXVEL: SelectParam(agent, CParamAgent::ParamID::MAX_VELOCITY, deltaMult); break;
-	case ID_PARAMS_MINANGLE: SelectParam(agent, CParamAgent::ParamID::BASE_ANGLE, deltaMult); break;
-	case ID_PARAMS_MAXANGLE: SelectParam(agent, CParamAgent::ParamID::ANGLE_SIZE, deltaMult); break;
-	case ID_PARAMS_MINVELX: SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY_X, deltaMult); break;
-	case ID_PARAMS_MAXVELX: SelectParam(agent, CParamAgent::ParamID::MAX_VELOCITY_X, deltaMult); break;
-	case ID_PARAMS_MINVELY: SelectParam(agent, CParamAgent::ParamID::MIN_VELOCITY_Y, deltaMult); break;
-	case ID_PARAMS_MAXVELY: SelectParam(agent, CParamAgent::ParamID::MAX_VELOCITY_Y, deltaMult); break;
-	case ID_PARAMS_XACCEL: SelectParam(agent, CParamAgent::ParamID::ACCELERATION_X, deltaMult); break;
-	case ID_PARAMS_YACCEL: SelectParam(agent, CParamAgent::ParamID::ACCELERATION_Y, deltaMult); break;
-	case ID_PARAMS_MAXAGE: SelectParam(agent, CParamAgent::ParamID::MAXIMUM_AGE, deltaMult); break;
-	case ID_PARAMS_EMISSIONRATE: SelectParam(agent, CParamAgent::ParamID::EMISSION_RATE, deltaMult); break;
-	case ID_PARAMS_EMISSIONRADIUS: SelectParam(agent, CParamAgent::ParamID::EMISSION_RADIUS, deltaMult); break;
-	case ID_PARAMS_INNERRADIUS: SelectParam(agent, CParamAgent::ParamID::INNER_RADIUS, deltaMult); break;
+	case ID_PARAMS_MINVEL: display->GetTextDisplay()->SetSelectedItem(paramTextItems[CParamAgent::ParamID::MIN_VELOCITY]); break;
+	case ID_PARAMS_MAXVEL: display->GetTextDisplay()->SetSelectedItem(paramTextItems[CParamAgent::ParamID::MAX_VELOCITY]); break;
+	case ID_PARAMS_MINANGLE: display->GetTextDisplay()->SetSelectedItem(paramTextItems[CParamAgent::ParamID::BASE_ANGLE]); break;
+	case ID_PARAMS_MAXANGLE: display->GetTextDisplay()->SetSelectedItem(paramTextItems[CParamAgent::ParamID::ANGLE_SIZE]); break;
+	case ID_PARAMS_MINVELX: display->GetTextDisplay()->SetSelectedItem(paramTextItems[CParamAgent::ParamID::MIN_VELOCITY_X]); break;
+	case ID_PARAMS_MAXVELX: display->GetTextDisplay()->SetSelectedItem(paramTextItems[CParamAgent::ParamID::MAX_VELOCITY_X]); break;
+	case ID_PARAMS_MINVELY: display->GetTextDisplay()->SetSelectedItem(paramTextItems[CParamAgent::ParamID::MIN_VELOCITY_Y]); break;
+	case ID_PARAMS_MAXVELY: display->GetTextDisplay()->SetSelectedItem(paramTextItems[CParamAgent::ParamID::MAX_VELOCITY_Y]); break;
+	case ID_PARAMS_XACCEL: display->GetTextDisplay()->SetSelectedItem(paramTextItems[CParamAgent::ParamID::ACCELERATION_X]); break;
+	case ID_PARAMS_YACCEL: display->GetTextDisplay()->SetSelectedItem(paramTextItems[CParamAgent::ParamID::ACCELERATION_Y]); break;
+	case ID_PARAMS_MAXAGE: display->GetTextDisplay()->SetSelectedItem(paramTextItems[CParamAgent::ParamID::MAXIMUM_AGE]); break;
+	case ID_PARAMS_EMISSIONRATE: display->GetTextDisplay()->SetSelectedItem(paramTextItems[CParamAgent::ParamID::EMISSION_RATE]); break;
+	case ID_PARAMS_EMISSIONRADIUS: display->GetTextDisplay()->SetSelectedItem(paramTextItems[CParamAgent::ParamID::EMISSION_RADIUS]); break;
+	case ID_PARAMS_INNERRADIUS: display->GetTextDisplay()->SetSelectedItem(paramTextItems[CParamAgent::ParamID::INNER_RADIUS]); break;
 	case ID_PARAMS_TINT:
 		colorDlg.rgbResult = psys->GetDefaultTint();
 		if (ChooseColor(&colorDlg)) {
@@ -417,18 +413,16 @@ void CWinEvents::OnKeyDown(WORD key)
 			display->GetNumInputBox()->PromptForValue(agent);
 		
 		} else if (key == VK_UP) {
-			selParam--;
-			SelectParam(agent, selParam, deltaMult);
+			display->GetTextDisplay()->LeftClick();
 		
 		} else if (key == VK_DOWN) {
-			selParam++;
-			SelectParam(agent, selParam, deltaMult);
+			display->GetTextDisplay()->RightClick();
 		
 		} else if (key == VK_LEFT) {
-			agent->SetValue(agent->GetValue() - deltaMult);
+			display->GetTextDisplay()->MouseWheel(-WHEEL_DELTA);
 		
 		} else if (key == VK_RIGHT) {
-			agent->SetValue(agent->GetValue() + deltaMult);
+			display->GetTextDisplay()->MouseWheel(WHEEL_DELTA);
 		}
 	}
 }
@@ -534,6 +528,76 @@ CParamAgent *CWinEvents::GetParamAgent()
 double CWinEvents::GetDeltaMult()
 {
 	return deltaMult;
+}
+
+void CWinEvents::SetupTextDisplay(CTextDisplay &td)
+{
+#ifdef _DEBUG
+	td.AddText(TEXT("DEBUG BUILD (performance is not optimal)"));
+#endif
+	td.AddItem(new CDynamicTextItem([this](tostringstream &ss) {
+		ss << "FPS: " << fpsMonitor.GetFPS() << SkipToChar(14);
+		ss << "Steps: " << simulationSteps << SkipToChar(27) << "(Min: " << minSteps << SkipToChar(39) << "Max: " << maxSteps << ")";
+	}, 1));
+
+	td.AddItem(new CDynamicTextItem([](tostringstream &ss) {
+		ss << "[-+] Adjustment multiplier: " << deltaMult;
+	}, 1));
+
+	td.AddItem(new CDynamicTextItem([](tostringstream &ss) {
+		ss << "[Z]  Velocity mode: " << CParticleSys::VelocityModeText(psys->GetVelocityMode());
+	}, 1));
+
+	td.AddText(TEXT(""));
+	td.AddText(TEXT("Current parameters:"));
+
+	const tchar_t *paramPrefixes[] = {
+		TEXT("Minimum velocity:   "),
+		TEXT("Maximum velocity:   "),
+		TEXT("Center angle:       "),
+		TEXT("Angular size:       "),
+		TEXT("X acceleration:     "),
+		TEXT("Y acceleration:     "),
+		TEXT("Maximum age:        "),
+		TEXT("Emission rate:      "),
+		TEXT("Emission radius:    "),
+		TEXT("Inner radius:       ")
+	};
+
+	const double defaultDeltaMults[] = { 10.0, 10.0, 10.0, 10.0, 10.0, -10.0, 0.1, 10.0, 1.0, 1.0 };
+
+	for (int i = 0; i < CParamAgent::PARAM_COUNT; i++) {
+		CParamTextItem *item = new CParamTextItem();
+		item->SetPrefixSuffixText(paramPrefixes[i], TEXT(""));
+		item->SetMinVerbosity(1);
+		item->SetTarget(*agent, (CParamAgent::ParamID)i);
+		item->SetDefaultDeltaMult(defaultDeltaMults[i]);
+		item->SetAnimID(i);
+		td.AddItem(item);
+		paramTextItems[i] = item;
+	}
+
+	td.AddText(TEXT(""));
+	td.AddText(TEXT("Use number keys to select built-in gradients"));
+	td.AddText(TEXT("[R] Reset parameters"));
+	td.AddText(TEXT("[C] Show/hide cursor"));
+	td.AddText(TEXT("[F] Freeze/unfreeze emitter"));
+	td.AddText(TEXT("[G] Reset gradient presets"));
+	
+	td.AddItem(new CDynamicTextItem([](tostringstream &ss) {
+		ss << "[A] Toggle additive drawing (" << (additiveDrawing ? "ON" : "OFF") << ")";
+	}));
+
+	td.AddItem(new CDynamicTextItem([](tostringstream &ss) {
+		ss << "[S] Static (random) color mode (" << (psys->GetChaoticGradientFlag() ? "CHAOTIC" : (psys->GetRandomColorMode() ? "ON" : "OFF")) << ")";
+	}));
+
+	td.AddItem(new CDynamicTextItem([](tostringstream &ss) {
+		ss << "[D] Static (random) image mode (" << (psys->GetRandomImageMode() ? "ON" : "OFF") << ")";
+	}));
+
+	td.AddText(TEXT("[Q] Change text display"));
+	td.AddText(TEXT("[E] Toggle bitmap/gradient/animation editors"));
 }
 
 INT_PTR CALLBACK CWinEvents::AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)

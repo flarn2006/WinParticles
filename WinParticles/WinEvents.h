@@ -5,6 +5,8 @@
 #include "ParamAgent.h"
 #include "AnimatedParam.h"
 #include "FPSMonitor.h"
+#include "TextDisplay.h"
+#include "ParamTextItem.h"
 
 class CWinEvents
 {
@@ -26,11 +28,11 @@ private:
 	CAnimatedParam animParams[CParamAgent::ParamID::PARAM_COUNT];
 	CAnimation<double> animations[CParamAgent::ParamID::PARAM_COUNT];
 	CFPSMonitor fpsMonitor;
+	CParamTextItem *paramTextItems[CParamAgent::ParamID::PARAM_COUNT];
 	int simulationSteps = 1;
 	int minSteps = 1;
 	int maxSteps = 1;
 
-	void SelectParam(CParamAgent *agent, CParamAgent::ParamID paramNum, double &deltaMult);
 	void SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd);
 	void RandomizeGradient(CGradient &gradient);
 	void InitializeGradients(CGradient *gradients);
@@ -58,5 +60,6 @@ public:
 	
 	CParamAgent *GetParamAgent();
 	double GetDeltaMult();
+	void SetupTextDisplay(CTextDisplay &td);
 };
 

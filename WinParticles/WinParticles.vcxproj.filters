@@ -135,6 +135,9 @@
     <ClInclude Include="TextDisplay.h">
       <Filter>Header Files\Display Items</Filter>
     </ClInclude>
+    <ClInclude Include="DynamicTextItem.h">
+      <Filter>Header Files\Text Items</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -226,6 +229,9 @@
     </ClCompile>
     <ClCompile Include="TextDisplay.cpp">
       <Filter>Source Files\Display Items</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicTextItem.cpp">
+      <Filter>Source Files\Text Items</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

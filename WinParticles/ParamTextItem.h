@@ -8,6 +8,10 @@ class CParamTextItem : public CAdjustableTextItem
 private:
 	CAnimTarget<double> *target;
 	bool targetIsMine;
+	int animID;
+
+protected:
+	virtual void OnSelected();
 
 public:
 	CParamTextItem();
@@ -17,5 +21,6 @@ public:
 	void SetTarget(CParamAgent &agent, CParamAgent::ParamID paramID);
 	virtual double GetValue() const;
 	virtual void SetValue(double value);
+	void SetAnimID(int animID);
 };
 
