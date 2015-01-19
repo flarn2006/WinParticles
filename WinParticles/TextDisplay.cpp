@@ -89,6 +89,11 @@ void CTextDisplay::MouseWheel(short wheelDelta)
 	}
 }
 
+void CTextDisplay::NumericInput(double value)
+{
+	GetSelectedItem()->ReactToNumInput(value);
+}
+
 CSelectableTextItem *CTextDisplay::GetSelectedItem()
 {
 	if (noSelection)

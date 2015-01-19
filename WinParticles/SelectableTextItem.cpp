@@ -14,6 +14,10 @@ void CSelectableTextItem::OnMouseWheel(short wheelDelta)
 {
 }
 
+void CSelectableTextItem::OnReactToNumInput(double value)
+{
+}
+
 void CSelectableTextItem::SetSelected(bool state)
 {
 	isSelected = state;
@@ -24,6 +28,12 @@ void CSelectableTextItem::MouseWheel(short wheelDelta)
 {
 	// This is separate just in case I ever add some kind of additional code here.
 	OnMouseWheel(wheelDelta);
+}
+
+void CSelectableTextItem::ReactToNumInput(double value)
+{
+	// Same with this.
+	OnReactToNumInput(value);
 }
 
 void CSelectableTextItem::GetText(tstring &text) const

@@ -27,6 +27,11 @@ void CAdjustableTextItem::OnMouseWheel(short wheelDelta)
 	SetValue(GetValue() + delta * deltaMult);
 }
 
+void CAdjustableTextItem::OnReactToNumInput(double value)
+{
+	SetValue(value);
+}
+
 void CAdjustableTextItem::SetPrefixSuffixText(const tstring &prefix, const tstring &suffix)
 {
 	prefixText = prefix;
