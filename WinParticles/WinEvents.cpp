@@ -263,7 +263,7 @@ bool CWinEvents::OnCommand(WORD command, WORD eventID)
 		verbosity = 0;
 		UpdateViewMenuChecks();
 		break;
-	case ID_VIEW_CONTEXTHELP:
+	case ID_HELP_CONTEXTHELP:
 		display->GetHelpTextObj()->SetEnabled(!display->GetHelpTextObj()->GetEnabled());
 		UpdateViewMenuChecks();
 		break;
@@ -283,7 +283,7 @@ void CWinEvents::UpdateViewMenuChecks()
 	const UINT verbosityCommands[] = { ID_VIEW_HIDETEXT, ID_VIEW_ONLYSHOWPARAMETERS, ID_VIEW_SHOWALLTEXT };
 	CheckMenuRadioItem(hMenu, ID_VIEW_SHOWALLTEXT, ID_VIEW_HIDETEXT, verbosityCommands[verbosity], MF_BYCOMMAND);
 
-	CheckMenuItem(hMenu, ID_VIEW_CONTEXTHELP, MF_CHECK_BOOL(display->GetHelpTextObj()->GetEnabled()));
+	CheckMenuItem(hMenu, ID_HELP_CONTEXTHELP, MF_CHECK_BOOL(display->GetHelpTextObj()->GetEnabled()));
 
 	display->UpdateSize(&clientRect); //for animation editor positioning based on gradient editor status
 }
