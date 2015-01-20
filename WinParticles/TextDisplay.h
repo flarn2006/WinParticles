@@ -28,7 +28,9 @@ public:
 	CStaticTextItem *AddText(const tstring &text);
 	void LeftClick();
 	void RightClick();
-	/*new*/ void MouseWheel(short wheelDelta);
+	/*Hiding intentional*/ void MouseWheel(short wheelDelta);
+	void NumericInput(double value);
+
 	CSelectableTextItem *GetSelectedItem();
 	bool SetSelectedItem(CSelectableTextItem *item);
 };

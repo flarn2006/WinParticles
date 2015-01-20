@@ -410,7 +410,9 @@ void CWinEvents::OnKeyDown(WORD key)
 		
 		} else if (key == VK_RETURN) {
 			GetClientRect(hWnd, &clientRect);
-			display->GetNumInputBox()->PromptForValue(agent);
+			display->GetNumInputBox()->PromptForValue((CNumericInputBox::Callback)[](double value) {
+				display->GetTextDisplay()->NumericInput(value);
+			});
 		
 		} else if (key == VK_UP) {
 			display->GetTextDisplay()->LeftClick();
