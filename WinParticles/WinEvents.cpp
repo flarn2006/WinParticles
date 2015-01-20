@@ -543,6 +543,14 @@ void CWinEvents::SetupTextDisplay(CTextDisplay &td)
 	}));
 
 	td.AddItem(new CDynamicTextItem([](tostringstream &ss) {
+		ss << "Number of particles: " << psys->GetParticles()->size();
+	}));
+
+	td.AddText();
+	td.AddText(TEXT("Use mouse buttons/wheel or arrow keys to edit parameters."));
+	td.AddText(TEXT("Press ENTER to type a value directly."));
+
+	td.AddItem(new CDynamicTextItem([](tostringstream &ss) {
 		ss << "[-+] Adjustment multiplier: " << deltaMult;
 	}, 1));
 
@@ -550,7 +558,7 @@ void CWinEvents::SetupTextDisplay(CTextDisplay &td)
 		ss << "[Z]  Velocity mode: " << CParticleSys::VelocityModeText(psys->GetVelocityMode());
 	}));
 
-	td.AddText(TEXT(""));
+	td.AddText();
 	td.AddText(TEXT("Current parameters:"));
 
 	const tchar_t *paramPrefixes[] = {
@@ -579,7 +587,7 @@ void CWinEvents::SetupTextDisplay(CTextDisplay &td)
 		paramTextItems[i] = item;
 	}
 
-	td.AddText(TEXT(""));
+	td.AddText();
 	td.AddText(TEXT("Use number keys to select built-in gradients"));
 	td.AddText(TEXT("[R] Reset parameters"));
 	td.AddText(TEXT("[C] Show/hide cursor"));

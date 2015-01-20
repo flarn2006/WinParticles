@@ -25,7 +25,7 @@ public:
 	CTextDisplay();
 	~CTextDisplay();
 	void AddItem(CTextItem *item);
-	CStaticTextItem *AddText(const tstring &text);
+	CStaticTextItem *AddText(const tstring &text = TEXT(""));
 	void LeftClick();
 	void RightClick();
 	/*Hiding intentional*/ void MouseWheel(short wheelDelta);
