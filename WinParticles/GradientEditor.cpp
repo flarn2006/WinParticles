@@ -58,10 +58,12 @@ void CGradientEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 
 	for (int x = clientRect->left; x < clientRect->right; x++) {
 		double point = Interpolate(x, clientRect->left, clientRect->right, 0.0, 1.0);
+		COLORREF color = MultiplyColors(tint, gradient->ColorAtPoint(point));
 		SelectObject(hDC, GetStockObject(DC_PEN));
-		SetDCPenColor(hDC, MultiplyColors(tint, gradient->ColorAtPoint(point)));
-		MoveToEx(hDC, x, clientRect->bottom - 24, NULL);
+		SetDCPenColor(hDC, color);
+		MoveToEx(hDC, x, clientRect->bottom - 23, NULL);
 		LineTo(hDC, x, clientRect->bottom);
+		SetPixel(hDC, x, clientRect->bottom - 24, InterpolateColor(color, 0xFFFFFF, 0.125));
 	}
 
 	SetTextColor(hDC, 0xFFFFFF);

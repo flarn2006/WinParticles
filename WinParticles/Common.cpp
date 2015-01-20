@@ -8,6 +8,14 @@ double Interpolate(double value, double inputMin, double inputMax, double output
 	return x * (outputMax - outputMin) + outputMin;
 }
 
+COLORREF InterpolateColor(COLORREF colorA, COLORREF colorB, double point)
+{
+	BYTE r = (BYTE)Interpolate(point, 0.0, 1.0, GetRValue(colorA), GetRValue(colorB));
+	BYTE g = (BYTE)Interpolate(point, 0.0, 1.0, GetGValue(colorA), GetGValue(colorB));
+	BYTE b = (BYTE)Interpolate(point, 0.0, 1.0, GetBValue(colorA), GetBValue(colorB));
+	return RGB(r, g, b);
+}
+
 COLORREF MultiplyColors(COLORREF a, COLORREF b)
 {
 	int red1 = GetRValue(a), red2 = GetRValue(b);

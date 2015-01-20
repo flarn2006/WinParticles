@@ -124,10 +124,8 @@ COLORREF CGradient::ColorAtPoint(double position)
 		} else {
 			relativePos = Interpolate(position, steps[index1].position, steps[index2].position, 0.0, 1.0);
 		}
-		BYTE red = (BYTE)Interpolate(relativePos, 0.0, 1.0, (double)GetRValue(steps[index1].color), (double)GetRValue(steps[index2].color));
-		BYTE green = (BYTE)Interpolate(relativePos, 0.0, 1.0, (double)GetGValue(steps[index1].color), (double)GetGValue(steps[index2].color));
-		BYTE blue = (BYTE)Interpolate(relativePos, 0.0, 1.0, (double)GetBValue(steps[index1].color), (double)GetBValue(steps[index2].color));
-		return RGB(red, green, blue);
+		
+		return InterpolateColor(steps[index1].color, steps[index2].color, relativePos);
 	}
 }
 

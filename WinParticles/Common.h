@@ -27,6 +27,8 @@
 
 double Interpolate(double value, double inputMin, double inputMax, double outputMin, double outputMax);
 
+COLORREF InterpolateColor(COLORREF a, COLORREF b, double point);
+
 COLORREF MultiplyColors(COLORREF a, COLORREF b);
 
 double RandInRange(double min, double max);
