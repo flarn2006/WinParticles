@@ -2,6 +2,7 @@
 #include "TextDisplay.h"
 #include "Common.h"
 
+extern HFONT font;
 extern int verbosity;
 
 CTextDisplay::CTextDisplay()
@@ -34,6 +35,7 @@ void CTextDisplay::OnDraw(HDC hDC, const LPRECT clientRect)
 	textRect.right = clientRect->right;
 	textRect.bottom = clientRect->bottom;
 	
+	SelectObject(hDC, font);
 	SetTextColor(hDC, 0);
 	DrawText(hDC, out.str().c_str(), out.str().length(), &textRect, 0);
 	textRect.left--; textRect.top--;
