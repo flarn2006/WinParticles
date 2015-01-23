@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "AdjustableTextItem.h"
+#include "RootDisplay.h"
 
 extern double deltaMult;
+extern CRootDisplay *display;
 
 CAdjustableTextItem::CAdjustableTextItem()
 {
@@ -27,9 +29,11 @@ void CAdjustableTextItem::OnMouseWheel(short wheelDelta)
 	SetValue(GetValue() + delta * deltaMult);
 }
 
-void CAdjustableTextItem::OnReactToNumInput(double value)
+void CAdjustableTextItem::OnEnterKey()
 {
-	SetValue(value);
+	display->GetNumInputBox()->PromptForValue((CNumericInputBox::Callback)[this](double value) {
+		SetValue(value);
+	});
 }
 
 void CAdjustableTextItem::SetPrefixSuffixText(const tstring &prefix, const tstring &suffix)

@@ -14,7 +14,7 @@ void CSelectableTextItem::OnMouseWheel(short wheelDelta)
 {
 }
 
-void CSelectableTextItem::OnReactToNumInput(double value)
+void CSelectableTextItem::OnEnterKey()
 {
 }
 
@@ -30,10 +30,10 @@ void CSelectableTextItem::MouseWheel(short wheelDelta)
 	OnMouseWheel(wheelDelta);
 }
 
-void CSelectableTextItem::ReactToNumInput(double value)
+void CSelectableTextItem::EnterKey()
 {
 	// Same with this.
-	OnReactToNumInput(value);
+	OnEnterKey();
 }
 
 void CSelectableTextItem::GetText(tstring &text) const

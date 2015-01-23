@@ -11,7 +11,7 @@ protected:
 	virtual void GetItemText(tstring &text) const;
 	virtual void OnSelected();
 	virtual void OnMouseWheel(short wheelDelta);
-	virtual void OnReactToNumInput(double value);
+	virtual void OnEnterKey();
 
 public:
 	CAdjustableTextItem();

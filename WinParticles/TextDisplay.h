@@ -29,7 +29,7 @@ public:
 	void LeftClick();
 	void RightClick();
 	/*Hiding intentional*/ void MouseWheel(short wheelDelta);
-	void NumericInput(double value);
+	void EnterKey();
 
 	CSelectableTextItem *GetSelectedItem();
 	bool SetSelectedItem(CSelectableTextItem *item);

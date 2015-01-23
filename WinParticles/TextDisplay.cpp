@@ -91,9 +91,9 @@ void CTextDisplay::MouseWheel(short wheelDelta)
 	}
 }
 
-void CTextDisplay::NumericInput(double value)
+void CTextDisplay::EnterKey()
 {
-	GetSelectedItem()->ReactToNumInput(value);
+	GetSelectedItem()->EnterKey();
 }
 
 CSelectableTextItem *CTextDisplay::GetSelectedItem()
