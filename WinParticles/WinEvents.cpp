@@ -38,6 +38,8 @@ CWinEvents::CWinEvents(HWND hWnd)
 	emitterX = emitterY = 0;
 	DragAcceptFiles(hWnd, TRUE);
 
+	//SetWindowLongPtr(hWnd, GWL_EXSTYLE, GetWindowLongPtr(hWnd, GWL_EXSTYLE) | WS_EX_CLIENTEDGE);
+
 	srand(GetTickCount());
 	psys = new CParticleSys();
 	psys->SetAcceleration(0.0, -600.0);
