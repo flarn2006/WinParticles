@@ -282,6 +282,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="bmptoolbar.bmp" />
+    <Image Include="icon1.ico" />
+    <Image Include="wppfile.ico" />
     <Image Include="knob.bmp" />
     <Image Include="particles.bmp" />
     <Image Include="reset_icon.bmp" />
