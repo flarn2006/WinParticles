@@ -95,6 +95,7 @@ void CBitmapEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 	UpdateBounds(clientRect);
 
 	// Draw the bitmap
+	SetBkColor(hDC, 0);
 	SetTextColor(hDC, 0xFFFFFF);
 	StretchBlt(hDC, bounds.left, bounds.top, bmpSize.cx * pixelSize, bmpSize.cy * pixelSize, bitmap->GetDC(), 0, 0, bmpSize.cx, bmpSize.cy, SRCCOPY);
 	

@@ -120,6 +120,7 @@ void CAnimEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 	textRect.right = bounds.right;
 	DrawText(hDC, out.str().c_str(), out.str().length(), &textRect, 0);
 
+	SetBkColor(hDC, 0);
 	BitBlt(hDC, resetBtnBounds.left + 4, resetBtnBounds.top + 3, 10, 11, resetBmpDC, 0, 0, SRCCOPY);
 	if (resetBtnHighlighted) {
 		SelectObject(hDC, GetStockObject(DC_BRUSH));
