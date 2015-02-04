@@ -116,10 +116,21 @@ bool CParticle::IsDead()
 void CParticle::Simulate(double time)
 {
 	if (!IsDead()) {
-		vx += ax * time;
-		vy += ay * time;
-		px += vx * time;
-		py += vy * time;
+		if (ax != 0) {
+			double vx0 = vx;
+			vx += ax * time;
+			px += (vx + vx0) * (vx - vx0) / 2 / ax;
+		} else {
+			px += vx * time;
+		}
+
+		if (ay != 0) {
+			double vy0 = vy;
+			vy += ay * time;
+			py += (vy + vy0) * (vy - vy0) / 2 / ay;
+		} else {
+			py += vy * time;
+		}
 
 		age += time;
 
