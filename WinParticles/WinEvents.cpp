@@ -87,6 +87,7 @@ CWinEvents::CWinEvents(HWND hWnd)
 		if (presetMgr->DidLastPresetIncludeGradient()) SelectGradient(-1, selGradientNum);
 	}
 
+	SetVelocityMode(CParticleSys::VelocityMode::MODE_POLAR, hWnd);
 	UpdateViewMenuChecks();
 }
 
@@ -146,8 +147,7 @@ void CWinEvents::SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd)
 	HMENU hMenu = GetMenu(mainWnd);
 	psys->SetVelocityMode(mode);
 
-	CheckMenuItem(hMenu, ID_PARAMS_VM_POLAR, MF_CHECK_BOOL(mode == CParticleSys::VelocityMode::MODE_POLAR));
-	CheckMenuItem(hMenu, ID_PARAMS_VM_RECT, MF_CHECK_BOOL(mode == CParticleSys::VelocityMode::MODE_RECT));
+	CheckMenuRadioItem(hMenu, ID_PARAMS_VM_POLAR, ID_PARAMS_VM_RECT, (mode == CParticleSys::VelocityMode::MODE_POLAR) ? ID_PARAMS_VM_POLAR : ID_PARAMS_VM_RECT, MF_BYCOMMAND);
 
 	EnableMenuItem(hMenu, ID_PARAMS_MINVEL, mode != CParticleSys::VelocityMode::MODE_POLAR);
 	EnableMenuItem(hMenu, ID_PARAMS_MAXVEL, mode != CParticleSys::VelocityMode::MODE_POLAR);
