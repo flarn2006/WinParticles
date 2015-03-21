@@ -149,5 +149,7 @@ void CGradient::SpaceEvenly()
 			double newPos = (double)i / (count - 1);
 			SetStepPosition(i, newPos);
 		}
+	} else if (count == 1) {
+		SetStepPosition(0, 0.5);
 	}
 }
