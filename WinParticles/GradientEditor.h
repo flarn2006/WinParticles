@@ -61,6 +61,7 @@ protected:
 public:
 	CGradientEditor(CGradient *gradient);
 	~CGradientEditor();
+	CGradient *GetGradient();
 	void SetGradient(CGradient *gradient);
 	void SetTint(COLORREF tint);
 	bool IsOKToSwitchGradients();

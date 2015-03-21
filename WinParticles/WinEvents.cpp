@@ -389,7 +389,9 @@ void CWinEvents::OnKeyDown(WORD key)
 			psys->SetRandomImageMode(!psys->GetRandomImageMode());
 		
 		} else if (key == (WPARAM)'H') {
-			psys->SetChaoticGradientFlag(!psys->GetChaoticGradientFlag());
+			CGradient *currentGradient = display->GetGradientEditor()->GetGradient();
+			currentGradient->SpaceEvenly();
+			psys->SetGradient(*currentGradient);
 		
 		} else if (key == (WPARAM)'Q') {
 			verbosity = (verbosity + 1) % 3;
@@ -593,6 +595,7 @@ void CWinEvents::SetupTextDisplay(CTextDisplay &td)
 	td.AddText(TEXT("[C] Show/hide cursor"));
 	td.AddText(TEXT("[F] Freeze/unfreeze emitter"));
 	td.AddText(TEXT("[G] Reset gradient presets"));
+	td.AddText(TEXT("[H] Space gradient steps evenly"));
 	
 	td.AddItem(new CDynamicTextItem([](tostringstream &ss) {
 		ss << "[A] Toggle additive drawing (" << (additiveDrawing ? "ON" : "OFF") << ")";

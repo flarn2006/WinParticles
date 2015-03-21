@@ -131,6 +131,11 @@ bool CGradientEditor::OccupiesPoint(int x, int y)
 	}
 }
 
+CGradient *CGradientEditor::GetGradient()
+{
+	return gradient;
+}
+
 void CGradientEditor::SetGradient(CGradient *gradient)
 {
 	this->gradient = gradient;
