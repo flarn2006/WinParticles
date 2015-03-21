@@ -140,3 +140,12 @@ void CGradient::PrecalculateColors()
 		usePrecalc = false;
 	}
 }
+
+void CGradient::SpaceEvenly()
+{
+	unsigned int count = GetStepCount();
+	for (unsigned int i = 0; i < count; i++) {
+		double newPos = (double)i / (count - 1);
+		SetStepPosition(i, newPos);
+	}
+}

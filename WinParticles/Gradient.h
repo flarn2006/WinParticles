@@ -32,6 +32,7 @@ public:
 	void DeleteStep(int index);
 	void DeleteAllSteps();
 	void PrecalculateColors();
+	void SpaceEvenly();
 
 	virtual COLORREF ColorAtPoint(double position);
 };
