@@ -144,8 +144,10 @@ void CGradient::PrecalculateColors()
 void CGradient::SpaceEvenly()
 {
 	unsigned int count = GetStepCount();
-	for (unsigned int i = 0; i < count; i++) {
-		double newPos = (double)i / (count - 1);
-		SetStepPosition(i, newPos);
+	if (count > 1) {
+		for (unsigned int i = 0; i < count; i++) {
+			double newPos = (double)i / (count - 1);
+			SetStepPosition(i, newPos);
+		}
 	}
 }
