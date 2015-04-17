@@ -9,6 +9,7 @@
 #include "TextItem.h"
 #include "DynamicTextItem.h"
 #include "ParamTextItem.h"
+#include "ScaleAllTextItem.h"
 
 #define MAX_LOADSTRING 100
 #define NUM_GRADIENTS 5
@@ -589,7 +590,17 @@ void CWinEvents::SetupTextDisplay(CTextDisplay &td)
 		paramTextItems[i] = item;
 	}
 
+	CScaleAllTextItem *scaleAll = new CScaleAllTextItem();
+	scaleAll->AddParam(paramTextItems[CParamAgent::MIN_VELOCITY]);
+	scaleAll->AddParam(paramTextItems[CParamAgent::MAX_VELOCITY]);
+	scaleAll->AddParam(paramTextItems[CParamAgent::ACCELERATION_X]);
+	scaleAll->AddParam(paramTextItems[CParamAgent::ACCELERATION_Y]);
+	scaleAll->AddParam(paramTextItems[CParamAgent::EMISSION_RADIUS]);
+	scaleAll->AddParam(paramTextItems[CParamAgent::INNER_RADIUS]);
 	td.AddText();
+	td.AddItem(scaleAll);
+	td.AddText();
+
 	td.AddText(TEXT("Use number keys to select built-in gradients"));
 	td.AddText(TEXT("[R] Reset parameters"));
 	td.AddText(TEXT("[C] Show/hide cursor"));

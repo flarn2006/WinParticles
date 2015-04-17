@@ -228,6 +228,7 @@
     <ClInclude Include="PresetManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RootDisplay.h" />
+    <ClInclude Include="ScaleAllTextItem.h" />
     <ClInclude Include="SelectableTextItem.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SwitchCtrl.h" />
@@ -262,6 +263,7 @@
     <ClCompile Include="ParticleSys.cpp" />
     <ClCompile Include="PresetManager.cpp" />
     <ClCompile Include="RootDisplay.cpp" />
+    <ClCompile Include="ScaleAllTextItem.cpp" />
     <ClCompile Include="SelectableTextItem.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

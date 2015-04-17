@@ -1,7 +1,8 @@
 #pragma once
 #include "SelectableTextItem.h"
+#include "AnimTarget.h"
 
-class CAdjustableTextItem : public CSelectableTextItem
+class CAdjustableTextItem : public CSelectableTextItem, public CAnimTarget<double>
 {
 private:
 	tstring prefixText, suffixText;
