@@ -18,6 +18,7 @@ CAnimEditor::CAnimEditor(CAnimation<double> *animations)
 	SetPosition(0, 0);
 	cyanPen = CreatePen(PS_SOLID, 2, RGB(0, 255, 255));
 	greenPen = CreatePen(PS_SOLID, 2, RGB(0, 255, 0));
+	redPen = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
 	resetBmp = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_RESET_ICON));
 	resetBmpDC = CreateCompatibleDC(NULL);
 	SelectObject(resetBmpDC, resetBmp);
@@ -39,6 +40,8 @@ CAnimEditor::~CAnimEditor()
 	DeleteDC(resetBmpDC);
 	DeleteObject(resetBmp);
 	DeleteObject(cyanPen);
+	DeleteObject(greenPen);
+	DeleteObject(redPen);
 }
 
 void CAnimEditor::UpdateBounds()
@@ -67,14 +70,22 @@ void CAnimEditor::SetPosition(int left, int top)
 
 void CAnimEditor::Update()
 {
-	enabledSwitch.SetState(animations[selectedID].GetEnabled());
+	if (selectedID >= 0) {
+		enabledSwitch.SetEnabled(true);
+		freqKnob.SetEnabled(true);
 
-	selFuncID = 0;
-	for (int i = 0; i < 5; i++) {
-		if (animations[selectedID].GetFunction() == functionList[i]) {
-			selFuncID = i;
-			break;
+		enabledSwitch.SetState(animations[selectedID].GetEnabled());
+
+		selFuncID = 0;
+		for (int i = 0; i < 5; i++) {
+			if (animations[selectedID].GetFunction() == functionList[i]) {
+				selFuncID = i;
+				break;
+			}
 		}
+	} else {
+		enabledSwitch.SetEnabled(false);
+		freqKnob.SetEnabled(false);
 	}
 }
 
@@ -95,45 +106,59 @@ void CAnimEditor::GetLineRect(LPRECT rect, int lineNum)
 void CAnimEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 {
 	SelectObject(hDC, GetStockObject(BLACK_BRUSH));
-	SelectObject(hDC, animations[selectedID].GetEnabled() ? greenPen : cyanPen);
+	if (selectedID >= 0)
+		SelectObject(hDC, animations[selectedID].GetEnabled() ? greenPen : cyanPen);
+	else
+		SelectObject(hDC, redPen);
 	Rectangle(hDC, bounds.left, bounds.top, bounds.right, bounds.bottom);
 
-	COLORREF color = animations[selectedID].GetEnabled() ? RGB(0, 255, 0) : RGB(0, 255, 255);
-	SetTextColor(hDC, color);
-	TextOut(hDC, bounds.left + 48, bounds.top + 9, enabledSwitch.GetState() ? TEXT("ENABLED ") : TEXT("DISABLED"), 8);
+	if (selectedID >= 0) {
+		COLORREF color = animations[selectedID].GetEnabled() ? RGB(0, 255, 0) : RGB(0, 255, 255);
+		SetTextColor(hDC, color);
+		TextOut(hDC, bounds.left + 48, bounds.top + 9, enabledSwitch.GetState() ? TEXT("ENABLED ") : TEXT("DISABLED"), 8);
 
-	TextOut(hDC, bounds.left + 7, bounds.top + 99, TEXT("-"), 1);
-	TextOut(hDC, bounds.left + 83, bounds.top + 99, TEXT("+"), 1);
+		TextOut(hDC, bounds.left + 7, bounds.top + 99, TEXT("-"), 1);
+		TextOut(hDC, bounds.left + 83, bounds.top + 99, TEXT("+"), 1);
 
-	tostringstream out;
-	double min, max;
-	animations[selectedID].GetRange(&min, &max);
-	out << TEXT("Min: ") << min << std::endl;
-	out << TEXT("Max: ") << max << std::endl;
-	out << TEXT("Func: ") << functionNames[selFuncID] << std::endl;
-	out << TEXT("Freq: ") << animations[selectedID].GetFrequency() << std::endl;
+		tostringstream out;
+		double min, max;
+		animations[selectedID].GetRange(&min, &max);
+		out << TEXT("Min: ") << min << std::endl;
+		out << TEXT("Max: ") << max << std::endl;
+		out << TEXT("Func: ") << functionNames[selFuncID] << std::endl;
+		out << TEXT("Freq: ") << animations[selectedID].GetFrequency() << std::endl;
 
-	RECT textRect;
-	textRect.left = bounds.left + 7;
-	textRect.top = bounds.top + 32;
-	textRect.bottom = bounds.bottom;
-	textRect.right = bounds.right;
-	DrawText(hDC, out.str().c_str(), out.str().length(), &textRect, 0);
+		RECT textRect;
+		textRect.left = bounds.left + 7;
+		textRect.top = bounds.top + 32;
+		textRect.bottom = bounds.bottom;
+		textRect.right = bounds.right;
+		DrawText(hDC, out.str().c_str(), out.str().length(), &textRect, 0);
 
-	SetBkColor(hDC, 0);
-	BitBlt(hDC, resetBtnBounds.left + 4, resetBtnBounds.top + 3, 10, 11, resetBmpDC, 0, 0, SRCCOPY);
-	if (resetBtnHighlighted) {
-		SelectObject(hDC, GetStockObject(DC_BRUSH));
-		SetDCBrushColor(hDC, color);
-		PatBlt(hDC, resetBtnBounds.left, resetBtnBounds.top, resetBtnBounds.right - resetBtnBounds.left + 1, resetBtnBounds.bottom - resetBtnBounds.top + 1, PATINVERT);
-	}
+		SetBkColor(hDC, 0);
+		BitBlt(hDC, resetBtnBounds.left + 4, resetBtnBounds.top + 3, 10, 11, resetBmpDC, 0, 0, SRCCOPY);
+		if (resetBtnHighlighted) {
+			SelectObject(hDC, GetStockObject(DC_BRUSH));
+			SetDCBrushColor(hDC, color);
+			PatBlt(hDC, resetBtnBounds.left, resetBtnBounds.top, resetBtnBounds.right - resetBtnBounds.left + 1, resetBtnBounds.bottom - resetBtnBounds.top + 1, PATINVERT);
+		}
 
-	if (highlightLine >= 0) {
-		RECT line;
-		GetLineRect(&line, highlightLine);
-		SelectObject(hDC, GetStockObject(DC_BRUSH));
-		SetDCBrushColor(hDC, color);
-		PatBlt(hDC, line.left, line.top, line.right - line.left, line.bottom - line.top, PATINVERT);
+		if (highlightLine >= 0) {
+			RECT line;
+			GetLineRect(&line, highlightLine);
+			SelectObject(hDC, GetStockObject(DC_BRUSH));
+			SetDCBrushColor(hDC, color);
+			PatBlt(hDC, line.left, line.top, line.right - line.left, line.bottom - line.top, PATINVERT);
+		}
+	} else {
+		SetTextColor(hDC, RGB(255, 0, 0));
+		POINT textLocation = { (bounds.left + bounds.right) / 2, (bounds.top + bounds.bottom) / 2 };
+		SIZE textSize;
+		tstring text = TEXT("No selection");
+		GetTextExtentPoint32(hDC, text.c_str(), text.length(), &textSize);
+		textLocation.x -= textSize.cx / 2;
+		textLocation.y -= textSize.cy / 2;
+		TextOut(hDC, textLocation.x, textLocation.y, text.c_str(), text.length());
 	}
 
 	CCompoundDispItem::OnDraw(hDC, clientRect);
@@ -141,6 +166,8 @@ void CAnimEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 
 void CAnimEditor::OnMouseDown(int x, int y)
 {
+	if (selectedID < 0) return;
+
 	if (resetBtnHighlighted) {
 		for (int i = 0; i < CParamAgent::ParamID::PARAM_COUNT; i++) {
 			animations[i].Reset();
@@ -190,6 +217,8 @@ void CAnimEditor::OnMouseDown(int x, int y)
 
 void CAnimEditor::OnMouseMove(int x, int y)
 {
+	if (selectedID < 0) return;
+
 	highlightLine = -1;
 	for (int i = 0; i < 4; i++) {
 		RECT line;

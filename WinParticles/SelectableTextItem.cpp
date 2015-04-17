@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "SelectableTextItem.h"
+#include "RootDisplay.h"
+
+extern CRootDisplay *display;
 
 CSelectableTextItem::CSelectableTextItem()
 {
@@ -8,6 +11,7 @@ CSelectableTextItem::CSelectableTextItem()
 
 void CSelectableTextItem::OnSelected()
 {
+	SetAnimEditorID(-1);
 }
 
 void CSelectableTextItem::OnMouseWheel(short wheelDelta)
@@ -16,6 +20,11 @@ void CSelectableTextItem::OnMouseWheel(short wheelDelta)
 
 void CSelectableTextItem::OnEnterKey()
 {
+}
+
+void CSelectableTextItem::SetAnimEditorID(int id)
+{
+	display->GetAnimEditor()->SetSelectedID(id);
 }
 
 void CSelectableTextItem::SetSelected(bool state)

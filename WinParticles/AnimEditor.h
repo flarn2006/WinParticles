@@ -19,6 +19,7 @@ private:
 	RECT bounds;
 	HPEN cyanPen;
 	HPEN greenPen;
+	HPEN redPen;
 	CSwitchCtrl enabledSwitch;
 	CKnobCtrl freqKnob;
 	int highlightLine = -1;

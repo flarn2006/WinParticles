@@ -12,6 +12,8 @@ protected:
 	virtual void OnMouseWheel(short wheelDelta);
 	virtual void OnEnterKey();
 
+	void SetAnimEditorID(int id);
+
 public:
 	CSelectableTextItem();
 

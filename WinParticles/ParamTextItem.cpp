@@ -3,8 +3,6 @@
 #include "AnimatedParam.h"
 #include "RootDisplay.h"
 
-extern CRootDisplay *display;
-
 CParamTextItem::CParamTextItem()
 {
 	target = NULL;
@@ -20,7 +18,7 @@ CParamTextItem::~CParamTextItem()
 void CParamTextItem::OnSelected()
 {
 	CAdjustableTextItem::OnSelected();
-	if (animID >= 0) display->GetAnimEditor()->SetSelectedID(animID);
+	SetAnimEditorID(animID);
 }
 
 void CParamTextItem::SetTarget(CAnimTarget<double> &target)
