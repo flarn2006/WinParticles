@@ -235,6 +235,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TextDisplay.h" />
     <ClInclude Include="TextItem.h" />
+    <ClInclude Include="VelocityModeParamTextItem.h" />
     <ClInclude Include="WinEvents.h" />
     <ClInclude Include="WinParticles.h" />
   </ItemGroup>
@@ -276,6 +277,7 @@
     <ClCompile Include="SwitchCtrl.cpp" />
     <ClCompile Include="TextDisplay.cpp" />
     <ClCompile Include="TextItem.cpp" />
+    <ClCompile Include="VelocityModeParamTextItem.cpp" />
     <ClCompile Include="WinEvents.cpp" />
     <ClCompile Include="WinParticles.cpp" />
   </ItemGroup>

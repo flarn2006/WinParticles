@@ -141,6 +141,9 @@
     <ClInclude Include="ScaleAllTextItem.h">
       <Filter>Header Files\Text Items</Filter>
     </ClInclude>
+    <ClInclude Include="VelocityModeParamTextItem.h">
+      <Filter>Header Files\Text Items</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -237,6 +240,9 @@
       <Filter>Source Files\Text Items</Filter>
     </ClCompile>
     <ClCompile Include="ScaleAllTextItem.cpp">
+      <Filter>Source Files\Text Items</Filter>
+    </ClCompile>
+    <ClCompile Include="VelocityModeParamTextItem.cpp">
       <Filter>Source Files\Text Items</Filter>
     </ClCompile>
   </ItemGroup>

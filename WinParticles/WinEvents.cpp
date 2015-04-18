@@ -10,6 +10,7 @@
 #include "DynamicTextItem.h"
 #include "ParamTextItem.h"
 #include "ScaleAllTextItem.h"
+#include "VelocityModeParamTextItem.h"
 
 #define MAX_LOADSTRING 100
 #define NUM_GRADIENTS 5
@@ -158,18 +159,6 @@ void CWinEvents::SetVelocityMode(CParticleSys::VelocityMode mode, HWND mainWnd)
 	EnableMenuItem(hMenu, ID_PARAMS_MAXVELX, mode != CParticleSys::VelocityMode::MODE_RECT);
 	EnableMenuItem(hMenu, ID_PARAMS_MINVELY, mode != CParticleSys::VelocityMode::MODE_RECT);
 	EnableMenuItem(hMenu, ID_PARAMS_MAXVELY, mode != CParticleSys::VelocityMode::MODE_RECT);
-
-	if (mode == CParticleSys::VelocityMode::MODE_RECT) {
-		paramTextItems[0]->SetPrefixSuffixText(TEXT("Minimum X velocity: "), TEXT(""));
-		paramTextItems[1]->SetPrefixSuffixText(TEXT("Maximum X velocity: "), TEXT(""));
-		paramTextItems[2]->SetPrefixSuffixText(TEXT("Minimum Y velocity: "), TEXT(""));
-		paramTextItems[3]->SetPrefixSuffixText(TEXT("Maximum Y velocity: "), TEXT(""));
-	} else {
-		paramTextItems[0]->SetPrefixSuffixText(TEXT("Minimum velocity:   "), TEXT(""));
-		paramTextItems[1]->SetPrefixSuffixText(TEXT("Maximum velocity:   "), TEXT(""));
-		paramTextItems[2]->SetPrefixSuffixText(TEXT("Center angle:       "), TEXT(""));
-		paramTextItems[3]->SetPrefixSuffixText(TEXT("Angular size:       "), TEXT(""));
-	}
 }
 
 void CWinEvents::RandomizeGradient(CGradient &gradient)
@@ -577,11 +566,26 @@ void CWinEvents::SetupTextDisplay(CTextDisplay &td)
 		TEXT("Inner radius:       ")
 	};
 
+	const tchar_t *paramPrefixesAlt[] = {
+		TEXT("Minimum X velocity: "),
+		TEXT("Maximum X velocity: "),
+		TEXT("Minimum Y velocity: "),
+		TEXT("Maximum Y velocity: ")
+	};
+
 	const double defaultDeltaMults[] = { 10.0, 10.0, 10.0, 10.0, 10.0, -10.0, 0.1, 10.0, 1.0, 1.0 };
 
 	for (int i = 0; i < CParamAgent::PARAM_COUNT; i++) {
-		CParamTextItem *item = new CParamTextItem();
-		item->SetPrefixSuffixText(paramPrefixes[i], TEXT(""));
+		CParamTextItem *item;
+		if (i <= 3) {
+			CVelocityModeParamTextItem *item2 = new CVelocityModeParamTextItem(psys);
+			item2->SetPrefixText(CParticleSys::VelocityMode::MODE_POLAR, paramPrefixes[i]);
+			item2->SetPrefixText(CParticleSys::VelocityMode::MODE_RECT, paramPrefixesAlt[i]);
+			item = item2;
+		} else {
+			item = new CParamTextItem();
+			item->SetPrefixSuffixText(paramPrefixes[i], TEXT(""));
+		}
 		item->SetMinVerbosity(1);
 		item->SetTarget(*agent, (CParamAgent::ParamID)i);
 		item->SetDefaultDeltaMult(defaultDeltaMults[i]);
