@@ -65,3 +65,27 @@ void ColorToHTML(COLORREF color, std::wstring &str)
 	swprintf_s(buf, 8, L"#%02X%02X%02X", GetRValue(color), GetGValue(color), GetBValue(color));
 	str = buf;
 }
+
+BOOL CenterTextOut(HDC hDC, int x, int y, LPCTSTR lpString, int c)
+{
+	SIZE textSize;
+	GetTextExtentPoint32(hDC, lpString, c, &textSize);
+	x -= textSize.cx / 2;
+	y -= textSize.cy / 2;
+	return TextOut(hDC, x, y, lpString, c);
+}
+
+BOOL CenterTextOut(HDC hDC, POINT center, LPCTSTR lpString, int c)
+{
+	return CenterTextOut(hDC, center.x, center.y, lpString, c);
+}
+
+BOOL CenterTextOut(HDC hDC, int x, int y, const tstring &str)
+{
+	return CenterTextOut(hDC, x, y, str.c_str(), str.length());
+}
+
+BOOL CenterTextOut(HDC hDC, POINT center, const tstring &str)
+{
+	return CenterTextOut(hDC, center.x, center.y, str.c_str(), str.length());
+}

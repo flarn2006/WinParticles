@@ -95,3 +95,8 @@ std::basic_ostream<_Elem> &operator<<(std::basic_ostream<_Elem> &os, const basic
 	}
 	return os;
 }
+
+BOOL CenterTextOut(HDC hDC, int x, int y, LPCTSTR lpString, int c);
+BOOL CenterTextOut(HDC hDC, POINT center, LPCTSTR lpString, int c);
+BOOL CenterTextOut(HDC hDC, int x, int y, const tstring &str);
+BOOL CenterTextOut(HDC hDC, POINT center, const tstring &str);

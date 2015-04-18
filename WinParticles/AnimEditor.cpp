@@ -153,12 +153,7 @@ void CAnimEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 	} else {
 		SetTextColor(hDC, RGB(255, 0, 0));
 		POINT textLocation = { (bounds.left + bounds.right) / 2, (bounds.top + bounds.bottom) / 2 };
-		SIZE textSize;
-		tstring text = TEXT("No selection");
-		GetTextExtentPoint32(hDC, text.c_str(), text.length(), &textSize);
-		textLocation.x -= textSize.cx / 2;
-		textLocation.y -= textSize.cy / 2;
-		TextOut(hDC, textLocation.x, textLocation.y, text.c_str(), text.length());
+		CenterTextOut(hDC, textLocation, TEXT("No selection"));
 	}
 
 	CCompoundDispItem::OnDraw(hDC, clientRect);
