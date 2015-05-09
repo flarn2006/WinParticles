@@ -535,7 +535,8 @@ void CWinEvents::SetupTextDisplay(CTextDisplay &td)
 	}));
 
 	td.AddItem(new CDynamicTextItem([](tostringstream &ss) {
-		ss << "Number of particles: " << psys->GetParticles()->size();
+		double target = psys->GetEmissionRate() * psys->GetMaxAge();
+		ss << "Number of particles: " << psys->GetParticles()->size() << " / " << target;
 	}));
 
 	td.AddText();
