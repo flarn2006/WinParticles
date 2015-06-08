@@ -84,7 +84,6 @@ CGradientEditor::CStepHandle *CGradientEditor::AddGradientStep(int x)
 {
 	double pos = Interpolate(x, clientRect->left, clientRect->right, 0.0, 1.0);
 	unsigned int index = gradient->AddStep(pos, gradient->ColorAtPoint(pos));
-	gradient->PrecalculateColors();
 	SetGradient(gradient);
 	return stepHandles[index];
 }
@@ -220,7 +219,6 @@ void CGradientEditor::CStepHandle::OnMouseMove(int x, int y)
 void CGradientEditor::CStepHandle::OnMouseUp(int x, int y)
 {
 	dragging = false;
-	gradient->PrecalculateColors();
 	parent->UpdatePsysGradient();
 }
 
@@ -231,14 +229,12 @@ void CGradientEditor::CStepHandle::OnRightClick(int x, int y)
 			dragging = false;
 			gradient->DeleteStep(stepIndex);
 			parent->SetGradient(gradient);
-			gradient->PrecalculateColors();
 			parent->UpdatePsysGradient();
 		}
 	} else {
 		colorDlg.rgbResult = gradient->GetStepColor(stepIndex);
 		if (ChooseColor(&colorDlg)) {
 			gradient->SetStepColor(stepIndex, colorDlg.rgbResult);
-			gradient->PrecalculateColors();
 			parent->UpdatePsysGradient();
 		}
 	}

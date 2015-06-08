@@ -5,18 +5,17 @@
 class CGradient
 {
 private:
-	static const int PRECALC_MIN_STEPS = 10;  // minimum number of steps to trigger precalculation
-	static const int PRECALC_STEPS = 1024;    // number of individual gradient steps to be precalculated
-
 	struct Step
 	{
 		COLORREF color;
 		double position;
+		bool operator<(const Step &other); //for sorting
 	};
 
 	std::vector<Step> steps;
-	COLORREF precalc[PRECALC_STEPS];
-	bool usePrecalc;
+	bool needsSorting;
+
+	void SortSteps();
 
 public:
 	CGradient();
@@ -31,7 +30,6 @@ public:
 	unsigned int AddStep(double position, COLORREF color);
 	void DeleteStep(int index);
 	void DeleteAllSteps();
-	void PrecalculateColors();
 	void SpaceEvenly();
 
 	virtual COLORREF ColorAtPoint(double position);

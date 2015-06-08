@@ -377,8 +377,6 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 						}
 					}
 				}
-
-				if (includesGradient) gradient->PrecalculateColors();
 			}
 		} else {
 			// bitmapRow is not -1; read a line of the bitmap
