@@ -105,6 +105,10 @@ CWinEvents::~CWinEvents()
 
 void CWinEvents::InitializeGradients(CGradient *gradients)
 {
+	for (int i = 0; i < NUM_GRADIENTS; i++) {
+		gradients[i].DeleteAllSteps();
+	}
+
 	gradients[0].AddStep(0.0, RGB(255, 255, 0));
 	gradients[0].AddStep(0.25, RGB(255, 0, 0));
 	gradients[0].AddStep(0.5, RGB(0, 0, 0));
