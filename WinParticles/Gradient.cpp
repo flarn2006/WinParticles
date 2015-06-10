@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Gradient.h"
 #include <algorithm>
+#include <exception>
+#include <climits>
 
 CGradient::CGradient()
 {
@@ -22,14 +24,25 @@ void CGradient::SortSteps()
 	}
 }
 
-COLORREF CGradient::GetStepColor(int index)
+CGradient::Step &CGradient::StepWithID(int id)
 {
-	return steps[index].color;
+	for (auto i = steps.begin(); i != steps.end(); i++) {
+		if (i->id == id) {
+			return *i;
+		}
+	}
+
+	throw std::exception("Step ID not found");
 }
 
-double CGradient::GetStepPosition(int index)
+COLORREF CGradient::GetStepColor(int id)
 {
-	return steps[index].position;
+	return StepWithID(id).color;
+}
+
+double CGradient::GetStepPosition(int id)
+{
+	return StepWithID(id).position;
 }
 
 unsigned int CGradient::GetStepCount()
@@ -37,49 +50,56 @@ unsigned int CGradient::GetStepCount()
 	return steps.size();
 }
 
-void CGradient::SetStepColor(int index, COLORREF color)
+void CGradient::SetStepColor(int id, COLORREF color)
 {
-	steps[index].color = color;
+	StepWithID(id).color = color;
 }
 
-void CGradient::SetStepPosition(int index, double position)
+void CGradient::SetStepPosition(int id, double position)
 {
-	if (steps[index].position != position) {
+	if (StepWithID(id).position != position) {
 		needsSorting = true;
-		steps[index].position = position;
+		StepWithID(id).position = position;
 	}
 }
 
-void CGradient::SetStep(int index, double position, COLORREF color)
+void CGradient::SetStep(int id, double position, COLORREF color)
 {
-	SetStepColor(index, color);
-	SetStepPosition(index, position);
+	SetStepColor(id, color);
+	SetStepPosition(id, position);
 }
 
-unsigned int CGradient::AddStep(double position, COLORREF color)
+int CGradient::AddStep(double position, COLORREF color)
 {
 	needsSorting = true;
-	steps.push_back({ color, position });
+	steps.push_back({ nextStepID++, color, position });
 	return steps.size() - 1;
 }
 
-void CGradient::DeleteStep(int index)
+bool CGradient::DeleteStep(int id)
 {
-	DeleteVectorItem(steps, index);
+	for (unsigned int i = 0; i < steps.size(); i++) {
+		if (steps[i].id == id) {
+			DeleteVectorItem(steps, i);
+			return true;
+		}
+	}
+	return false;
 }
 
 void CGradient::DeleteAllSteps()
 {
 	steps.clear();
+	nextStepID = 0;
 }
 
 COLORREF CGradient::ColorAtPoint(double position)
 {
 	SortSteps();
 
-	int index1 = -1;
+	unsigned int index1 = UINT_MAX;
 	unsigned int count = GetStepCount();
-	for (int i = 0; i < count; i++) {
+	for (unsigned int i = 0; i < count; i++) {
 		if (steps[i].position <= position) {
 			index1 = i;
 		} else {
@@ -87,7 +107,7 @@ COLORREF CGradient::ColorAtPoint(double position)
 		}
 	}
 
-	if (index1 == -1) {
+	if (index1 == UINT_MAX) {
 		// No steps before this point
 		return steps[0].color;
 	} else if (index1 + 1 >= count) {
