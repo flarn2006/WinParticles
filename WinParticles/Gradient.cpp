@@ -24,15 +24,25 @@ void CGradient::SortSteps()
 	}
 }
 
-CGradient::Step &CGradient::StepWithID(int id)
+bool CGradient::FindStep(int id, unsigned int *indexOut)
 {
-	for (auto i = steps.begin(); i != steps.end(); i++) {
-		if (i->id == id) {
-			return *i;
+	for (unsigned int i = 0; i < steps.size(); i++) {
+		if (steps[i].id == id) {
+			if (indexOut) *indexOut = i;
+			return true;
 		}
 	}
+	return false;
+}
 
-	throw std::exception("Step ID not found");
+CGradient::Step &CGradient::StepWithID(int id)
+{
+	unsigned int index;
+	if (FindStep(id, &index)) {
+		return steps[index];
+	} else {
+		throw std::exception("Step ID not found");
+	}
 }
 
 COLORREF CGradient::GetStepColor(int id)
@@ -78,13 +88,13 @@ int CGradient::AddStep(double position, COLORREF color)
 
 bool CGradient::DeleteStep(int id)
 {
-	for (unsigned int i = 0; i < steps.size(); i++) {
-		if (steps[i].id == id) {
-			DeleteVectorItem(steps, i);
-			return true;
-		}
+	unsigned int index;
+	if (FindStep(id, &index)) {
+		DeleteVectorItem(steps, index);
+		return true;
+	} else {
+		return false;
 	}
-	return false;
 }
 
 void CGradient::DeleteAllSteps()

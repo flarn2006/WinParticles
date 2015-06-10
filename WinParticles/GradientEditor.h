@@ -12,7 +12,7 @@ private:
 	private:
 		CGradientEditor *parent;
 		CGradient *gradient;
-		int stepIndex;
+		int stepID;
 		int lastDragX;
 		bool dragging;
 		RECT bounds;
@@ -35,7 +35,7 @@ private:
 	public:
 		CStepHandle(CGradientEditor *parent);
 		~CStepHandle();
-		void SetGradientInfo(CGradient *gradient, int stepIndex);
+		void SetGradientInfo(CGradient *gradient, int stepID);
 		void SetPositioningInfo(int xMin, int xMax, int y);
 		void StartDragging(int fromX);
 		bool IsBeingDragged();

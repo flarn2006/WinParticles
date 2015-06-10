@@ -18,6 +18,7 @@ private:
 	int nextStepID = 0;
 
 	void SortSteps();
+	bool FindStep(int id, unsigned int *indexOut = NULL);
 	Step &StepWithID(int id);
 
 public:

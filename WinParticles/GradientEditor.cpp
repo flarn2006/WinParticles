@@ -178,7 +178,7 @@ CGradientEditor::CStepHandle::~CStepHandle()
 
 void CGradientEditor::CStepHandle::UpdateBounds()
 {
-	double stepPos = gradient->GetStepPosition(stepIndex);
+	double stepPos = gradient->GetStepPosition(stepID);
 	int ctrX = (int)Interpolate(stepPos, 0.0, 1.0, posXMin, posXMax);
 	bounds.left = ctrX - 5;
 	bounds.right = bounds.left + WIDTH - 1;
@@ -193,7 +193,7 @@ void CGradientEditor::CStepHandle::OnDraw(HDC hDC, const LPRECT clientRect)
 	MaskBlt(hDC, bounds.left, bounds.top, WIDTH, HEIGHT, parent->shBitmapDC, xSrc, 0, parent->shBmpMask, xSrc, 0, MAKEROP4(SRCCOPY, 0xAA0029));
 	SetBrushOrgEx(hDC, -20, 0, NULL);
 	SelectObject(hDC, GetStockObject(DC_BRUSH));
-	SetDCBrushColor(hDC, gradient->GetStepColor(stepIndex));
+	SetDCBrushColor(hDC, gradient->GetStepColor(stepID));
 	WorkingMaskBlt(hDC, bounds.left, bounds.top, WIDTH, HEIGHT, hDC, xSrc, 0, parent->shBmpColorMask, xSrc, 0, MAKEROP4(PATCOPY, 0xAA0029));
 }
 
@@ -205,12 +205,12 @@ void CGradientEditor::CStepHandle::OnMouseDown(int x, int y)
 
 void CGradientEditor::CStepHandle::OnMouseMove(int x, int y)
 {
-	tstring colorStr; ColorToHTML(gradient->GetStepColor(stepIndex), colorStr);
+	tstring colorStr; ColorToHTML(gradient->GetStepColor(stepID), colorStr);
 	display->SetHelpText(TEXT("Right click to change color, or right click while dragging to delete. [color = " + colorStr + TEXT("]")));
 	if (dragging && posInfoSet) {
 		int deltaX = x - lastDragX;
 		double deltaPos = Interpolate(deltaX, posXMin, posXMax, 0.0, 1.0);
-		gradient->SetStepPosition(stepIndex, gradient->GetStepPosition(stepIndex) + deltaPos);
+		gradient->SetStepPosition(stepID, gradient->GetStepPosition(stepID) + deltaPos);
 		lastDragX = x;
 		parent->UpdatePsysGradient();
 	}
@@ -227,14 +227,14 @@ void CGradientEditor::CStepHandle::OnRightClick(int x, int y)
 	if (dragging) {
 		if (gradient->GetStepCount() > 1) {
 			dragging = false;
-			gradient->DeleteStep(stepIndex);
+			gradient->DeleteStep(stepID);
 			parent->SetGradient(gradient);
 			parent->UpdatePsysGradient();
 		}
 	} else {
-		colorDlg.rgbResult = gradient->GetStepColor(stepIndex);
+		colorDlg.rgbResult = gradient->GetStepColor(stepID);
 		if (ChooseColor(&colorDlg)) {
-			gradient->SetStepColor(stepIndex, colorDlg.rgbResult);
+			gradient->SetStepColor(stepID, colorDlg.rgbResult);
 			parent->UpdatePsysGradient();
 		}
 	}
@@ -246,10 +246,10 @@ bool CGradientEditor::CStepHandle::OccupiesPoint(int x, int y)
 	return PtInRect(&bounds, { x, y }) > 0;
 }
 
-void CGradientEditor::CStepHandle::SetGradientInfo(CGradient *gradient, int stepIndex)
+void CGradientEditor::CStepHandle::SetGradientInfo(CGradient *gradient, int stepID)
 {
 	this->gradient = gradient;
-	this->stepIndex = stepIndex;
+	this->stepID = stepID;
 }
 
 void CGradientEditor::CStepHandle::SetPositioningInfo(int xMin, int xMax, int y)
