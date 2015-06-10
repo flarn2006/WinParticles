@@ -45,6 +45,11 @@ CGradient::Step &CGradient::StepWithID(int id)
 	}
 }
 
+int CGradient::GetStepID(unsigned int index)
+{
+	return steps[index].id;
+}
+
 COLORREF CGradient::GetStepColor(int id)
 {
 	return StepWithID(id).color;

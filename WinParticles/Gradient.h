@@ -25,6 +25,7 @@ public:
 	CGradient();
 	CGradient(int numSteps);
 
+	int GetStepID(unsigned int index);
 	COLORREF GetStepColor(int id);
 	double GetStepPosition(int id);
 	unsigned int GetStepCount();

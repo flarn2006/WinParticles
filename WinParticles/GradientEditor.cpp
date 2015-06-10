@@ -148,8 +148,10 @@ void CGradientEditor::SetGradient(CGradient *gradient)
 	}
 
 	for (unsigned int i = 0; i < stepHandles.size(); i++) {
-		stepHandles[i]->SetEnabled(i < (unsigned)gradient->GetStepCount());
-		stepHandles[i]->SetGradientInfo(gradient, i);
+		stepHandles[i]->SetEnabled(i < gradient->GetStepCount());
+		if (i < gradient->GetStepCount()) {
+			stepHandles[i]->SetGradientInfo(gradient, gradient->GetStepID(i));
+		}
 	}
 }
 
