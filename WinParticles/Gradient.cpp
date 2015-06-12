@@ -145,11 +145,10 @@ void CGradient::SpaceEvenly()
 	unsigned int count = GetStepCount();
 	if (count > 1) {
 		for (unsigned int i = 0; i < count; i++) {
-			double newPos = (double)i / (count - 1);
-			SetStepPosition(i, newPos);
+			steps[i].position = (double)i / (count - 1);
 		}
 	} else if (count == 1) {
-		SetStepPosition(0, 0.5);
+		steps[0].position = 0.5;
 	}
 }
 
