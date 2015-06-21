@@ -98,7 +98,8 @@ bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components com
 
 		unsigned int stepCount = gradient->GetStepCount();
 		for (unsigned int i = 0; i < stepCount; i++) {
-			file << "GradientStep=" << gradient->GetStepPosition(i) << "," << std::hex << gradient->GetStepColor(i) << std::endl;
+			int stepID = gradient->GetStepID(i);
+			file << "GradientStep=" << gradient->GetStepPosition(stepID) << "," << std::hex << gradient->GetStepColor(stepID) << std::endl;
 		}
 
 		file << std::endl;
