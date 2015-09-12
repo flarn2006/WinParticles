@@ -227,9 +227,6 @@
     <ClCompile Include="TextItem.cpp">
       <Filter>Source Files\Text Items</Filter>
     </ClCompile>
-    <ClCompile Include="AdjustableTextItem.cpp">
-      <Filter>Source Files\Text Items</Filter>
-    </ClCompile>
     <ClCompile Include="ParamTextItem.cpp">
       <Filter>Source Files\Text Items</Filter>
     </ClCompile>

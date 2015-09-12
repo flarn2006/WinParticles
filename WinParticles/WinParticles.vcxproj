@@ -244,7 +244,6 @@
     <ClInclude Include="WinParticles.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AdjustableTextItem.cpp" />
     <ClCompile Include="AnimatedParam.cpp" />
     <ClCompile Include="AnimationGeneric.cpp" />
     <ClCompile Include="AnimEditor.cpp" />

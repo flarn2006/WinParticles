@@ -3,7 +3,7 @@
 #include "AnimTarget.h"
 #include "ParamAgent.h"
 
-class CParamTextItem : public CAdjustableTextItem
+class CParamTextItem : public CAdjustableTextItem<double>
 {
 private:
 	CAnimTarget<double> *target;
