@@ -54,6 +54,7 @@ void CParticleSys::DefaultParameters()
 	innerRadius = 0.0;
 	ax = 0.0;
 	ay = 0.0;
+	displayChance = 255;
 }
 
 CParticleSys::VelocityMode CParticleSys::GetVelocityMode()
@@ -181,6 +182,16 @@ void CParticleSys::SetInnerRadius(double innerRadius)
 	this->innerRadius = innerRadius;
 }
 
+BYTE CParticleSys::GetDisplayChance()
+{
+	return displayChance;
+}
+
+void CParticleSys::SetDisplayChance(BYTE displayChance)
+{
+	this->displayChance = displayChance;
+}
+
 CGradient &CParticleSys::GetGradient()
 {
 	return gradient;
@@ -279,10 +290,12 @@ void CParticleSys::Draw(HDC hDC, LPRECT rect)
 		double x, y;
 		i->GetPosition(&x, &y);
 		if (rect->left <= x && x <= rect->right && rect->top <= y && y <= rect->bottom) {
-			if (GetChaoticGradientFlag())
-				i->Draw(hDC, gradient.ColorAtPoint(RandInRange(0.0, 1.0)));
-			else
-				i->Draw(hDC);
+			if (displayChance == 255 || rand() % 256 >= displayChance) {
+				if (GetChaoticGradientFlag())
+					i->Draw(hDC, gradient.ColorAtPoint(RandInRange(0.0, 1.0)));
+				else
+					i->Draw(hDC);
+			}
 		}
 	}
 }

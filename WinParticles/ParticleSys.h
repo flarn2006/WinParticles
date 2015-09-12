@@ -23,6 +23,7 @@ private:
 	double emissionRadius;
 	double innerRadius;
 	double timeSinceEmit;
+	BYTE displayChance;
 	CGradient gradient;
 	COLORREF defaultTint;
 	std::vector<CAnimationGeneric*> animations;
@@ -76,6 +77,9 @@ public:
 
 	double GetInnerRadius();
 	void SetInnerRadius(double innerRadius);
+
+	BYTE GetDisplayChance();
+	void SetDisplayChance(BYTE displayChance);
 
 	CGradient &GetGradient();
 	void SetGradient(const CGradient &gradient);
