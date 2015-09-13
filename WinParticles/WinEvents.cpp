@@ -625,7 +625,7 @@ void CWinEvents::SetupTextDisplay(CTextDisplay &td)
 
 	CCustomAdjTextItem<SHORT> *displayChance = new CCustomAdjTextItem<SHORT>();
 	displayChance->SetPrefixSuffixText(TEXT("Display chance:     "), TEXT(" / 256"));
-	displayChance->SetDefaultDeltaMult(8);
+	displayChance->SetDefaultDeltaMult(10);
 	displayChance->SetCallbackForGet([]() {
 		return (SHORT)psys->GetDisplayChance() + 1;
 	});
