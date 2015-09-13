@@ -87,6 +87,7 @@ bool CPresetManager::SavePreset(LPCTSTR filename, CPresetManager::Components com
 
 		file << "AdditiveDrawing=" << (additiveDrawing ? '1' : '0') << std::endl;
 		file << "RandomImageMode=" << (psys->GetRandomImageMode() ? '1' : '0') << std::endl;
+		file << "DisplayChance=" << (WORD)(psys->GetDisplayChance()) << std::endl;
 
 		file << std::endl;
 	}
@@ -310,6 +311,11 @@ bool CPresetManager::LoadPreset(LPCTSTR filename)
 					int state;
 					parseRight >> state;
 					psys->SetRandomImageMode(state > 0);
+
+				} else if (left.compare("DisplayChance") == 0) {
+					WORD displayChance;
+					parseRight >> displayChance;
+					psys->SetDisplayChance((BYTE)displayChance);
 
 				} else if (left.compare("GradientStep") == 0) {
 					std::string left2, right2;
