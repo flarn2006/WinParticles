@@ -7,7 +7,7 @@ extern CRootDisplay *display;
 extern double deltaMult;
 
 template <typename _T>
-class CAdjustableTextItem : public CSelectableTextItem, public CAnimTarget<double>
+class CAdjustableTextItem : public CSelectableTextItem, public CAnimTarget<_T>
 {
 private:
 	tstring prefixText, suffixText;
@@ -29,13 +29,13 @@ protected:
 	virtual void OnMouseWheel(short wheelDelta)
 	{
 		double delta = (double)wheelDelta / WHEEL_DELTA;
-		SetValue(GetValue() + delta * deltaMult);
+		SetValue(GetValue() + (_T)(delta * deltaMult));
 	}
 
 	virtual void OnEnterKey()
 	{
 		display->GetNumInputBox()->PromptForValue((CNumericInputBox::Callback)[this](double value) {
-			SetValue(value);
+			SetValue((_T)value);
 		});
 	}
 
@@ -46,9 +46,9 @@ public:
 		defaultDeltaMult = 0;
 	}
 
-	virtual double GetValue() const = 0;
+	virtual _T GetValue() const = 0;
 
-	virtual void SetValue(double value) = 0;
+	virtual void SetValue(_T value) = 0;
 
 	void SetPrefixSuffixText(const tstring &prefix, const tstring &suffix)
 	{

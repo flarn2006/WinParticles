@@ -144,6 +144,9 @@
     <ClInclude Include="VelocityModeParamTextItem.h">
       <Filter>Header Files\Text Items</Filter>
     </ClInclude>
+    <ClInclude Include="CustomAdjTextItem.h">
+      <Filter>Header Files\Text Items</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

@@ -216,6 +216,7 @@
     <ClInclude Include="BitmapEditor.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="CompoundDispItem.h" />
+    <ClInclude Include="CustomAdjTextItem.h" />
     <ClInclude Include="DisplayItem.h" />
     <ClInclude Include="DynamicTextItem.h" />
     <ClInclude Include="FPSMonitor.h" />

@@ -11,6 +11,7 @@
 #include "ParamTextItem.h"
 #include "ScaleAllTextItem.h"
 #include "VelocityModeParamTextItem.h"
+#include "CustomAdjTextItem.h"
 
 #define MAX_LOADSTRING 100
 #define NUM_GRADIENTS 5
@@ -608,6 +609,21 @@ void CWinEvents::SetupTextDisplay(CTextDisplay &td)
 	scaleAll->AddParam(paramTextItems[CParamAgent::INNER_RADIUS]);
 	td.AddText();
 	td.AddItem(scaleAll);
+	td.AddText();
+
+	CCustomAdjTextItem<SHORT> *displayChance = new CCustomAdjTextItem<SHORT>();
+	displayChance->SetPrefixSuffixText(TEXT("Display chance:     "), TEXT(" / 256"));
+	displayChance->SetDefaultDeltaMult(8);
+	displayChance->SetCallbackForGet([]() {
+		return (SHORT)psys->GetDisplayChance() + 1;
+	});
+	displayChance->SetCallbackForSet([](SHORT value) {
+		SHORT clampedValue = value;
+		if (clampedValue < 1) clampedValue = 1;
+		else if (clampedValue > 256) clampedValue = 256;
+		psys->SetDisplayChance((BYTE)(clampedValue - 1));
+	});
+	td.AddItem(displayChance);
 	td.AddText();
 
 	td.AddText(TEXT("Use number keys to select built-in gradients"));
