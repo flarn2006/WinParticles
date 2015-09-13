@@ -27,7 +27,7 @@ extern HCURSOR curEmitter;
 extern bool additiveDrawing;
 extern CHOOSECOLOR colorDlg;
 extern CParticleBitmap bitmap;
-extern HFONT font;
+extern HFONT font, fontSmall;
 extern tstring cmdLine;
 extern CRootDisplay *display;
 extern CGradient gradients[NUM_GRADIENTS];
@@ -56,6 +56,8 @@ CWinEvents::CWinEvents(HWND hWnd)
 	selGradientNum = 0;
 
 	font = CreateFont(0, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, DEFAULT_PITCH, TEXT("Fixedsys"));
+	fontSmall = CreateFont(8, 8, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, DEFAULT_PITCH, TEXT("Terminal"));
+	
 	SetTimer(hWnd, 0, 1000 / (TARGET_FPS * 3 / 2), NULL); 
 	bbuf = new CBackBuffer(hWnd);
 
@@ -101,6 +103,7 @@ CWinEvents::~CWinEvents()
 	delete agent;
 	delete presetMgr;
 	DeleteObject(font);
+	DeleteObject(fontSmall);
 	delete display;
 }
 

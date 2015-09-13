@@ -15,6 +15,7 @@ private:
 	std::vector<std::vector<CTextItem*>::size_type> selectableIndices;
 	SelIndex selIndex;
 	bool noSelection;
+	HFONT myFont;
 
 	void SetSelectedIndex(SelIndex index);
 
@@ -33,5 +34,6 @@ public:
 
 	CSelectableTextItem *GetSelectedItem();
 	bool SetSelectedItem(CSelectableTextItem *item);
+	void SetFont(HFONT newFont);
 };
 

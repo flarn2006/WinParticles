@@ -8,6 +8,7 @@
 extern HINSTANCE hInst;
 extern CWinEvents *winEvents;
 extern CRootDisplay *display;
+extern HFONT font;
 
 CAnimation<double>::AnimFunction CAnimEditor::functionList[] = { AnimFunctions::Saw, AnimFunctions::Sine, AnimFunctions::Square, AnimFunctions::Triangle, AnimFunctions::Random };
 LPCTSTR CAnimEditor::functionNames[] = { TEXT("Saw"), TEXT("Sine"), TEXT("Square"), TEXT("Triangle"), TEXT("Random") };
@@ -112,9 +113,12 @@ void CAnimEditor::OnDraw(HDC hDC, const LPRECT clientRect)
 		SelectObject(hDC, redPen);
 	Rectangle(hDC, bounds.left, bounds.top, bounds.right, bounds.bottom);
 
+	SelectObject(hDC, font);
+	
 	if (selectedID >= 0) {
 		COLORREF color = animations[selectedID].GetEnabled() ? RGB(0, 255, 0) : RGB(0, 255, 255);
 		SetTextColor(hDC, color);
+
 		TextOut(hDC, bounds.left + 48, bounds.top + 9, enabledSwitch.GetState() ? TEXT("ENABLED ") : TEXT("DISABLED"), 8);
 
 		TextOut(hDC, bounds.left + 7, bounds.top + 99, TEXT("-"), 1);

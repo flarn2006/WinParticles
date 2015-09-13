@@ -8,6 +8,7 @@ extern int verbosity;
 CTextDisplay::CTextDisplay()
 {
 	noSelection = true;
+	myFont = font;
 }
 
 CTextDisplay::~CTextDisplay()
@@ -121,4 +122,9 @@ bool CTextDisplay::SetSelectedItem(CSelectableTextItem *item)
 		}
 	}
 	return false;
+}
+
+void CTextDisplay::SetFont(HFONT newFont)
+{
+	myFont = newFont;
 }

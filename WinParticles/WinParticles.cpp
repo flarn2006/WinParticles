@@ -39,7 +39,7 @@ HCURSOR curEmitter;
 bool additiveDrawing = true;
 CHOOSECOLOR colorDlg;
 CParticleBitmap bitmap;
-HFONT font;
+HFONT font, fontSmall;
 tstring cmdLine;
 CRootDisplay *display;
 CGradient gradients[NUM_GRADIENTS];
