@@ -34,6 +34,7 @@ public:
 
 	CSelectableTextItem *GetSelectedItem();
 	bool SetSelectedItem(CSelectableTextItem *item);
+	HFONT GetFont() const;
 	void SetFont(HFONT newFont);
 };
 

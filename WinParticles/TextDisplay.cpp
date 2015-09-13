@@ -36,7 +36,7 @@ void CTextDisplay::OnDraw(HDC hDC, const LPRECT clientRect)
 	textRect.right = clientRect->right;
 	textRect.bottom = clientRect->bottom;
 	
-	SelectObject(hDC, font);
+	SelectObject(hDC, myFont);
 	SetTextColor(hDC, 0);
 	DrawText(hDC, out.str().c_str(), out.str().length(), &textRect, 0);
 	textRect.left--; textRect.top--;
@@ -122,6 +122,11 @@ bool CTextDisplay::SetSelectedItem(CSelectableTextItem *item)
 		}
 	}
 	return false;
+}
+
+HFONT CTextDisplay::GetFont() const
+{
+	return myFont;
 }
 
 void CTextDisplay::SetFont(HFONT newFont)

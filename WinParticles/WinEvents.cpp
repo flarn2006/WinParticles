@@ -263,6 +263,15 @@ bool CWinEvents::OnCommand(WORD command, WORD eventID)
 		verbosity = 0;
 		UpdateViewMenuChecks();
 		break;
+	case ID_VIEW_USESMALLFONT:
+		if (display->GetTextDisplay()->GetFont() == fontSmall) {
+			display->GetTextDisplay()->SetFont(font);
+			CheckMenuItem(GetMenu(hWnd), ID_VIEW_USESMALLFONT, MF_UNCHECKED);
+		} else {
+			display->GetTextDisplay()->SetFont(fontSmall);
+			CheckMenuItem(GetMenu(hWnd), ID_VIEW_USESMALLFONT, MF_CHECKED);
+		}
+		break;
 	case ID_HELP_CONTEXTHELP:
 		display->GetHelpTextObj()->SetEnabled(!display->GetHelpTextObj()->GetEnabled());
 		UpdateViewMenuChecks();
