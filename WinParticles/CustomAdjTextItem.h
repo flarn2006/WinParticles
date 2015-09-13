@@ -13,6 +13,13 @@ private:
 	Callback_Get callbackGet;
 	Callback_Set callbackSet;
 
+protected:
+	virtual void OnSelected()
+	{
+		CAdjustableTextItem<T>::OnSelected();
+		SetAnimEditorID(-1);
+	}
+
 public:
 	void SetCallbackForGet(const Callback_Get &callback)
 	{
