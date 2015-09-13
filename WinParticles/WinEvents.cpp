@@ -612,15 +612,28 @@ void CWinEvents::SetupTextDisplay(CTextDisplay &td)
 		paramTextItems[i] = item;
 	}
 
-	CScaleAllTextItem *scaleAll = new CScaleAllTextItem();
+	td.AddText();
+
+	CScaleAllTextItem *scaleAll = new CScaleAllTextItem(TEXT("(Adjust spatial scale)"));
 	scaleAll->AddParam(paramTextItems[CParamAgent::MIN_VELOCITY]);
 	scaleAll->AddParam(paramTextItems[CParamAgent::MAX_VELOCITY]);
 	scaleAll->AddParam(paramTextItems[CParamAgent::ACCELERATION_X]);
 	scaleAll->AddParam(paramTextItems[CParamAgent::ACCELERATION_Y]);
 	scaleAll->AddParam(paramTextItems[CParamAgent::EMISSION_RADIUS]);
 	scaleAll->AddParam(paramTextItems[CParamAgent::INNER_RADIUS]);
-	td.AddText();
 	td.AddItem(scaleAll);
+
+	scaleAll = new CScaleAllTextItem(TEXT("(Adjust temporal scale)"));
+	scaleAll->AddParam(paramTextItems[CParamAgent::MIN_VELOCITY]);
+	scaleAll->AddParam(paramTextItems[CParamAgent::MAX_VELOCITY]);
+	scaleAll->AddParam(paramTextItems[CParamAgent::ACCELERATION_X]);
+	scaleAll->AddParam(paramTextItems[CParamAgent::ACCELERATION_X]);
+	scaleAll->AddParam(paramTextItems[CParamAgent::ACCELERATION_Y]);
+	scaleAll->AddParam(paramTextItems[CParamAgent::ACCELERATION_Y]);
+	scaleAll->AddParam(paramTextItems[CParamAgent::EMISSION_RATE]);
+	scaleAll->AddParam(paramTextItems[CParamAgent::MAXIMUM_AGE], true);
+	td.AddItem(scaleAll);
+
 	td.AddText();
 
 	CCustomAdjTextItem<SHORT> *displayChance = new CCustomAdjTextItem<SHORT>();

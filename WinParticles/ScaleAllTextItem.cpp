@@ -6,20 +6,28 @@
 
 extern CRootDisplay *display;
 
-CScaleAllTextItem::CScaleAllTextItem()
+CScaleAllTextItem::CScaleAllTextItem(const tstring &itemText)
 {
+	text = itemText;
 }
 
 void CScaleAllTextItem::ScaleAllBy(double factor)
 {
-	for (auto i = affectedParams.begin(); i != affectedParams.end(); i++) {
-		(*i)->SetValue(factor * (*i)->GetValue());
+	std::size_t count = affectedParams.size();
+	for (std::size_t i = 0; i < count; i++) {
+		double newValue;
+		if (inverted[i]) {
+			newValue = affectedParams[i]->GetValue() / factor;
+		} else {
+			newValue = affectedParams[i]->GetValue() * factor;
+		}
+		affectedParams[i]->SetValue(newValue);
 	}
 }
 
 void CScaleAllTextItem::GetItemText(tstring &text) const
 {
-	text = TEXT("(Scale entire system)");
+	text = this->text;
 }
 
 void CScaleAllTextItem::OnMouseWheel(short wheelDelta)
@@ -28,9 +36,10 @@ void CScaleAllTextItem::OnMouseWheel(short wheelDelta)
 	ScaleAllBy(multiplier);
 }
 
-void CScaleAllTextItem::AddParam(CAnimTarget<double> *param)
+void CScaleAllTextItem::AddParam(CAnimTarget<double> *param, bool inverted)
 {
 	affectedParams.push_back(param);
+	this->inverted.push_back(inverted);
 }
 
 void CScaleAllTextItem::OnEnterKey()

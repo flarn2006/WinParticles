@@ -7,6 +7,8 @@ class CScaleAllTextItem : public CSelectableTextItem
 {
 private:
 	std::vector<CAnimTarget<double>*> affectedParams;
+	std::vector<bool> inverted;
+	tstring text;
 	void ScaleAllBy(double factor);
 
 protected:
@@ -15,7 +17,7 @@ protected:
 	virtual void OnEnterKey();
 
 public:
-	CScaleAllTextItem();
-	void AddParam(CAnimTarget<double> *param);
+	CScaleAllTextItem(const tstring &itemText);
+	void AddParam(CAnimTarget<double> *param, bool inverted = false);
 };
 
